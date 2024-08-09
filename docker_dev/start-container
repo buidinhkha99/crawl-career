@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+if [ ! -d /.composer ]; then
+    mkdir /.composer
+fi
+
+chmod -R ugo+rw /.composer
+
+service cron restart
+php artisan migrate -n --force
+php artisan schedule:clear-cache -n
+php artisan nova:check-license -n
+php artisan optimize:clear -n
+php artisan storage:link -n
+exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf

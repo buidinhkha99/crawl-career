@@ -1,0 +1,11 @@
+{
+  "novaSortable.reorderingDisabledTooltip.activeSort": "Sắp xếp lại bị tắt với các tùy chọn sắp xếp hoạt động.",
+  "novaSortable.reorderingDisabledTooltip.notAllowed": "Sắp xếp lại không được phép cho tài nguyên này.",
+  "novaSortable.moveToStart": "Di chuyển đến bắt đầu",
+  "novaSortable.moveToEnd": "Di chuyển đến cuối",
+  "novaSortable.reorderSuccessful": "Tài nguyên được sắp xếp lại thành công.",
+  "novaSortable.moveToStartSuccessful": "Đã di chuyển tài nguyên thành công đến vị trí đầu tiên",
+  "novaSortable.moveToEndSuccessful": "Đã di chuyển thành công tài nguyên đến vị trí cuối cùng.",
+  "novaSortable.reorderError": "Đã xảy ra lỗi khi cố gắng sắp xếp lại tài nguyên.",
+  "novaSortable.reorderNotAllowedFor": "Sắp xếp lại tài nguyên có ID :id không được phép."
+}

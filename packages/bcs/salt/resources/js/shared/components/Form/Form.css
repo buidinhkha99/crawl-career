@@ -1,0 +1,53 @@
+/* Large */
+.salt-form .title {
+    font-size: 24px;
+}
+
+.salt-form.lg .ant-input-affix-wrapper,
+.salt-form.lg .salt-input {
+    max-width: 240px;
+    /* height: 140px; */
+    height: 40px;
+}
+
+.salt-form.lg .ant-input::placeholder,
+.salt-form.lg .ant-input-affix-wrapper {
+    font-size: 14px;
+}
+
+.salt-form.lg textarea.ant-input {
+    max-width: 240px;
+}
+
+.salt-form.lg .button {
+    max-width: 111px;
+    height: 43px;
+    font-size: 16px;
+}
+
+/* Medium */
+.salt-form.md .title {
+    font-size: 16px;
+}
+
+.salt-form.md .ant-input-affix-wrapper,
+.salt-form.md .salt-input {
+    max-width: 200px;
+    height: 38px;
+}
+
+.salt-form.md textarea.ant-input {
+    max-width: 200px;
+    height: 60px;
+}
+
+.salt-form.md .ant-input::placeholder,
+.salt-form.md .ant-input {
+    font-size: 12px;
+}
+
+.salt-form.md .button {
+    max-width: 79px;
+    height: 32px;
+    font-size: 16px;
+}

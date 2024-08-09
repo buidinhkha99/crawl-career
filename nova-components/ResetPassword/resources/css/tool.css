@@ -1,0 +1,17 @@
+/* Nova Tool CSS */
+.customize-btn {
+    background-color: #11A5E9;
+    padding: 10px 16px;
+    color: #1e293b;
+    font-weight: bold;
+    border-radius: 0.25rem;
+}
+
+.text-required {
+    color: red;
+}
+
+.dark .errorInput.form-input-bordered,
+.dark .errorInput.form-select-bordered {
+    border: 1px solid red !important;
+}

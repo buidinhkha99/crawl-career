@@ -1,0 +1,58 @@
+{
+    "name": "salt/nova-flexible-content",
+    "description": "Flexible Content & Repeater Fields for Laravel Nova.",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "nova",
+        "field",
+        "flexible",
+        "repeat",
+        "group",
+        "layout"
+    ],
+    "authors": [
+    ],
+    "require": {
+        "php": "^7.3|^8.0",
+        "laravel/framework": "^8.0|^9.0",
+        "laravel/nova": "^4.0",
+        "nova-kit/nova-packages-tool": "^1.3.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Salt\\NovaFlexibleContent\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://nova.laravel.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Salt\\NovaFlexibleContent\\ToolServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "laravel/pint": "^1.2"
+    },
+    "scripts": {
+        "test": "phpunit --colors=always tests",
+        "fix-style": "./vendor/bin/pint"
+    }
+}

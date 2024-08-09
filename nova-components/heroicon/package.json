@@ -1,0 +1,31 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "npm run development",
+    "development": "mix",
+    "watch": "mix watch",
+    "watch-poll": "mix watch -- --watch-options-poll=1000",
+    "hot": "mix watch --hot",
+    "prod": "npm run production",
+    "production": "mix --production"
+  },
+  "devDependencies": {
+    "@vue/compiler-sfc": "^3.2.22",
+    "postcss": "^8.3.11",
+    "resolve-url-loader": "^5.0.0",
+    "sass": "^1.54.4",
+    "sass-loader": "^12.6.0",
+    "vue-loader": "^16.8.3"
+  },
+  "dependencies": {
+    "@inertiajs/inertia": "^0.11.0",
+    "@vue/babel-plugin-jsx": "^1.1.1",
+    "eslint": "^8.0.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-vue": "^9.3.0",
+    "form-backend-validation": "^2.4.0",
+    "laravel-mix": "^6.0.41",
+    "vue-advanced-cropper": "^2.8.3",
+    "vuex": "^4.0.2"
+  }
+}

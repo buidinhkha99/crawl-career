@@ -1,0 +1,40 @@
+{
+    "name": "nemrutco/nova-global-filter",
+    "description": "This package allows you to broadcast any of your existing Laravel Nova filters to metrics or custom cards.",
+    "keywords": [
+        "laravel",
+        "nova",
+        "filters",
+        "dashboard",
+        "metrics",
+        "card"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=7.1.0",
+        "laravel/nova":"^4.0"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://nova.laravel.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Nemrutco\\NovaGlobalFilter\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Nemrutco\\NovaGlobalFilter\\CardServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

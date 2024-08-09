@@ -1,0 +1,41 @@
+{
+  "name": "outl1ne/nova-media-hub",
+  "description": "A Laravel Nova tool for managing media.",
+  "keywords": [
+    "laravel",
+    "nova"
+  ],
+  "license": "MIT",
+  "require": {
+    "php": ">=8.0",
+    "laravel/nova": "^4.0",
+    "outl1ne/nova-translations-loader": "^5.0",
+    "outl1ne/nova-translatable": "^2.0.4",
+    "spatie/image": "^2.2",
+    "spatie/image-optimizer": "^1.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "Outl1ne\\NovaMediaHub\\": "src/"
+    },
+    "files": []
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Outl1ne\\NovaMediaHub\\MediaHubServiceProvider"
+      ]
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://nova.laravel.com"
+    }
+  ]
+}

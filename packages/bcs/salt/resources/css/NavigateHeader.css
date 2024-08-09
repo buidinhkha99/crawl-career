@@ -1,0 +1,84 @@
+.navigate .navLink::before {
+    content: "";
+    position: absolute;
+    background: #ffffff;
+    box-shadow: 0px 0px 8px #ffffff;
+    border-radius: 2px;
+    height: 3px;
+    width: 0;
+    transition: width 0.25s;
+    top: 205%;
+}
+
+.navigate .active::before {
+    content: "";
+    position: absolute;
+    background: #ffffff;
+    box-shadow: 0px 0px 8px #ffffff;
+    border-radius: 2px;
+    height: 3px;
+    width: 100%;
+    transition: width 0.25s;
+    top: 205%;
+}
+
+.navigate .navLink:hover::before {
+    width: 100%;
+}
+
+
+.navigate .navLink2Xl::before {
+    content: "";
+    position: absolute;
+    background: #ffffff;
+    box-shadow: 0px 0px 8px #ffffff;
+    border-radius: 2px;
+    height: 3px;
+    width: 0;
+    transition: width 0.25s;
+    top: 245%;
+}
+
+.navigate .navLink2Xl:hover::before {
+    width: 100%;
+}
+
+.navigate .active2Xl::before {
+    content: "";
+    position: absolute;
+    background: #ffffff;
+    box-shadow: 0px 0px 8px #ffffff;
+    border-radius: 2px;
+    height: 3px;
+    width: 100%;
+    transition: width 0.25s;
+    top: 245%;
+}
+
+.navigate .navLinkMobile::before {
+    content: "";
+    position: absolute;
+    background: #ffffff;
+    box-shadow: 0px 0px 8px #ffffff;
+    border-radius: 2px;
+    height: 3px;
+    width: 0;
+    transition: width 0.25s;
+    top: 110%;
+}
+
+.navigate .navLinkMobile:hover::before {
+    width: 100%;
+}
+
+.navigate .activeMobile::before {
+    content: "";
+    position: absolute;
+    background: #ffffff;
+    box-shadow: 0px 0px 8px #ffffff;
+    border-radius: 2px;
+    height: 3px;
+    width: 100%;
+    transition: width 0.25s;
+    top: 110%;
+}

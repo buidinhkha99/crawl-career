@@ -1,0 +1,7 @@
+export * from "./Tag"
+export * from "./CardPostRound"
+export * from "./PostInfo"
+export * from "./UserReaded"
+export * from "./CardPostSquare"
+export * from "./CardPopularSquare"
+export * from "./CardPopularRound"

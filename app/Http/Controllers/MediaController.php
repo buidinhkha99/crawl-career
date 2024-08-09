@@ -1,0 +1,152 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Enums\ExaminationStatus;
+use App\Enums\UserGender;
+use App\Models\Examination;
+use App\Models\Setting;
+use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Outl1ne\NovaMediaHub\Models\Media;
+
+class MediaController extends Controller
+{
+    public function streamExamPdf(Request $request, $id)
+    {
+        // check permissions
+        if (! Auth::user()->can('viewAny', Examination::class)) {
+            abort(403);
+        }
+
+        $exam = Examination::where('uuid', $id)->firstOrFail();
+        $media = Media::find($exam->getAttribute('avatar'));
+        $avatar = base64_encode(Storage::disk('public')->get($media?->path.$media?->file_name));
+
+        if (! $avatar) {
+            $avatar = base64_encode(Storage::disk('public')->get('default_avatar_user.png'));
+        }
+        $duration = $exam->getAttribute('duration') ?: 0;
+        $hours = floor($duration / 3600);
+        $minutes = floor(($duration / 60) % 60);
+        $seconds = $duration % 60;
+        $duration_convert = "$hours giờ, $minutes phút, $seconds giây";
+
+        if ($hours == 0 && $minutes > 0) {
+            $duration_convert = "$minutes phút, $seconds giây";
+            if ($seconds == 0) {
+                $duration_convert = "$minutes phút";
+            }
+        }
+
+        if ($hours == 0 && $minutes == 0) {
+            $duration_convert = "$seconds giây";
+        }
+
+        if ($hours > 0) {
+            if ($seconds == 0) {
+                $duration_convert = "$hours giờ, $minutes phút";
+            }
+
+            if ($minutes == 0) {
+                $duration_convert = "$hours giờ";
+            }
+        }
+
+        $html = Blade::render(Setting::get('exam_result_pdf'), [
+            'created_at' => $exam->created_at->format('d/m/Y'),
+            'quiz_name' => $exam->quiz_name,
+            'exam_name' => $exam->getAttribute('exam_name'),
+            'is_started_at' => $exam->getAttribute('start_time_exam')->format('d/m/Y'),
+            'is_ended_at' => $exam->getAttribute('end_time_exam')->format('d/m/Y'),
+            'duration' => $duration_convert,
+
+            'user_info' => [
+                'avatar' => 'data:image/png;base64,'.$avatar,
+                'full_name' => $exam->getAttribute('name'),
+                'identification_number' => $exam->getAttribute('employee_code'),
+                'date_of_birth' => $exam->getAttribute('dob')?->format('d/m/Y'),
+                'coaching_team' => $exam->getAttribute('group'),
+                'work_unit' => $exam->getAttribute('department'),
+                'working_position' => $exam->getAttribute('position'),
+            ],
+            'exam_result' => [
+                'right_answers' => $exam->getAttribute('correct_answer'),
+                'wrong_answers' => $exam->getAttribute('wrong_answer'),
+                'unanswered' => $exam->getAttribute('unanswered'),
+                'score' => $exam->getAttribute('score'),
+                'is_passed' => $exam->getAttribute('state') == ExaminationStatus::Pass,
+            ],
+            'examination' => $exam->getAttribute('examination'),
+        ], true);
+
+        $filename = Str::snake("{$exam->exam_name}{$exam->name}_{$exam->username}").'.pdf';
+
+        return PDF::loadHTML($html, 'UTF-8')->inline($filename);
+    }
+
+    public function streamReportPdf(Request $request)
+    {
+        // check permissions
+        if (! Auth::user()?->can('viewAny', Examination::class)) {
+            abort(403);
+        }
+
+        $hash = $request->get('payload');
+        $payload = json_decode(base64_decode($hash));
+        $payload->headings = collect($payload->headings);
+
+        $html = Blade::render(Setting::get('content_page_pdf_report'), [
+            'header' => [
+                'company_name' => $payload?->company_name,
+                'place' => $payload?->place,
+                'date_time' => $payload?->date_time,
+            ],
+            'title' => $payload?->title,
+            'table' => [
+                'heading' => $payload?->headings ?? [],
+                'data' => Examination::whereIn('id', $payload?->ids)->get()->map(function ($row) use ($payload) {
+                    return $payload?->headings->map(function ($header) use ($row) {
+                        return match ($header) {
+                            __('Employee Code') => $row->employee_code,
+                            __('Full Name') => $row->name,
+                            __('Date Of Birth') => $row->dob?->format('d/m/Y'),
+                            __('CCCD/CMND') => $row->username,
+                            __('Exam') => $row->exam_name,
+                            __('Quiz') => $row->quiz_name,
+                            __('Score') => $row->score > 0 ? $row->score : '0',
+                            __('Result') => $row->state,
+                            __('Duration') => $row->duration ? gmdate('H:i:s', $row->duration) : null,
+                            __('Exam date') => $row->start_time?->format('d/m/Y'),
+                            __('Gender') => UserGender::getValue($row->gender),
+                            __('Group User') => $row->group,
+                            __('Position ') => $row->position,
+                            __('Department') => $row->department,
+                            __('Factory') => $row->factory_name,
+                            __('Start Time') => $row->start_time?->format('d/m/Y H:i:s'),
+                            __('End Time') => $row->end_time?->format('d/m/Y H:i:s'),
+                            __('Number Correct Answer') => $row->correct_answer > 0 ? $row->correct_answer : '0',
+                            __('Number wrong answer') => $row->wrong_answer > 0 ? $row->wrong_answer : '0',
+                            __('Number Unanswered') => $row->unanswered > 0 ? $row->unanswered : '0',
+                            __('Signature') => null,
+                        };
+                    });
+                })->toArray(),
+            ],
+            'note' => $payload?->note,
+            'footer' => [
+                'verifier' => $payload?->verifier,
+                'reporter' => $payload?->reporter,
+                'represent' => $payload?->represent
+            ],
+        ], true);
+
+        $filename = 'bao_cao_bai_thi.pdf';
+
+        return PDF::loadHTML($html, 'UTF-8')->setPaper('a4')->setOrientation('landscape')->inline($filename);
+    }
+}
