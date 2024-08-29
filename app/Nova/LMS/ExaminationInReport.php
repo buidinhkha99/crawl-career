@@ -8,6 +8,8 @@ use App\Nova\Actions\DownloadExcel;
 use App\Nova\Actions\DownloadPDFReport;
 use App\Nova\Filters\ExamNameFilter;
 use App\Nova\Filters\QuizNameFilter;
+use App\Nova\Filters\ReportDurationExamFilter;
+use App\Nova\Filters\ReportScoreFilter;
 use App\Nova\Filters\UserGroupNameFilter;
 use App\Nova\Resource;
 use App\Nova\User;
@@ -161,6 +163,8 @@ class ExaminationInReport extends Resource
             (new ExamNameFilter())->singleSelect(),
             (new QuizNameFilter())->singleSelect(),
             (new UserGroupNameFilter())->singleSelect(),
+            (new ReportScoreFilter())->singleSelect(),
+            (new ReportDurationExamFilter())->singleSelect(),
         ];
     }
 
