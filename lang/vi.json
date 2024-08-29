@@ -1149,5 +1149,11 @@
     "Invalid" : "Không hợp lệ",
     "Not in any group": "Không thuộc nhóm nào",
     "Signature" : "Chữ ký",
-    "Name without comma" : "Tên nhóm không có dấu phẩy"
+    "Name without comma" : "Tên nhóm không có dấu phẩy",
+    "Low to high" : "Từ thấp đến cao",
+    "High to low" : "Từ cao xuống thấp",
+    "Score examination" : "Điểm bài thi",
+    "Duration examination" : "Thời gian làm bài",
+    "Fast to slow" : "Từ nhanh nhất đến chậm nhất",
+    "Slow to fast" : "Từ chậm nhất đến nhanh nhất"
 }
