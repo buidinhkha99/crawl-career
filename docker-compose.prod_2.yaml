@@ -1,0 +1,51 @@
+version: '3'
+services:
+    vimicoedu-app:
+        image: index.docker.io/phuongvietvu0306/vimicoedu:feat-add-filter-score-and-duration
+        restart: unless-stopped
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        ports:
+            - '90:80'
+        volumes:
+            - './vimicoedu/.env:/app/.env'
+            - './vimicoedu/storage:/app/storage'
+            - 'caddy_data:/data'
+            - 'caddy_config:/config'
+        networks:
+            - salt
+        depends_on:
+            - mysql
+            - redis
+    vimicoedu-queue:
+        image: index.docker.io/phuongvietvu0306/vimicoedu:feat-add-filter-score-and-duration
+        restart: unless-stopped
+        volumes:
+            - './vimicoedu/.env:/app/.env'
+            - './vimicoedu/storage:/app/storage'
+            - 'caddy_data:/data'
+            - 'caddy_config:/config'
+        networks:
+            - salt
+        depends_on:
+            - mysql
+            - redis
+        command: php artisan queue:work -vvv
+    vimicoedu-schedule:
+        image: index.docker.io/phuongvietvu0306/vimicoedu:feat-add-filter-score-and-duration
+        restart: unless-stopped
+        volumes:
+            - './vimicoedu/.env:/app/.env'
+            - './vimicoedu/storage:/app/storage'
+            - 'caddy_data:/data'
+            - 'caddy_config:/config'
+        networks:
+            - salt
+        depends_on:
+            - mysql
+            - redis
+        command: php artisan schedule:work -vvv
+# Volumes needed for Caddy certificates and configuration
+volumes:
+    caddy_data:
+    caddy_config:
