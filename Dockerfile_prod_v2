@@ -1,0 +1,57 @@
+FROM dunglas/frankenphp
+
+RUN install-php-extensions \
+    pdo_mysql \
+    gd \
+    imap \
+    bcmath \
+    intl \
+    msgpack \
+    zip \
+    igbinary \
+    opcache \
+    redis \
+    memcached \
+    pcov
+
+RUN apt update && apt install -y wkhtmltopdf
+
+ARG SERVER_NAME=:80
+
+ENV SERVER_NAME=$SERVER_NAME
+
+# Enable PHP production settings
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+
+WORKDIR /app
+
+COPY app ./app
+COPY bootstrap ./bootstrap
+COPY config ./config
+COPY database ./database
+COPY lang ./lang
+
+COPY public/build ./public/build
+COPY public/vendor ./public/vendor
+COPY public/.htaccess ./public/.htaccess
+COPY public/favicon.ico ./public/favicon.ico
+COPY public/index.php ./public/index.php
+COPY public/robots.txt ./public/robots.txt
+
+COPY resources ./resources
+COPY routes ./routes
+COPY vendor ./vendor
+COPY artisan .
+COPY composer.json .
+COPY composer.lock .
+
+COPY docker/memory.ini /usr/local/etc/php/conf.d/memory.ini
+
+RUN mkdir -p storage/app/public
+RUN mkdir -p storage/framework/views
+RUN mkdir -p storage/framework/cache/data
+RUN mkdir -p storage/framework/sessions
+RUN mkdir -p storage/framework/testing
+RUN mkdir -p storage/logs
+
+RUN ln -s /app/storage/app/public public/storage
