@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CertificateConstant;
 use App\Enums\ExaminationStatus;
 use App\Enums\ExaminationType;
 use App\Enums\QuizType;
+use App\Jobs\CreateCertificate;
+use App\Models\Certificate;
 use App\Models\Exam;
 use App\Models\Examination;
 use App\Models\ExaminationMockQuiz;
@@ -272,6 +275,12 @@ class QuizController extends Controller
                         ->type('info')
                 );
             });
+
+            // Provide occupational certificate for user pass exam
+            // TODO: check condition provide certificate
+            if ($examination->status == ExaminationStatus::Pass) {
+                $this->dispatchSync(new CreateCertificate($user->id, CertificateConstant::OCCUPATIONAL_SAFETY));
+            };
         });
 
         return redirect()->back()->with('message', __('Nộp bài thi thành công!'));
