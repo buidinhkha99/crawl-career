@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Outl1ne\NovaMediaHub\Models\Media;
+use Barryvdh\DomPDF\ServiceProvider;
 
 class MediaController extends Controller
 {
@@ -164,22 +165,12 @@ class MediaController extends Controller
 //            'data' => $payload
 //        ]);
 
-//        $pdf = PDF::loadView('certificate-occupational', []);
-//        //Nếu muốn hiển thị file pdf theo chiều ngang
-//         $pdf->setPaper('A4');
-//
-//        //Nếu muốn download file pdf
-////        return $pdf->download('myPDF.pdf');
-//
-//        //Nếu muốn preview in pdf
-//        return $pdf->stream('myPDF.pdf');
-
         $html = Blade::render(file_get_contents(resource_path('views/certificate-occupational.blade.php')), [
             'data' => $payload
         ], true);
 
         $filename = 'danh_sach_the.pdf';
 
-        return PDF::loadHTML($html, 'UTF-8')->setOption('dpi' ,7200)->setPaper('Letter')->inline($filename);
+        return PDF::loadHTML($html, 'UTF-8')->setPaper('Letter')->inline($filename);
     }
 }

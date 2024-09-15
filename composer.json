@@ -14,6 +14,7 @@
         "alexwenzel/nova-dependency-container": "^1.7",
         "artesaos/seotools": "^1.0",
         "badinansoft/nova-language-switch": "^1.2",
+        "barryvdh/laravel-dompdf": "^3.0",
         "barryvdh/laravel-snappy": "^1.0",
         "bensampo/laravel-enum": "^6.2",
         "bepsvpt/secure-headers": "^7.4",
