@@ -13,7 +13,6 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::dropIfExists('certificates');
         Schema::create('certificates', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
