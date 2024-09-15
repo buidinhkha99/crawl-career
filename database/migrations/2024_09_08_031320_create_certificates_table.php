@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('type')->comment('Loại thẻ occupational-safety (an toàn lao động), electrical-safety (an toàn điện)');
+            $table->foreignId('group_id')->comment('Nhóm người lao động được cấp thẻ')->constrained('groups');
             $table->integer('card_id')->comment('Mã số thẻ, theo số thứ tự thẻ, làm mới theo năm');
             $table->json('card_info')->comment('Thông tin của thẻ tại thời điểm cấp');
             $table->timestamps();

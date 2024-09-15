@@ -1149,5 +1149,10 @@
     "Invalid" : "Không hợp lệ",
     "Not in any group": "Không thuộc nhóm nào",
     "Signature" : "Chữ ký",
-    "Name without comma" : "Tên nhóm không có dấu phẩy"
+    "Name without comma" : "Tên nhóm không có dấu phẩy",
+    "Occupational Certificate" : "Chứng chỉ ATLD",
+    "Certificate ID" : "Số chứng chỉ",
+    "Certificate" : "Chứng chỉ",
+    "Create from" : "Từ ngày",
+    "Create to" : "Đến ngày"
 }

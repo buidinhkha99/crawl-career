@@ -17,6 +17,7 @@ use App\Nova\LMS\Lesson;
 use App\Nova\LMS\Exam;
 use App\Nova\LMS\Examination;
 use App\Nova\LMS\ExaminationInReport;
+use App\Nova\LMS\OccupationalCertificate;
 use App\Nova\LMS\Question;
 use App\Nova\LMS\QuestionType;
 use App\Nova\LMS\Quiz;
@@ -142,6 +143,10 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                    MenuItem::make(__('Random Quiz'))->path('/settings/quiz-random')->canSee(fn () => Auth::user() && ((method_exists(Auth::user(), 'isSuperAdmin') && Auth::user()->isSuperAdmin())
                            || Auth::user()->hasPermissionTo('view'.SettingType::QuizRandom))),
                ])->icon('document-text')->collapsedByDefault(),
+
+                MenuSection::make(__('Certificate'), [
+                    MenuItem::resource(OccupationalCertificate::class),
+                ])->icon('academic-cap')->collapsedByDefault(),
 
                 MenuSection::make(__('Configuration'), [
                     MenuItem::make(__('Exam Rule'))->path('/settings/rule')

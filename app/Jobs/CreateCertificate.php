@@ -51,6 +51,7 @@ class CreateCertificate implements ShouldQueue
 
             Certificate::create([
                 'user_id' => $this->userID,
+                'group_id' => $user->groups->first()?->id,
                 'type' => $this->type,
                 'card_info' => $cardInfo,
                 'card_id' => getNextNumberCardID($this->type)
