@@ -149,4 +149,26 @@ class MediaController extends Controller
 
         return PDF::loadHTML($html, 'UTF-8')->setPaper('a4')->setOrientation('landscape')->inline($filename);
     }
+
+    public function streamCertificatesPdf(Request $request)
+    {
+        // check permissions
+        if (!Auth::user()) {
+            abort(403);
+        }
+
+        $hash = session('payload');
+        $payload = json_decode(base64_decode($hash));
+
+//        return view('certificate-occupational', [
+//            'data' => $payload
+//        ]);
+        $html = Blade::render(file_get_contents(resource_path('views/certificate-occupational.blade.php')), [
+            'data' => $payload
+        ], true);
+
+        $filename = 'danh_sach_the.pdf';
+
+        return PDF::loadHTML($html, 'UTF-8')->setPaper('a4')->setOrientation('landscape')->inline($filename);
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Nova\LMS;
 
 use App\Enums\CertificateConstant;
 use App\Models\Certificate;
+use App\Nova\Actions\DownloadPDFCertificate;
 use App\Nova\Filters\CertificateEndTimeFilter;
 use App\Nova\Filters\CertificateStartTimeFilter;
 use App\Nova\Filters\DepartmentCertificateFilter;
@@ -131,6 +132,8 @@ class OccupationalCertificate extends Resource
      */
     public function actions(NovaRequest $request): array
     {
-        return [];
+        return [
+            new DownloadPDFCertificate()
+        ];
     }
 }

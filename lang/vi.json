@@ -965,6 +965,7 @@
     "Report": "Báo cáo",
     "Download Excel Report": "Tải báo cáo với Excel",
     "Download PDF Report": "Tải báo cáo với PDF",
+    "Download PDF Certificate": "Xuất danh sách thẻ",
     "Invalid email": "Email không hợp lệ",
     "Answer sheet": "Bảng trả lời",
     "Invalid Gender": "Trường Giới tính không hợp lệ",
@@ -1154,5 +1155,10 @@
     "Certificate ID" : "Số chứng chỉ",
     "Certificate" : "Chứng chỉ",
     "Create from" : "Từ ngày",
-    "Create to" : "Đến ngày"
+    "Create to" : "Đến ngày",
+    "Complete From" : "Ngày bắt đầu",
+    "Complete To" : "Ngày kết thúc",
+    "Effective To" : "Ngày hết hiệu lực",
+    "Director Name" : "Tên giám đốc",
+    "Signature Image" : "Ảnh chữ ký"
 }
