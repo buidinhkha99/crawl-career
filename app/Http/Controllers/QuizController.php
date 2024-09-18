@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\CertificateConstant;
 use App\Enums\ExaminationStatus;
 use App\Enums\ExaminationType;
 use App\Enums\QuizType;
-use App\Jobs\CreateCertificate;
-use App\Models\Certificate;
 use App\Models\Exam;
 use App\Models\Examination;
 use App\Models\ExaminationMockQuiz;
