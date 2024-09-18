@@ -13,7 +13,7 @@ class Certificate extends Model
 
     protected $fillable = [
         'user_id',
-        'group_id',
+        'released_at',
         'type',
         'card_id',
         'card_info'
@@ -21,6 +21,7 @@ class Certificate extends Model
 
     protected $casts = [
         'card_info' => 'json',
+        'released_at' => 'date'
     ];
 
     protected $appends = ['certificate_id'];
@@ -38,7 +39,7 @@ class Certificate extends Model
     public function getCertificateIDAttribute()
     {
         if ($this->type == CertificateConstant::OCCUPATIONAL_SAFETY) {
-            return $this->card_id . '/' . $this->created_at->year . '/TATLĐ';
+            return $this->card_id . '/' . $this->released_at->year . '/TATLĐ';
         }
 
         if ($this->type == CertificateConstant::ELECTRICAL_SAFETY) {
@@ -50,32 +51,59 @@ class Certificate extends Model
 
     public function getJobAttribute()
     {
-        $cardInfo = json_decode($this->attributes['card_info'], true);
         $job = null;
-        if (!empty($cardInfo['position'])) {
-            $job = $cardInfo['position'];
+        if (!empty($this->user->position)) {
+            $job = $this->user->position;
         }
 
-        if (!empty($cardInfo['department']) && $job) {
-            $job = $job . ' - ' . $cardInfo['department'];
-        } elseif (!empty($cardInfo['department']) && empty($job)) {
-            $job = $cardInfo['department'];
+        if (!empty($this->user->department) && $job) {
+            $job = $job . ' - ' . $this->user->department;
+        } elseif (!empty($this->user->department) && empty($job)) {
+            $job = $this->user->department;
         }
 
         return $job;
     }
 
-    public function getDobAttribute()
+    public function getCompleteFromAttribute()
     {
         $cardInfo = json_decode($this->attributes['card_info'], true);
 
-        return !empty($cardInfo['dob']) ? Carbon::parse($cardInfo['dob']) : null;
+        return !empty($cardInfo['complete_from']) ? Carbon::parse($cardInfo['complete_from']) : null;
     }
 
-    public function setDobAttribute($value)
+    public function setCompleteFromAttribute($value)
     {
         $cardInfo = json_decode($this->attributes['card_info'], true);
-        $cardInfo['dob'] = $value;
+        $cardInfo['complete_from'] = $value;
+        $this->attributes['card_info'] = json_encode($cardInfo);
+    }
+
+    public function getCompleteToAttribute()
+    {
+        $cardInfo = json_decode($this->attributes['card_info'], true);
+
+        return !empty($cardInfo['complete_to']) ? Carbon::parse($cardInfo['complete_to']) : null;
+    }
+
+    public function setCompleteToAtAttribute($value)
+    {
+        $cardInfo = json_decode($this->attributes['card_info'], true);
+        $cardInfo['complete_to'] = $value ? Carbon::parse($cardInfo['complete_to'])->format('Y-m-d') : null;
+        $this->attributes['card_info'] = json_encode($cardInfo);
+    }
+
+    public function getEffectiveToAttribute()
+    {
+        $cardInfo = json_decode($this->attributes['card_info'], true);
+
+        return !empty($cardInfo['effective_to']) ? Carbon::parse($cardInfo['effective_to']) : null;
+    }
+
+    public function setEffectiveToAttribute($value)
+    {
+        $cardInfo = json_decode($this->attributes['card_info'], true);
+        $cardInfo['effective_to'] = $value ? Carbon::parse($cardInfo['effective_to'])->format('Y-m-d') : null;
         $this->attributes['card_info'] = json_encode($cardInfo);
     }
 }

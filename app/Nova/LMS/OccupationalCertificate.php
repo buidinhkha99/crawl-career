@@ -6,6 +6,8 @@ use App\Enums\CertificateConstant;
 use App\Models\Certificate;
 use App\Nova\Actions\DownloadPDFCertificate;
 use App\Nova\Filters\CertificateEndTimeFilter;
+use App\Nova\Filters\CertificateExpirationDateFilter;
+use App\Nova\Filters\CertificateIssueDateFilter;
 use App\Nova\Filters\CertificateStartTimeFilter;
 use App\Nova\Filters\DepartmentCertificateFilter;
 use App\Nova\Filters\GroupUserCertificateFilter;
@@ -15,9 +17,13 @@ use App\Nova\Traits\HasCallbacks;
 use App\Nova\User;
 use Carbon\Carbon;
 use Laravel\Nova\Exceptions\HelperNotSupported;
+use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\Date;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Outl1ne\NovaMediaHub\Nova\Fields\MediaHubField;
 
@@ -44,7 +50,7 @@ class OccupationalCertificate extends Resource
 
     public static function indexQuery(NovaRequest $request, $query)
     {
-        return $query->where('type', CertificateConstant::OCCUPATIONAL_SAFETY);
+        return $query->with('user')->where('type', CertificateConstant::OCCUPATIONAL_SAFETY);
     }
 
     public static function label(): string
@@ -62,14 +68,27 @@ class OccupationalCertificate extends Resource
         return [
             ID::make()->sortable(),
             Text::make(__('Certificate ID'), 'certificate_id'),
-            Text::make(__('Name User'), 'card_info->name', function () {
-                return '<a class="link-default" href="' .
-                    sprintf('%s/resources/%s/%d', config('nova.path'), User::uriKey(), $this->user_id) . '">' .
-                    $this->card_info['name'] . ' </a>';
-            })->asHtml()->sortable(),
-            DateTime::make(__('Date Of Birth'), 'card_info->dob')
+            BelongsTo::make(__('Users'), 'user', User::class),
+            Date::make(__('Training start date'), 'complete_from')
                 ->displayUsing(fn($value) => $value ? Carbon::parse($value)->format('d/m/Y') : null),
-            Text::make(__('Employee Code'), 'user.employee_code')->sortable(),
+            Date::make(__('Training end date'), 'complete_to')
+                ->displayUsing(fn($value) => $value ? Carbon::parse($value)->format('d/m/Y') : null),
+            Date::make(__('Issue date'), 'released_at')
+                ->displayUsing(fn($value) => $value ? Carbon::parse($value)->format('d/m/Y') : null),
+            Date::make(__('Expiration date'), 'effective_to')
+                ->displayUsing(fn($value) => $value ? Carbon::parse($value)->format('d/m/Y') : null),
+        ];
+    }
+
+    public function fieldsForUpdate()
+    {
+        return [
+//            Number::make(__('Card number'), 'card_id')->required(),
+            Textarea::make(__('Training course name'), 'card_info->description')->required(),
+            Date::make(__('Training start date'), 'complete_from')->required(),
+            Date::make(__('Training end date'), 'complete_to')->required(),
+            Date::make(__('Issue date'), 'released_at')->required(),
+            Date::make(__('Expiration date'), 'effective_to')->required(),
         ];
     }
 
@@ -81,19 +100,21 @@ class OccupationalCertificate extends Resource
     {
         return [
             ID::make()->sortable(),
-            MediaHubField::make(__('Avatar'), 'card_info->avatar_id')
+            MediaHubField::make(__('Avatar'), 'user->avatar')
                 ->defaultCollection('users'),
             Text::make(__('Certificate ID'), 'certificate_id'),
-            Text::make(__('Name User'), 'card_info->name', function () {
-                return '<a class="link-default" href="' .
-                    sprintf('%s/resources/%s/%d', config('nova.path'), User::uriKey(), $this->user_id) . '">' .
-                    $this->card_info['name'] . ' </a>';
-            })->asHtml()->sortable(),
-            DateTime::make(__('Date Of Birth'), 'card_info->dob')
+            BelongsTo::make(__('Users'), 'user', User::class),
+            Text::make(__('Position '), 'user->position'),
+            Text::make(__('Department'), 'user->department'),
+            Textarea::make(__('Training course name'), 'card_info->description'),
+            Date::make(__('Training start date'), 'complete_from')
                 ->displayUsing(fn($value) => $value ? Carbon::parse($value)->format('d/m/Y') : null),
-            Text::make(__('Employee Code'), 'user.employee_code')->sortable(),
-            Text::make(__('Position '), 'card_info->position'),
-            Text::make(__('Department'), 'card_info->department'),
+            Date::make(__('Training end date'), 'complete_to')
+                ->displayUsing(fn($value) => $value ? Carbon::parse($value)->format('d/m/Y') : null),
+            Date::make(__('Issue date'), 'released_at')
+                ->displayUsing(fn($value) => $value ? Carbon::parse($value)->format('d/m/Y') : null),
+            Date::make(__('Expiration date'), 'effective_to')
+                ->displayUsing(fn($value) => $value ? Carbon::parse($value)->format('d/m/Y') : null),
         ];
     }
 
@@ -113,6 +134,8 @@ class OccupationalCertificate extends Resource
         return [
             (new CertificateStartTimeFilter()),
             (new CertificateEndTimeFilter()),
+            (new CertificateIssueDateFilter()),
+            (new CertificateExpirationDateFilter()),
             (new GroupUserCertificateFilter())->singleSelect(),
             (new DepartmentCertificateFilter())->singleSelect(),
             (new PositionCertificateFilter())->singleSelect(),

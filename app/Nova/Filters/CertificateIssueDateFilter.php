@@ -6,11 +6,11 @@ use Illuminate\Support\Carbon;
 use Laravel\Nova\Filters\DateFilter;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class CertificateStartTimeFilter extends DateFilter
+class CertificateIssueDateFilter extends DateFilter
 {
     public function name()
     {
-        return __('Training start date');
+        return __('Issue date');
     }
 
     /**
@@ -25,6 +25,6 @@ class CertificateStartTimeFilter extends DateFilter
     {
         $value = Carbon::parse($value)->format('Y-m-d');
 
-        return $query->whereRaw("JSON_UNQUOTE(JSON_EXTRACT(card_info, '$.complete_from')) = ?", [$value]);
+        return $query->where('released_at', '=', $value);
     }
 }

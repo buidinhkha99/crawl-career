@@ -178,14 +178,14 @@ class MediaController extends Controller
                 ];
 
                 $backSizeCards[] = [
-                    'name' => $cert->card_info['name'] ?? null,
-                    'dob' => $cert->dob->format('d/m/Y') ?? null,
+                    'name' => $cert->user->name ?? null,
+                    'dob' => $cert->user->dob->format('d/m/Y') ?? null,
                     'job' => $cert->job,
                     'description' => $cert->card_info['description'] ?? null,
                     'complete_from' => Carbon::parse($payload->complete_from)->format('d/m/Y'),
                     'complete_to' => Carbon::parse($payload->complete_to)->format('d/m/Y'),
                     'place' => $payload->place,
-                    'created_at' => Carbon::parse($cert->created_at)->format('d/m/Y'),
+                    'created_at' => Carbon::parse($cert->released_at)->format('d/m/Y'),
                     'director_name' => $payload->director_name,
                     'signature_photo' => $payload->signature_photo,
                     'effective_to' => Carbon::parse($payload->effective_to)->format('d/m/Y'),

@@ -1160,5 +1160,11 @@
     "Complete To" : "Ngày kết thúc",
     "Effective To" : "Ngày hết hiệu lực",
     "Director Name" : "Tên giám đốc",
-    "Signature Image" : "Ảnh chữ ký"
+    "Signature Image" : "Ảnh chữ ký",
+    "Card number" : "Số thẻ",
+    "Training course name" : "Tên khóa huấn luyện",
+    "Training start date" : "Ngày bắt đầu huấn luyện",
+    "Training end date" : "Ngày kết thúc huấn luyện",
+    "Issue date" : "Ngày cấp",
+    "Expiration date" : "Ngày hết hạn"
 }

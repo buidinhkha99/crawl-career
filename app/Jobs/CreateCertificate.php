@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Enums\CertificateConstant;
 use App\Models\Certificate;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -45,30 +46,31 @@ class CreateCertificate implements ShouldQueue
             }
 
             $cardInfo = match ($this->type) {
-                CertificateConstant::OCCUPATIONAL_SAFETY => $this->getDataOccupation($user),
+                CertificateConstant::OCCUPATIONAL_SAFETY => $this->getDataOccupation(),
                 CertificateConstant::ELECTRICAL_SAFETY => $this->getDataElectrical($user),
             };
 
+            // TODO: get data by import
+            $releasedAt = fake()->date();
             Certificate::create([
                 'user_id' => $this->userID,
-                'group_id' => $user->groups->first()?->id,
                 'type' => $this->type,
                 'card_info' => $cardInfo,
-                'card_id' => getNextNumberCardID($this->type)
+                'released_at' => $releasedAt,
+                'card_id' => getNextNumberCardID($this->type, Carbon::parse($releasedAt)->year)
             ]);
         } catch (Exception $e) {
             Log::error('[CERTIFICATE-SERVICE] Create certificate failed. UserID:' . $this->userID . ' Error: ' . $e->getMessage());
         }
     }
 
-    private function getDataOccupation($user): array
+    private function getDataOccupation(): array
     {
         return [
-            'name' => $user->name,
-            'dob' => $user->dob,
-            'department' => $user->department,
-            'position' => $user->position,
-            'description' => $description ?? null,
+            'description' => 'Đã hoàn thành khóa huấn luyện: An toàn, vệ sinh lao động dành cho người lao động thuộc nhóm 3',
+            'complete_from' => fake()->date(),
+            'complete_to' => fake()->date(),
+            'effective_to' => fake()->date(),
         ];
     }
 

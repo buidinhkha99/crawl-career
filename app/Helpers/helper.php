@@ -8,8 +8,8 @@ if (!function_exists('getNextNumberCardID')) {
      * @param string $type
      * @return string
      */
-    function getNextNumberCardID(string $type): string
+    function getNextNumberCardID(string $type, $year): string
     {
-        return Certificate::where('type', $type)->max('card_id') + 1;
+        return Certificate::where('type', $type)->whereYear('released_at', $year)->max('card_id') + 1;
     }
 }
