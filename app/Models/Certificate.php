@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\CertificateConstant;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,7 +20,7 @@ class Certificate extends Model
     ];
 
     protected $casts = [
-      'card_info' => 'json',
+        'card_info' => 'json',
     ];
 
     protected $appends = ['certificate_id'];
@@ -45,5 +46,36 @@ class Certificate extends Model
         }
 
         return $this->card_id;
+    }
+
+    public function getJobAttribute()
+    {
+        $cardInfo = json_decode($this->attributes['card_info'], true);
+        $job = null;
+        if (!empty($cardInfo['position'])) {
+            $job = $cardInfo['position'];
+        }
+
+        if (!empty($cardInfo['department']) && $job) {
+            $job = $job . ' - ' . $cardInfo['department'];
+        } elseif (!empty($cardInfo['department']) && empty($job)) {
+            $job = $cardInfo['department'];
+        }
+
+        return $job;
+    }
+
+    public function getDobAttribute()
+    {
+        $cardInfo = json_decode($this->attributes['card_info'], true);
+
+        return !empty($cardInfo['dob']) ? Carbon::parse($cardInfo['dob']) : null;
+    }
+
+    public function setDobAttribute($value)
+    {
+        $cardInfo = json_decode($this->attributes['card_info'], true);
+        $cardInfo['dob'] = $value;
+        $this->attributes['card_info'] = json_encode($cardInfo);
     }
 }

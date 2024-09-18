@@ -64,12 +64,11 @@ class CreateCertificate implements ShouldQueue
     private function getDataOccupation($user): array
     {
         return [
-            'avatar_id' => $user->avatar_id,
-            'avatar_url' => $user->avatar_url,
             'name' => $user->name,
             'dob' => $user->dob,
             'department' => $user->department,
             'position' => $user->position,
+            'description' => $description ?? null,
         ];
     }
 

@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CertificateConstant;
 use App\Enums\ExaminationStatus;
 use App\Enums\UserGender;
+use App\Models\Certificate;
 use App\Models\Examination;
 use App\Models\Setting;
 use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Outl1ne\NovaMediaHub\Models\Media;
-use Barryvdh\DomPDF\ServiceProvider;
+use Barryvdh\DomPDF\Facade\Pdf as BPDF;
 
 class MediaController extends Controller
 {
@@ -160,17 +163,51 @@ class MediaController extends Controller
 
         $hash = session('payload');
         $payload = json_decode(base64_decode($hash));
+        $type = $payload->type ?? null;
 
-//        return view('certificate-occupational', [
-//            'data' => $payload
-//        ]);
+        if ($type == CertificateConstant::OCCUPATIONAL_SAFETY) {
+            $frontSizeCards = [];
+            $backSizeCards = [];
+            $certificates = Certificate::with('user')->whereIn('id', $payload->ids)->get();
+            foreach ($certificates as $cert) {
+                $media = Media::find($cert->user->getAttribute('avatar'));
+                $avatar = base64_encode(Storage::disk('public')->get($media?->path.$media?->file_name));
+                $frontSizeCards[] = [
+                    'image' => $avatar,
+                    'certificate_id' => $cert->certificate_id,
+                ];
 
-        $html = Blade::render(file_get_contents(resource_path('views/certificate-occupational.blade.php')), [
-            'data' => $payload
-        ], true);
+                $backSizeCards[] = [
+                    'name' => $cert->card_info['name'] ?? null,
+                    'dob' => $cert->dob->format('d/m/Y') ?? null,
+                    'job' => $cert->job,
+                    'description' => $cert->card_info['description'] ?? null,
+                    'complete_from' => Carbon::parse($payload->complete_from)->format('d/m/Y'),
+                    'complete_to' => Carbon::parse($payload->complete_to)->format('d/m/Y'),
+                    'place' => $payload->place,
+                    'created_at' => Carbon::parse($cert->created_at)->format('d/m/Y'),
+                    'director_name' => $payload->director_name,
+                    'signature_photo' => $payload->signature_photo,
+                    'effective_to' => Carbon::parse($payload->effective_to)->format('d/m/Y'),
+                ];
+            }
 
-        $filename = 'danh_sach_the.pdf';
+            $groupFonts = collect($frontSizeCards)->chunk(9)->map(fn($group) => $group->values());
+            $groupBacks = collect($backSizeCards)->chunk(9)->map(function($group) {
+                $valueReversed = $group->chunk(3)->map(fn ($groupCard) => $groupCard->reverse()->values());
 
-        return PDF::loadHTML($html, 'UTF-8')->setPaper('Letter')->inline($filename);
+                return $valueReversed->collapse();
+            });
+            $pdf = BPDF::loadView('certificate-occupational', [
+                'total_group' => $groupFonts->count(),
+                'group_font_size_cards' => $groupFonts,
+                'group_back_size_cards' => $groupBacks,
+            ]);
+
+            // impotant can not change
+            return $pdf->setPaper([0, 0, 595, 893])->setOption(['fontDir' => storage_path('/fonts')])->stream();
+        }
+
+        abort(404);
     }
 }

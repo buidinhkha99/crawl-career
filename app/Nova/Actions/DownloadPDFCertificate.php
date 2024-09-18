@@ -2,6 +2,7 @@
 
 namespace App\Nova\Actions;
 
+use App\Enums\CertificateConstant;
 use App\Models\Setting;
 use Illuminate\Support\Collection;
 use Laravel\Nova\Actions\Action;
@@ -26,6 +27,7 @@ class DownloadPDFCertificate extends Action
         $base64 = base64_encode($fileData);
 
         $payload = [
+            'type' => CertificateConstant::OCCUPATIONAL_SAFETY,
             'complete_from' => $fields->get('complete_from'),
             'complete_to' => $fields->get('complete_to'),
             'effective_to' => $fields->get('effective_to'),
@@ -45,12 +47,12 @@ class DownloadPDFCertificate extends Action
     {
         return [
             Text::make(__('Place'), 'place')->default(fn () => __('Lào Cai'))->rules('required'),
-            Date::make(__('Complete From'), 'complete_from')->rules('required'),
-            Date::make(__('Complete To'), 'complete_to')->rules('required'),
-            Date::make(__('Effective To'), 'effective_to')->rules('required'),
-            Text::make(__('Director Name'), 'director_name')->rules('required'),
+            Date::make(__('Complete From'), 'complete_from')->rules('required')->default(fn () => now()),
+            Date::make(__('Complete To'), 'complete_to')->rules('required')->default(fn () => now()),
+            Date::make(__('Effective To'), 'effective_to')->rules('required')->default(fn () => now()),
+            Text::make(__('Director Name'), 'director_name')->rules('required')->default(fn () => 'MInh'),
             Image::make(__('Signature Image'), 'signature_photo')->rules('required'),
-            Date::make(__('Effective To'), 'effective_to')->rules('required'),
+            Date::make(__('Effective To'), 'effective_to')->rules('required')->default(fn () => now()),
         ];
     }
 }
