@@ -5,6 +5,8 @@ namespace App\Nova\LMS;
 use App\Enums\CertificateConstant;
 use App\Models\Certificate;
 use App\Nova\Actions\DownloadPDFCertificate;
+use App\Nova\Actions\ImportOccupationalCertificate;
+use App\Nova\Actions\ImportUser;
 use App\Nova\Filters\CertificateEndTimeFilter;
 use App\Nova\Filters\CertificateExpirationDateFilter;
 use App\Nova\Filters\CertificateIssueDateFilter;
@@ -156,6 +158,9 @@ class OccupationalCertificate extends Resource
     public function actions(NovaRequest $request): array
     {
         return [
+            (new ImportOccupationalCertificate(CertificateConstant::OCCUPATIONAL_SAFETY))->standalone()
+                ->canSee(fn ($request) => $request->user()->can('viewAny', \App\Models\Certificate::class))
+                ->canRun(fn ($request) => $request->user()->can('create', \App\Models\Certificate::class)),
             new DownloadPDFCertificate()
         ];
     }
