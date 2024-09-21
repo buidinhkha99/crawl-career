@@ -4,6 +4,7 @@ namespace App\Nova\LMS;
 
 use App\Enums\CertificateConstant;
 use App\Models\Certificate;
+use App\Nova\Actions\DownloadExcelTemplate;
 use App\Nova\Actions\DownloadPDFCertificate;
 use App\Nova\Actions\ImportOccupationalCertificate;
 use App\Nova\Actions\ImportUser;
@@ -158,6 +159,12 @@ class OccupationalCertificate extends Resource
     public function actions(NovaRequest $request): array
     {
         return [
+            (new DownloadExcelTemplate())->standalone()
+                ->confirmButtonText(__('Download'))
+                ->cancelButtonText(__('Cancel'))
+                ->onlyOnIndex()
+                ->confirmText(__('Are you sure you want to download'))
+                ->setType('occupational-certificate'),
             (new ImportOccupationalCertificate(CertificateConstant::OCCUPATIONAL_SAFETY))->standalone()
                 ->canSee(fn ($request) => $request->user()->can('viewAny', \App\Models\Certificate::class))
                 ->canRun(fn ($request) => $request->user()->can('create', \App\Models\Certificate::class)),
