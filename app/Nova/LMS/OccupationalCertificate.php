@@ -80,10 +80,22 @@ class OccupationalCertificate extends Resource
         ];
     }
 
-    public function fieldsForUpdate()
+    public function fieldsForUpdate(NovaRequest $request)
     {
         return [
-//            Number::make(__('Card number'), 'card_id')->required(),
+            Number::make(__('Card number'), 'card_id')->rules('required', function($attribute, $value, $fail)  use ($request){
+                $year = Carbon::parse($request->released_at)->year;
+                if (Certificate::where('type', CertificateConstant::OCCUPATIONAL_SAFETY)
+                    ->where('user_id', '!=', $this->user_id)
+                    ->where('card_id', $value)
+                    ->whereYear('released_at', $year)
+                    ->exists()
+                ) {
+                    return $fail(__('Card number used by other users in year :year', [
+                        'year' => $year
+                    ]));
+                }
+            }),
             Textarea::make(__('Training course name'), 'card_info->description')->required(),
             Date::make(__('Training start date'), 'complete_from')->required(),
             Date::make(__('Training end date'), 'complete_to')->required(),
