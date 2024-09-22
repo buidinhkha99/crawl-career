@@ -86,7 +86,7 @@ class Certificate extends Model
         return !empty($cardInfo['complete_to']) ? Carbon::parse($cardInfo['complete_to']) : null;
     }
 
-    public function setCompleteToAtAttribute($value)
+    public function setCompleteToAttribute($value)
     {
         $cardInfo = json_decode($this->attributes['card_info'], true);
         $cardInfo['complete_to'] = $value ? Carbon::parse($cardInfo['complete_to'])->format('Y-m-d') : null;
