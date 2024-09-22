@@ -47,7 +47,7 @@ class CreateCertificate implements ShouldQueue
 
             $cardInfo = match ($this->type) {
                 CertificateConstant::OCCUPATIONAL_SAFETY => $this->getDataOccupation(),
-                CertificateConstant::ELECTRICAL_SAFETY => $this->getDataElectrical($user),
+                CertificateConstant::ELECTRICAL_SAFETY => $this->getDataElectrical(),
             };
 
             Certificate::create([
@@ -74,8 +74,11 @@ class CreateCertificate implements ShouldQueue
         ];
     }
 
-    private function getDataElectrical($user): array
+    private function getDataElectrical(): array
     {
-        return [];
+        return [
+            'description' => $this->info['description'],
+            'level' => $this->info['level'],
+        ];
     }
 }

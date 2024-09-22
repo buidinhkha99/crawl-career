@@ -13,6 +13,7 @@ use App\Nova\Dashboards\Main;
 use App\Nova\Dashboards\Review;
 use App\Nova\Flexible\Components\Background;
 use App\Nova\Form;
+use App\Nova\LMS\ElectricalCertificate;
 use App\Nova\LMS\Lesson;
 use App\Nova\LMS\Exam;
 use App\Nova\LMS\Examination;
@@ -146,6 +147,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
 
                 MenuSection::make(__('Certificate'), [
                     MenuItem::resource(OccupationalCertificate::class),
+                    MenuItem::resource(ElectricalCertificate::class),
                 ])->icon('academic-cap')->collapsedByDefault(),
 
                 MenuSection::make(__('Configuration'), [
