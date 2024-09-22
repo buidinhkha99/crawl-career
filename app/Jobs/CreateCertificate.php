@@ -17,13 +17,12 @@ use Mockery\Exception;
 class CreateCertificate implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(protected $userID, protected $type)
+    public function __construct(protected $userID, protected $type, protected $info)
     {
 
     }
@@ -32,6 +31,7 @@ class CreateCertificate implements ShouldQueue
      * Execute the job.
      *
      * @return void
+     * @throws \Exception
      */
     public function handle()
     {
@@ -50,27 +50,27 @@ class CreateCertificate implements ShouldQueue
                 CertificateConstant::ELECTRICAL_SAFETY => $this->getDataElectrical($user),
             };
 
-            // TODO: get data by import
-            $releasedAt = fake()->date();
             Certificate::create([
                 'user_id' => $this->userID,
                 'type' => $this->type,
                 'card_info' => $cardInfo,
-                'released_at' => $releasedAt,
-                'card_id' => getNextNumberCardID($this->type, Carbon::parse($releasedAt)->year)
+                'released_at' => $this->info['released_at'],
+                'card_id' => $this->info['card_id'] ?? getNextNumberCardID($this->type, Carbon::parse($this->info['released_at'])->year)
             ]);
         } catch (Exception $e) {
             Log::error('[CERTIFICATE-SERVICE] Create certificate failed. UserID:' . $this->userID . ' Error: ' . $e->getMessage());
+
+            throw new \Exception($e->getMessage());
         }
     }
 
     private function getDataOccupation(): array
     {
         return [
-            'description' => 'An toàn, vệ sinh lao động dành cho người lao động thuộc nhóm 3',
-            'complete_from' => fake()->date(),
-            'complete_to' => fake()->date(),
-            'effective_to' => fake()->date(),
+            'description' => $this->info['description'],
+            'complete_from' => $this->info['complete_from'],
+            'complete_to' => $this->info['complete_to'],
+            'effective_to' => $this->info['effective_to'],
         ];
     }
 

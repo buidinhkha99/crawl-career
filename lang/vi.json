@@ -1166,6 +1166,13 @@
     "Training start date" : "Ngày bắt đầu huấn luyện",
     "Training end date" : "Ngày kết thúc huấn luyện",
     "Issue date" : "Ngày cấp",
-    "Card number used by other users in year :year" : "Số thẻ đã được sử dụng với người lao động khác trong năm :year",
-    "Expiration date" : "Ngày hết hạn"
+    "Expiration date" : "Ngày hết hạn",
+    "Release date" : "Ngày cấp",
+    "Employee not found in the system" : "Không tìm thấy người lao động trùng tên và mã nhân viên",
+    "Card already exists" : "Thẻ đã tồn tại trên hệ thống",
+    "Added list cards, check the message to see if any user failed.": "Đã thêm thẻ phù hợp vào hệ thống, kiểm tra thông báo để xem có thẻ nào bị lỗi không.",
+    "Row :key add card error. Error: :error": "Hàng :key thêm thẻ bị lỗi. Lỗi: :error",
+    "Card ID already exists in other user. Card ID. :card_id" : "Mã thẻ đã tồn tại với người lao động khác. ID của thẻ: :card_id",
+    "Field duplicated card ID in same year at row: :row" : "Số thẻ đã bị trùng với người khác trong cùng một năm. Trùng tại hàng: :row",
+    "Card number used by other users in year :year" : "Số thẻ đã được sử dụng với người lao động khác trong năm :year"
 }
