@@ -16,13 +16,13 @@ class DepartmentCertificateFilter extends MultiselectFilter
 
     public function apply(NovaRequest $request, $query, $value)
     {
-        return $query->whereJsonContains('card_info->department', $value[0] ?? null);
+        return $query->whereHas('user', function ($query) use ($value) {
+            $query->where('department', $value[0] ?? null);
+        });
     }
 
     public function options(Request $request)
     {
-        return [
-            ...User::select('department')->distinct()->get()?->pluck('department', 'department'),
-        ];
+        return User::select('department')->whereNotNull('department')->distinct()->get()?->pluck('department', 'department');
     }
 }
