@@ -49,8 +49,7 @@ class DownloadPDFCertificate extends Action
             Text::make(__('Place'), 'place')->default(fn () => __('Lào Cai'))->rules('required'),
             Date::make(__('Complete From'), 'complete_from')->rules('required')->default(fn () => now()),
             Date::make(__('Complete To'), 'complete_to')->rules('required')->default(fn () => now()),
-            Date::make(__('Effective To'), 'effective_to')->rules('required')->default(fn () => now()),
-            Text::make(__('Director Name'), 'director_name')->rules('required')->default(fn () => 'MInh'),
+            Text::make(__('Director Name'), 'director_name')->rules('required'),
             Image::make(__('Signature Image'), 'signature_photo')->rules('required'),
             Date::make(__('Effective To'), 'effective_to')->rules('required')->default(fn () => now()),
         ];

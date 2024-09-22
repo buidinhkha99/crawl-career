@@ -67,7 +67,7 @@ class CreateCertificate implements ShouldQueue
     private function getDataOccupation(): array
     {
         return [
-            'description' => 'Đã hoàn thành khóa huấn luyện: An toàn, vệ sinh lao động dành cho người lao động thuộc nhóm 3',
+            'description' => 'An toàn, vệ sinh lao động dành cho người lao động thuộc nhóm 3',
             'complete_from' => fake()->date(),
             'complete_to' => fake()->date(),
             'effective_to' => fake()->date(),

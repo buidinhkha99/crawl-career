@@ -235,7 +235,7 @@
                         <div class="font-time">Sinh ngày: {{$group_back_size_cards[$iGroup][$i - 1]['dob'] ?? null}}</div>
                         <div class="font-time">Chức vụ: {{$group_back_size_cards[$iGroup][$i - 1]['job'] ?? null}}</div>
                         <div class="font-time">
-                            {{$group_back_size_cards[$iGroup][$i - 1]['description'] ?? null}}
+                            Đã hoàn thành khóa huấn luyện: {{$group_back_size_cards[$iGroup][$i - 1]['description'] ?? null}}
                         </div>
                         <div class="font-time">Từ ngày {{$group_back_size_cards[$iGroup][$i - 1]['complete_from'] ?? null}} đến ngày {{$group_back_size_cards[$iGroup][$i - 1]['complete_to'] ?? null}}</div>
                     </div>
