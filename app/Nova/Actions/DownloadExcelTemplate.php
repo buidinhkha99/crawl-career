@@ -42,6 +42,10 @@ class DownloadExcelTemplate extends Action
         if ($this->type === 'electrical-certificate') {
             return Action::download('/storage/the_atd.xlsx', 'the_atd.xlsx');
         }
+
+        if ($this->type === 'paper-certificate') {
+            return Action::download('/storage/giay_chung_nhan.xlsx', 'giay_chung_nhan.xlsx');
+        }
     }
 
     /**

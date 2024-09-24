@@ -1153,6 +1153,7 @@
     "Name without comma" : "Tên nhóm không có dấu phẩy",
     "Occupational Certificate" : "Chứng chỉ ATLD",
     "Electrical Certificate" : "Chứng chỉ ATD",
+    "Paper Certificate" : "Giấy chứng nhận",
     "Certificate ID" : "Số chứng chỉ",
     "Certificate" : "Chứng chỉ",
     "Create from" : "Từ ngày",
@@ -1167,6 +1168,8 @@
     "Training start date" : "Ngày bắt đầu huấn luyện",
     "Training end date" : "Ngày kết thúc huấn luyện",
     "Issue date" : "Ngày cấp",
+    "Issue date from" : "Ngày cấp từ ngày",
+    "Issue date to" : "Ngày cấp đến ngày",
     "Expiration date" : "Ngày hết hạn",
     "Release date" : "Ngày cấp",
     "Employee not found in the system" : "Không tìm thấy người lao động trùng tên và mã nhân viên",
@@ -1178,5 +1181,10 @@
     "Card number used by other users in year :year" : "Số thẻ đã được sử dụng với người lao động khác trong năm :year",
     "Level" : "Mức an toàn",
     "Add occupation certificate by excel file" :"Thêm thẻ ATLD bằng file excel",
-    "Add electrical certificate by excel file" :"Thêm thẻ ATD bằng file excel"
+    "Add electrical certificate by excel file" :"Thêm thẻ ATD bằng file excel",
+    "Add paper certificate by excel file" :"Thêm giấy chứng nhận bằng file excel",
+    "Nationality" : "Quốc gia",
+    "Result training" : "Kết quả huấn luyện",
+    "Expiration from" : "Thời gian hiệu lực từ ngày",
+    "Expiration to" : "Thời gian hiệu lực đến ngày"
 }

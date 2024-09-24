@@ -40,6 +40,10 @@ class Certificate extends Model
         if ($this->type == CertificateConstant::ELECTRICAL_SAFETY) {
             return $this->card_id . '/LĐV/TATĐ';
         }
+        if ($this->type == CertificateConstant::PAPER_SAFETY) {
+            return $this->card_id . '/' . $this->released_at->year;
+        }
+
 
         return $this->card_id;
     }
@@ -60,59 +64,140 @@ class Certificate extends Model
         return $job;
     }
 
+    // Helper method to decode card_info
+    private function getCardInfoAttribute()
+    {
+        return json_decode($this->attributes['card_info'], true) ?? [];
+    }
+
+    // Helper method to set card_info
+    private function setCardInfoAttribute($key, $value)
+    {
+        $cardInfo = $this->getCardInfoAttribute();
+        $cardInfo[$key] = $value;
+        $this->attributes['card_info'] = json_encode($cardInfo);
+    }
+
+    // Helper method to parse dates
+    private function getDateAttribute($key)
+    {
+        $cardInfo = $this->getCardInfoAttribute();
+        return !empty($cardInfo[$key]) ? Carbon::parse($cardInfo[$key]) : null;
+    }
+
+    // Helper method to format dates for setting
+    private function setDateAttribute($key, $value)
+    {
+        $this->setCardInfoAttribute($key, $value ? Carbon::parse($value)->format('Y-m-d') : null);
+    }
+
     public function getCompleteFromAttribute()
     {
-        $cardInfo = json_decode($this->attributes['card_info'], true);
-
-        return !empty($cardInfo['complete_from']) ? Carbon::parse($cardInfo['complete_from']) : null;
+        return $this->getDateAttribute('complete_from');
     }
 
     public function setCompleteFromAttribute($value)
     {
-        $cardInfo = json_decode($this->attributes['card_info'], true);
-        $cardInfo['complete_from'] = $value;
-        $this->attributes['card_info'] = json_encode($cardInfo);
+        $this->setDateAttribute('complete_from', $value);
     }
 
     public function getCompleteToAttribute()
     {
-        $cardInfo = json_decode($this->attributes['card_info'], true);
-
-        return !empty($cardInfo['complete_to']) ? Carbon::parse($cardInfo['complete_to']) : null;
+        return $this->getDateAttribute('complete_to');
     }
 
     public function setCompleteToAttribute($value)
     {
-        $cardInfo = json_decode($this->attributes['card_info'], true);
-        $cardInfo['complete_to'] = $value ? Carbon::parse($cardInfo['complete_to'])->format('Y-m-d') : null;
-        $this->attributes['card_info'] = json_encode($cardInfo);
+        $this->setDateAttribute('complete_to', $value);
     }
 
     public function getEffectiveToAttribute()
     {
-        $cardInfo = json_decode($this->attributes['card_info'], true);
-
-        return !empty($cardInfo['effective_to']) ? Carbon::parse($cardInfo['effective_to']) : null;
+        return $this->getDateAttribute('effective_to');
     }
 
     public function setEffectiveToAttribute($value)
     {
-        $cardInfo = json_decode($this->attributes['card_info'], true);
-        $cardInfo['effective_to'] = $value ? Carbon::parse($cardInfo['effective_to'])->format('Y-m-d') : null;
-        $this->attributes['card_info'] = json_encode($cardInfo);
+        $this->setDateAttribute('effective_to', $value);
+    }
+
+    public function getDobAttribute()
+    {
+        return $this->getDateAttribute('dob');
+    }
+
+    public function setDobAttribute($value)
+    {
+        $this->setDateAttribute('dob', $value);
+    }
+
+    public function getEffectiveFromAttribute()
+    {
+        return $this->getDateAttribute('effective_from');
+    }
+
+    public function setEffectiveFromAttribute($value)
+    {
+        $this->setDateAttribute('effective_from', $value);
     }
 
     public function getLevelAttribute()
     {
-        $cardInfo = json_decode($this->attributes['card_info'], true);
-
-        return $cardInfo['level'];
+        return $this->getCardInfoAttribute()['level'] ?? null;
     }
 
     public function setLevelAttribute($value)
     {
-        $cardInfo = json_decode($this->attributes['card_info'], true);
-        $cardInfo['level'] = $value;
-        $this->attributes['card_info'] = json_encode($cardInfo);
+        $this->setCardInfoAttribute('level', $value);
+    }
+
+    public function getGenderAttribute()
+    {
+        return $this->getCardInfoAttribute()['gender'] ?? null;
+    }
+
+    public function setGenderAttribute($value)
+    {
+        $this->setCardInfoAttribute('gender', $value);
+    }
+
+    public function getNationalityAttribute()
+    {
+        return $this->getCardInfoAttribute()['nationality'] ?? null;
+    }
+
+    public function setNationalityAttribute($value)
+    {
+        $this->setCardInfoAttribute('nationality', $value);
+    }
+
+    public function getCccdAttribute()
+    {
+        return $this->getCardInfoAttribute()['cccd'] ?? null;
+    }
+
+    public function setCccdAttribute($value)
+    {
+        $this->setCardInfoAttribute('cccd', $value);
+    }
+
+    public function getGroupAttribute()
+    {
+        return $this->getCardInfoAttribute()['group'] ?? null;
+    }
+
+    public function setGroupAttribute($value)
+    {
+        $this->setCardInfoAttribute('group', $value);
+    }
+
+    public function getResultAttribute()
+    {
+        return $this->getCardInfoAttribute()['result'] ?? null;
+    }
+
+    public function setResultAttribute($value)
+    {
+        $this->setCardInfoAttribute('result', $value);
     }
 }
