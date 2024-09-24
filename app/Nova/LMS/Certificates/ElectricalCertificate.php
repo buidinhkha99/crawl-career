@@ -1,17 +1,13 @@
 <?php
 
-namespace App\Nova\LMS;
+namespace App\Nova\LMS\Certificates;
 
 use App\Enums\CertificateConstant;
 use App\Models\Certificate;
 use App\Nova\Actions\DownloadExcelTemplate;
-use App\Nova\Actions\DownloadPDFCertificate;
 use App\Nova\Actions\DownloadPDFElectricCertificate;
 use App\Nova\Actions\ImportOccupationalCertificate;
-use App\Nova\Filters\CertificateEndTimeFilter;
-use App\Nova\Filters\CertificateExpirationDateFilter;
 use App\Nova\Filters\CertificateIssueDateFilter;
-use App\Nova\Filters\CertificateStartTimeFilter;
 use App\Nova\Filters\DepartmentCertificateFilter;
 use App\Nova\Filters\GroupUserCertificateFilter;
 use App\Nova\Filters\LevelCertificateFilter;
@@ -162,10 +158,11 @@ class ElectricalCertificate extends Resource
                 ->cancelButtonText(__('Cancel'))
                 ->onlyOnIndex()
                 ->confirmText(__('Are you sure you want to download'))
-                ->setType('occupational-electric'),
-            (new ImportOccupationalCertificate(CertificateConstant::OCCUPATIONAL_SAFETY))->standalone()
+                ->setType('electrical-certificate'),
+            (new ImportOccupationalCertificate(CertificateConstant::ELECTRICAL_SAFETY))->standalone()
                 ->canSee(fn ($request) => $request->user()->can('viewAny', \App\Models\Certificate::class))
-                ->canRun(fn ($request) => $request->user()->can('create', \App\Models\Certificate::class)),
+                ->canRun(fn ($request) => $request->user()->can('create', \App\Models\Certificate::class))
+                ->withName(__('Add electrical certificate by excel file')),
             new DownloadPDFElectricCertificate()
         ];
     }

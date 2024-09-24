@@ -38,6 +38,10 @@ class DownloadExcelTemplate extends Action
         if ($this->type === 'occupational-certificate') {
             return Action::download('/storage/the_atld.xlsx', 'the_atld.xlsx');
         }
+
+        if ($this->type === 'electrical-certificate') {
+            return Action::download('/storage/the_atd.xlsx', 'the_atd.xlsx');
+        }
     }
 
     /**

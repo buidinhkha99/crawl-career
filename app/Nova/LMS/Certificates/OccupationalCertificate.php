@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Nova\LMS;
+namespace App\Nova\LMS\Certificates;
 
 use App\Enums\CertificateConstant;
 use App\Models\Certificate;
 use App\Nova\Actions\DownloadExcelTemplate;
 use App\Nova\Actions\DownloadPDFCertificate;
 use App\Nova\Actions\ImportOccupationalCertificate;
-use App\Nova\Actions\ImportUser;
 use App\Nova\Filters\CertificateEndTimeFilter;
 use App\Nova\Filters\CertificateExpirationDateFilter;
 use App\Nova\Filters\CertificateIssueDateFilter;
@@ -22,7 +21,6 @@ use Carbon\Carbon;
 use Laravel\Nova\Exceptions\HelperNotSupported;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Date;
-use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
@@ -179,7 +177,8 @@ class OccupationalCertificate extends Resource
                 ->setType('occupational-certificate'),
             (new ImportOccupationalCertificate(CertificateConstant::OCCUPATIONAL_SAFETY))->standalone()
                 ->canSee(fn ($request) => $request->user()->can('viewAny', \App\Models\Certificate::class))
-                ->canRun(fn ($request) => $request->user()->can('create', \App\Models\Certificate::class)),
+                ->canRun(fn ($request) => $request->user()->can('create', \App\Models\Certificate::class))
+                ->withName(__('Add occupation certificate by excel file')),
             new DownloadPDFCertificate()
         ];
     }
