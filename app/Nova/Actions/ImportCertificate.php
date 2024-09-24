@@ -6,6 +6,7 @@ use App\Enums\CertificateConstant;
 use App\Imports\CardImportCSV;
 use App\Imports\ElectricalCertificateImport;
 use App\Imports\OccupationCertificateImport;
+use App\Imports\PaperCertificateImport;
 use App\Imports\UserImportCSV;
 use App\Models\User;
 use Exception;
@@ -20,7 +21,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use PhpOffice\PhpSpreadsheet\Writer\Csv;
 
-class ImportOccupationalCertificate extends Action
+class ImportCertificate extends Action
 {
     public User $user;
     public $onlyOnIndex = true;
@@ -76,6 +77,11 @@ class ImportOccupationalCertificate extends Action
             if ($this->type == CertificateConstant::ELECTRICAL_SAFETY) {
                 $writer->save(storage_path('app/file_electric_certificate_example.csv'));
                 Excel::import(new ElectricalCertificateImport(), storage_path('app/file_electric_certificate_example.csv'));
+            }
+
+            if ($this->type == CertificateConstant::PAPER_SAFETY) {
+                $writer->save(storage_path('app/file_paper_certificate_example.csv'));
+                Excel::import(new PaperCertificateImport(), storage_path('app/file_paper_certificate_example.csv'));
             }
         }
 

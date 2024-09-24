@@ -3,16 +3,20 @@
 namespace App\Nova\LMS\Certificates;
 
 use App\Enums\CertificateConstant;
+use App\Enums\UserGender;
 use App\Models\Certificate;
 use App\Nova\Actions\DownloadExcelTemplate;
 use App\Nova\Actions\DownloadPDFElectricCertificate;
 use App\Nova\Actions\ImportCertificate;
+use App\Nova\Filters\CertificateEndTimeFilter;
 use App\Nova\Filters\CertificateIssueDateFromFilter;
 use App\Nova\Filters\CertificateIssueDateToFilter;
+use App\Nova\Filters\CertificateStartTimeFilter;
 use App\Nova\Filters\DepartmentCertificateFilter;
 use App\Nova\Filters\GroupUserCertificateFilter;
 use App\Nova\Filters\LevelCertificateFilter;
 use App\Nova\Filters\PositionCertificateFilter;
+use App\Nova\Filters\ResultCertificateFilter;
 use App\Nova\Resource;
 use App\Nova\Traits\HasCallbacks;
 use App\Nova\User;
@@ -25,9 +29,10 @@ use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Outl1ne\MultiselectField\Multiselect;
 use Outl1ne\NovaMediaHub\Nova\Fields\MediaHubField;
 
-class ElectricalCertificate extends Resource
+class PaperCertificate extends Resource
 {
     use HasCallbacks;
 
@@ -50,17 +55,17 @@ class ElectricalCertificate extends Resource
 
     public static function indexQuery(NovaRequest $request, $query)
     {
-        return $query->with('user')->where('type', CertificateConstant::ELECTRICAL_SAFETY);
+        return $query->with('user')->where('type', CertificateConstant::PAPER_SAFETY);
     }
 
     public static function label(): string
     {
-        return __('Electrical Certificate');
+        return __('Paper Certificate');
     }
 
     public function title()
     {
-        return __('Electrical Certificate');
+        return __('Paper Certificate');
     }
 
     public function fieldsForIndex()
@@ -69,7 +74,7 @@ class ElectricalCertificate extends Resource
             ID::make()->sortable(),
             Text::make(__('Certificate ID'), 'certificate_id'),
             BelongsTo::make(__('Users'), 'user', User::class),
-            Text::make(__('Level'), 'level')->required(),
+            Text::make(__('Result training'), 'result'),
             Date::make(__('Issue date'), 'released_at')
                 ->displayUsing(fn($value) => $value ? Carbon::parse($value)->format('d/m/Y') : null),
         ];
@@ -80,7 +85,7 @@ class ElectricalCertificate extends Resource
         return [
             Number::make(__('Card number'), 'card_id')->rules('required', function($attribute, $value, $fail)  use ($request){
                 $year = Carbon::parse($request->released_at)->year;
-                if (Certificate::where('type', CertificateConstant::ELECTRICAL_SAFETY)
+                if (Certificate::where('type', CertificateConstant::PAPER_SAFETY)
                     ->where('user_id', '!=', $this->user_id)
                     ->where('card_id', $value)
                     ->whereYear('released_at', $year)
@@ -91,7 +96,22 @@ class ElectricalCertificate extends Resource
                     ]));
                 }
             }),
-            Text::make(__('Level'), 'level')->required(),
+            Multiselect::make(__('Gender'), 'gender')
+                ->options(['Nam' => 'Nam', 'Nữ' => 'Nữ', 'Khác' => 'Khác'])
+                ->singleSelect()
+                ->rules('required'),
+            Date::make(__('Date Of Birth'), 'dob')->required(),
+            Text::make(__('Nationality'), 'nationality')->required(),
+            Text::make(__('CCCD/CMND'), 'cccd')->required(),
+            Text::make(__('Group User'), 'group')->required(),
+            Multiselect::make(__('Result training'), 'result')
+                ->options(['Giỏi' => 'Giỏi', 'Khá' => 'Khá', 'Trung bình' => 'Trung bình'])
+                ->singleSelect()
+                ->rules('required'),
+            Date::make(__('Training start date'), 'complete_from')->required(),
+            Date::make(__('Training end date'), 'complete_to')->required(),
+            Date::make(__('Expiration from'), 'effective_from')->required(),
+            Date::make(__('Expiration to'), 'effective_to')->required(),
             Date::make(__('Issue date'), 'released_at')->required(),
         ];
     }
@@ -110,8 +130,22 @@ class ElectricalCertificate extends Resource
             BelongsTo::make(__('Users'), 'user', User::class),
             Text::make(__('Position '), 'user->position'),
             Text::make(__('Department'), 'user->department'),
-            Textarea::make(__('Training course name'), 'job'),
-            Text::make(__('Level'), 'level')->required(),
+            Multiselect::make(__('Gender'), 'gender')
+                ->options(['Nam' => 'Nam', 'Nữ' => 'Nữ', 'Khác' => 'Khác'])
+                ->singleSelect()
+                ->rules('required'),
+            Date::make(__('Date Of Birth'), 'dob'),
+            Text::make(__('Nationality'), 'nationality'),
+            Text::make(__('CCCD/CMND'), 'cccd'),
+            Text::make(__('Group User'), 'group'),
+            Multiselect::make(__('Result training'), 'result')
+                ->options(['Giỏi' => 'Giỏi', 'Khá' => 'Khá', 'Trung bình' => 'Trung bình'])
+                ->singleSelect()
+                ->rules('required'),
+            Date::make(__('Training start date'), 'complete_from'),
+            Date::make(__('Training end date'), 'complete_to'),
+            Date::make(__('Expiration from'), 'effective_from'),
+            Date::make(__('Expiration to'), 'effective_to'),
             Date::make(__('Issue date'), 'released_at')
                 ->displayUsing(fn($value) => $value ? Carbon::parse($value)->format('d/m/Y') : null),
         ];
@@ -133,7 +167,9 @@ class ElectricalCertificate extends Resource
         return [
             (new CertificateIssueDateFromFilter()),
             (new CertificateIssueDateToFilter()),
-            (new LevelCertificateFilter()),
+            (new ResultCertificateFilter()),
+//            (new CertificateStartTimeFilter()),
+//            (new CertificateEndTimeFilter()),
             (new GroupUserCertificateFilter())->singleSelect(),
             (new DepartmentCertificateFilter())->singleSelect(),
             (new PositionCertificateFilter())->singleSelect(),
@@ -159,12 +195,11 @@ class ElectricalCertificate extends Resource
                 ->cancelButtonText(__('Cancel'))
                 ->onlyOnIndex()
                 ->confirmText(__('Are you sure you want to download'))
-                ->setType('electrical-certificate'),
-            (new ImportCertificate(CertificateConstant::ELECTRICAL_SAFETY))->standalone()
+                ->setType('paper-certificate'),
+            (new ImportCertificate(CertificateConstant::PAPER_SAFETY))->standalone()
                 ->canSee(fn ($request) => $request->user()->can('viewAny', \App\Models\Certificate::class))
                 ->canRun(fn ($request) => $request->user()->can('create', \App\Models\Certificate::class))
-                ->withName(__('Add electrical certificate by excel file')),
-            new DownloadPDFElectricCertificate()
+                ->withName(__('Add paper certificate by excel file')),
         ];
     }
 }

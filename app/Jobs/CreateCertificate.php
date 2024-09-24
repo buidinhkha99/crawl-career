@@ -11,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use Mockery\Exception;
 
@@ -48,6 +49,7 @@ class CreateCertificate implements ShouldQueue
             $cardInfo = match ($this->type) {
                 CertificateConstant::OCCUPATIONAL_SAFETY => $this->getDataOccupation(),
                 CertificateConstant::ELECTRICAL_SAFETY => $this->getDataElectrical(),
+                CertificateConstant::PAPER_SAFETY => $this->getDataPaper(),
             };
 
             Certificate::create([
@@ -77,8 +79,23 @@ class CreateCertificate implements ShouldQueue
     private function getDataElectrical(): array
     {
         return [
-            'description' => $this->info['description'],
             'level' => $this->info['level'],
+        ];
+    }
+
+    private function getDataPaper(): array
+    {
+        return [
+            'gender' => $this->info['gender'],
+            'dob' => $this->info['dob'],
+            'nationality' => $this->info['nationality'],
+            'cccd' => $this->info['cccd'],
+            'group' =>$this->info['group'],
+            'result' => $this->info['result'],
+            'complete_from' => $this->info['complete_from'],
+            'complete_to' => $this->info['complete_to'],
+            'effective_from' => $this->info['effective_from'],
+            'effective_to' => $this->info['effective_to'],
         ];
     }
 }

@@ -6,11 +6,11 @@ use Illuminate\Support\Carbon;
 use Laravel\Nova\Filters\DateFilter;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class CertificateIssueDateFilter extends DateFilter
+class CertificateIssueDateToFilter extends DateFilter
 {
     public function name()
     {
-        return __('Issue date');
+        return __('Issue date to');
     }
 
     /**
@@ -25,6 +25,6 @@ class CertificateIssueDateFilter extends DateFilter
     {
         $value = Carbon::parse($value)->format('Y-m-d');
 
-        return $query->where('released_at', '=', $value);
+        return $query->where('released_at', '<=', $value);
     }
 }
