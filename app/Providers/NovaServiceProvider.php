@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Enums\QuizType;
 use App\Enums\SettingType;
 use App\Exceptions\Handler;
 use App\Http\Middleware\OverrideSectionEditModeWhenUpdate;
@@ -13,15 +12,15 @@ use App\Nova\Dashboards\Main;
 use App\Nova\Dashboards\Review;
 use App\Nova\Flexible\Components\Background;
 use App\Nova\Form;
-use App\Nova\LMS\Lesson;
+use App\Nova\LMS\Certificates\ElectricalCertificate;
+use App\Nova\LMS\Certificates\OccupationalCertificate;
 use App\Nova\LMS\Exam;
-use App\Nova\LMS\Examination;
 use App\Nova\LMS\ExaminationInReport;
-use App\Nova\LMS\OccupationalCertificate;
+use App\Nova\LMS\Lesson;
+use App\Nova\LMS\MockQuiz;
 use App\Nova\LMS\Question;
 use App\Nova\LMS\QuestionType;
 use App\Nova\LMS\Quiz;
-use App\Nova\LMS\MockQuiz;
 use App\Nova\LMS\Topic;
 use App\Nova\Observer\FormObserver;
 use App\Nova\Observer\LessonObserver;
@@ -81,8 +80,6 @@ use Outl1ne\NovaSimpleRepeatable\SimpleRepeatable;
 use Salt\ResetPassword\ResetPassword;
 use Sereny\NovaPermissions\NovaPermissions;
 use Whitecube\NovaFlexibleContent\Flexible;
-use Laravel\Nova\Fields\Hidden;
-use Laravel\Nova\Fields\BelongsToMany;
 
 class NovaServiceProvider extends NovaApplicationServiceProvider
 {
@@ -146,6 +143,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
 
                 MenuSection::make(__('Certificate'), [
                     MenuItem::resource(OccupationalCertificate::class),
+                    MenuItem::resource(ElectricalCertificate::class),
                 ])->icon('academic-cap')->collapsedByDefault(),
 
                 MenuSection::make(__('Configuration'), [

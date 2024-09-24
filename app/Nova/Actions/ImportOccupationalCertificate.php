@@ -4,6 +4,8 @@ namespace App\Nova\Actions;
 
 use App\Enums\CertificateConstant;
 use App\Imports\CardImportCSV;
+use App\Imports\ElectricalCertificateImport;
+use App\Imports\OccupationCertificateImport;
 use App\Imports\UserImportCSV;
 use App\Models\User;
 use Exception;
@@ -22,7 +24,7 @@ class ImportOccupationalCertificate extends Action
 {
     public User $user;
     public $onlyOnIndex = true;
-    public $name = 'Thêm thẻ ATLD bằng file excel';
+    public $name = 'Action';
     public $confirmButtonText = 'Thêm';
     public $cancelButtonText = 'Đóng';
     public string $type;
@@ -66,8 +68,15 @@ class ImportOccupationalCertificate extends Action
         $writer = new Csv($spreadsheet);
         foreach ($loadedSheetNames as $sheetIndex => $loadedSheetName) {
             $writer->setSheetIndex($sheetIndex);
-            $writer->save(storage_path('app/file_certificate_example.csv'));
-            Excel::import(new CardImportCSV(), storage_path('app/file_certificate_example.csv'));
+            if ($this->type == CertificateConstant::OCCUPATIONAL_SAFETY) {
+                $writer->save(storage_path('app/file_certificate_example.csv'));
+                Excel::import(new OccupationCertificateImport(), storage_path('app/file_certificate_example.csv'));
+            }
+
+            if ($this->type == CertificateConstant::ELECTRICAL_SAFETY) {
+                $writer->save(storage_path('app/file_electric_certificate_example.csv'));
+                Excel::import(new ElectricalCertificateImport(), storage_path('app/file_electric_certificate_example.csv'));
+            }
         }
 
         return Action::message(__('Added list cards, check the message to see if any user failed.'));

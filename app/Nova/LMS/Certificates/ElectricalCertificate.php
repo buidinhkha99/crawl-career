@@ -1,19 +1,16 @@
 <?php
 
-namespace App\Nova\LMS;
+namespace App\Nova\LMS\Certificates;
 
 use App\Enums\CertificateConstant;
 use App\Models\Certificate;
 use App\Nova\Actions\DownloadExcelTemplate;
-use App\Nova\Actions\DownloadPDFCertificate;
+use App\Nova\Actions\DownloadPDFElectricCertificate;
 use App\Nova\Actions\ImportOccupationalCertificate;
-use App\Nova\Actions\ImportUser;
-use App\Nova\Filters\CertificateEndTimeFilter;
-use App\Nova\Filters\CertificateExpirationDateFilter;
 use App\Nova\Filters\CertificateIssueDateFilter;
-use App\Nova\Filters\CertificateStartTimeFilter;
 use App\Nova\Filters\DepartmentCertificateFilter;
 use App\Nova\Filters\GroupUserCertificateFilter;
+use App\Nova\Filters\LevelCertificateFilter;
 use App\Nova\Filters\PositionCertificateFilter;
 use App\Nova\Resource;
 use App\Nova\Traits\HasCallbacks;
@@ -22,7 +19,6 @@ use Carbon\Carbon;
 use Laravel\Nova\Exceptions\HelperNotSupported;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Date;
-use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
@@ -30,7 +26,7 @@ use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Outl1ne\NovaMediaHub\Nova\Fields\MediaHubField;
 
-class OccupationalCertificate extends Resource
+class ElectricalCertificate extends Resource
 {
     use HasCallbacks;
 
@@ -53,17 +49,17 @@ class OccupationalCertificate extends Resource
 
     public static function indexQuery(NovaRequest $request, $query)
     {
-        return $query->with('user')->where('type', CertificateConstant::OCCUPATIONAL_SAFETY);
+        return $query->with('user')->where('type', CertificateConstant::ELECTRICAL_SAFETY);
     }
 
     public static function label(): string
     {
-        return __('Occupational Certificate');
+        return __('Electrical Certificate');
     }
 
     public function title()
     {
-        return __('Occupational Certificate');
+        return __('Electrical Certificate');
     }
 
     public function fieldsForIndex()
@@ -72,14 +68,9 @@ class OccupationalCertificate extends Resource
             ID::make()->sortable(),
             Text::make(__('Certificate ID'), 'certificate_id'),
             BelongsTo::make(__('Users'), 'user', User::class),
-            Date::make(__('Training start date'), 'complete_from')
-                ->displayUsing(fn($value) => $value ? Carbon::parse($value)->format('d/m/Y') : null),
-            Date::make(__('Training end date'), 'complete_to')
-                ->displayUsing(fn($value) => $value ? Carbon::parse($value)->format('d/m/Y') : null),
             Date::make(__('Issue date'), 'released_at')
                 ->displayUsing(fn($value) => $value ? Carbon::parse($value)->format('d/m/Y') : null),
-            Date::make(__('Expiration date'), 'effective_to')
-                ->displayUsing(fn($value) => $value ? Carbon::parse($value)->format('d/m/Y') : null),
+            Text::make(__('Level'), 'level')->required(),
         ];
     }
 
@@ -88,7 +79,7 @@ class OccupationalCertificate extends Resource
         return [
             Number::make(__('Card number'), 'card_id')->rules('required', function($attribute, $value, $fail)  use ($request){
                 $year = Carbon::parse($request->released_at)->year;
-                if (Certificate::where('type', CertificateConstant::OCCUPATIONAL_SAFETY)
+                if (Certificate::where('type', CertificateConstant::ELECTRICAL_SAFETY)
                     ->where('user_id', '!=', $this->user_id)
                     ->where('card_id', $value)
                     ->whereYear('released_at', $year)
@@ -100,10 +91,8 @@ class OccupationalCertificate extends Resource
                 }
             }),
             Textarea::make(__('Training course name'), 'card_info->description')->required(),
-            Date::make(__('Training start date'), 'complete_from')->required(),
-            Date::make(__('Training end date'), 'complete_to')->required(),
+            Text::make(__('Level'), 'level')->required(),
             Date::make(__('Issue date'), 'released_at')->required(),
-            Date::make(__('Expiration date'), 'effective_to')->required(),
         ];
     }
 
@@ -122,13 +111,8 @@ class OccupationalCertificate extends Resource
             Text::make(__('Position '), 'user->position'),
             Text::make(__('Department'), 'user->department'),
             Textarea::make(__('Training course name'), 'card_info->description'),
-            Date::make(__('Training start date'), 'complete_from')
-                ->displayUsing(fn($value) => $value ? Carbon::parse($value)->format('d/m/Y') : null),
-            Date::make(__('Training end date'), 'complete_to')
-                ->displayUsing(fn($value) => $value ? Carbon::parse($value)->format('d/m/Y') : null),
+            Text::make(__('Level'), 'level')->required(),
             Date::make(__('Issue date'), 'released_at')
-                ->displayUsing(fn($value) => $value ? Carbon::parse($value)->format('d/m/Y') : null),
-            Date::make(__('Expiration date'), 'effective_to')
                 ->displayUsing(fn($value) => $value ? Carbon::parse($value)->format('d/m/Y') : null),
         ];
     }
@@ -147,10 +131,8 @@ class OccupationalCertificate extends Resource
     public function filters(NovaRequest $request): array
     {
         return [
-            (new CertificateStartTimeFilter()),
-            (new CertificateEndTimeFilter()),
             (new CertificateIssueDateFilter()),
-            (new CertificateExpirationDateFilter()),
+            (new LevelCertificateFilter()),
             (new GroupUserCertificateFilter())->singleSelect(),
             (new DepartmentCertificateFilter())->singleSelect(),
             (new PositionCertificateFilter())->singleSelect(),
@@ -176,11 +158,12 @@ class OccupationalCertificate extends Resource
                 ->cancelButtonText(__('Cancel'))
                 ->onlyOnIndex()
                 ->confirmText(__('Are you sure you want to download'))
-                ->setType('occupational-certificate'),
-            (new ImportOccupationalCertificate(CertificateConstant::OCCUPATIONAL_SAFETY))->standalone()
+                ->setType('electrical-certificate'),
+            (new ImportOccupationalCertificate(CertificateConstant::ELECTRICAL_SAFETY))->standalone()
                 ->canSee(fn ($request) => $request->user()->can('viewAny', \App\Models\Certificate::class))
-                ->canRun(fn ($request) => $request->user()->can('create', \App\Models\Certificate::class)),
-            new DownloadPDFCertificate()
+                ->canRun(fn ($request) => $request->user()->can('create', \App\Models\Certificate::class))
+                ->withName(__('Add electrical certificate by excel file')),
+            new DownloadPDFElectricCertificate()
         ];
     }
 }

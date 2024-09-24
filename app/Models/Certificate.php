@@ -31,11 +31,6 @@ class Certificate extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function group()
-    {
-        return $this->belongsTo(UserGroup::class, 'group_id');
-    }
-
     public function getCertificateIDAttribute()
     {
         if ($this->type == CertificateConstant::OCCUPATIONAL_SAFETY) {
@@ -104,6 +99,20 @@ class Certificate extends Model
     {
         $cardInfo = json_decode($this->attributes['card_info'], true);
         $cardInfo['effective_to'] = $value ? Carbon::parse($cardInfo['effective_to'])->format('Y-m-d') : null;
+        $this->attributes['card_info'] = json_encode($cardInfo);
+    }
+
+    public function getLevelAttribute()
+    {
+        $cardInfo = json_decode($this->attributes['card_info'], true);
+
+        return $cardInfo['level'];
+    }
+
+    public function setLevelAttribute($value)
+    {
+        $cardInfo = json_decode($this->attributes['card_info'], true);
+        $cardInfo['level'] = $value;
         $this->attributes['card_info'] = json_encode($cardInfo);
     }
 }

@@ -16,13 +16,13 @@ class PositionCertificateFilter extends MultiselectFilter
 
     public function apply(NovaRequest $request, $query, $value)
     {
-        return $query->whereJsonContains('card_info->position', $value[0] ?? null);
+        return $query->whereHas('user', function ($query) use ($value) {
+            $query->where('position', $value[0] ?? null);
+        });
     }
 
     public function options(Request $request)
     {
-        return [
-            ...User::select('position')->distinct()->get()?->pluck('position', 'position'),
-        ];
+        return User::select('position')->whereNotNull('position')->distinct()->get()?->pluck('position', 'position');
     }
 }

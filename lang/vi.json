@@ -1152,6 +1152,7 @@
     "Signature" : "Chữ ký",
     "Name without comma" : "Tên nhóm không có dấu phẩy",
     "Occupational Certificate" : "Chứng chỉ ATLD",
+    "Electrical Certificate" : "Chứng chỉ ATD",
     "Certificate ID" : "Số chứng chỉ",
     "Certificate" : "Chứng chỉ",
     "Create from" : "Từ ngày",
@@ -1174,5 +1175,8 @@
     "Row :key add card error. Error: :error": "Hàng :key thêm thẻ bị lỗi. Lỗi: :error",
     "Card ID already exists in other user. Card ID. :card_id" : "Mã thẻ đã tồn tại với người lao động khác. ID của thẻ: :card_id",
     "Field duplicated card ID in same year at row: :row" : "Số thẻ đã bị trùng với người khác trong cùng một năm. Trùng tại hàng: :row",
-    "Card number used by other users in year :year" : "Số thẻ đã được sử dụng với người lao động khác trong năm :year"
+    "Card number used by other users in year :year" : "Số thẻ đã được sử dụng với người lao động khác trong năm :year",
+    "Level" : "Mức an toàn",
+    "Add occupation certificate by excel file" :"Thêm thẻ ATLD bằng file excel",
+    "Add electrical certificate by excel file" :"Thêm thẻ ATD bằng file excel"
 }
