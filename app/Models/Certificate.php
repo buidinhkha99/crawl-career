@@ -65,13 +65,13 @@ class Certificate extends Model
     }
 
     // Helper method to decode card_info
-    private function getCardInfoAttribute()
+    public function getCardInfoAttribute()
     {
         return json_decode($this->attributes['card_info'], true) ?? [];
     }
 
     // Helper method to set card_info
-    private function setCardInfoAttribute($key, $value)
+    public function setCardInfoAttribute($key, $value)
     {
         $cardInfo = $this->getCardInfoAttribute();
         $cardInfo[$key] = $value;
@@ -79,14 +79,14 @@ class Certificate extends Model
     }
 
     // Helper method to parse dates
-    private function getDateAttribute($key)
+    public function getDateAttribute($key)
     {
         $cardInfo = $this->getCardInfoAttribute();
         return !empty($cardInfo[$key]) ? Carbon::parse($cardInfo[$key]) : null;
     }
 
     // Helper method to format dates for setting
-    private function setDateAttribute($key, $value)
+    public function setDateAttribute($key, $value)
     {
         $this->setCardInfoAttribute($key, $value ? Carbon::parse($value)->format('Y-m-d') : null);
     }

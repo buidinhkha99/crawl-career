@@ -174,14 +174,14 @@ class OccupationalCertificate extends Resource
             (new DownloadExcelTemplate())->standalone()
                 ->confirmButtonText(__('Download'))
                 ->cancelButtonText(__('Cancel'))
-                ->onlyOnIndex()
+                ->exceptOnDetail()
                 ->confirmText(__('Are you sure you want to download'))
                 ->setType('occupational-certificate'),
             (new ImportCertificate(CertificateConstant::OCCUPATIONAL_SAFETY))->standalone()
                 ->canSee(fn ($request) => $request->user()->can('viewAny', \App\Models\Certificate::class))
                 ->canRun(fn ($request) => $request->user()->can('create', \App\Models\Certificate::class))
                 ->withName(__('Add occupation certificate by excel file')),
-            new DownloadPDFCertificate()
+            (new DownloadPDFCertificate())->exceptOnDetail()
         ];
     }
 }

@@ -157,14 +157,14 @@ class ElectricalCertificate extends Resource
             (new DownloadExcelTemplate())->standalone()
                 ->confirmButtonText(__('Download'))
                 ->cancelButtonText(__('Cancel'))
-                ->onlyOnIndex()
+                ->exceptOnDetail()
                 ->confirmText(__('Are you sure you want to download'))
                 ->setType('electrical-certificate'),
             (new ImportCertificate(CertificateConstant::ELECTRICAL_SAFETY))->standalone()
                 ->canSee(fn ($request) => $request->user()->can('viewAny', \App\Models\Certificate::class))
                 ->canRun(fn ($request) => $request->user()->can('create', \App\Models\Certificate::class))
                 ->withName(__('Add electrical certificate by excel file')),
-            new DownloadPDFElectricCertificate()
+            (new DownloadPDFElectricCertificate())->exceptOnDetail()
         ];
     }
 }
