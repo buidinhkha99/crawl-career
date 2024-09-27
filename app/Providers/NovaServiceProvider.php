@@ -19,6 +19,7 @@ use App\Nova\LMS\Exam;
 use App\Nova\LMS\ExaminationInReport;
 use App\Nova\LMS\Lesson;
 use App\Nova\LMS\MockQuiz;
+use App\Nova\LMS\ObjectGroupCertificate;
 use App\Nova\LMS\Question;
 use App\Nova\LMS\QuestionType;
 use App\Nova\LMS\Quiz;
@@ -156,6 +157,14 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                         ->canSee(fn () => Auth::user() && ((method_exists(Auth::user(), 'isSuperAdmin') && Auth::user()->isSuperAdmin()))),
                     MenuItem::make(__('Exam Results PDF'))->path('/settings/exam-result-pdf-page')->canSee(fn () => Auth::user() && ((method_exists(Auth::user(), 'isSuperAdmin') && Auth::user()->isSuperAdmin()))),
                     MenuItem::make(__('PDF Report'))->path('/settings/pdf-report')
+                        ->canSee(fn () => Auth::user() && ((method_exists(Auth::user(), 'isSuperAdmin') && Auth::user()->isSuperAdmin()))),
+                    MenuItem::make(__('Electrical Certificate'))->path('/settings/electrical-certificate')
+                        ->canSee(fn () => Auth::user() && ((method_exists(Auth::user(), 'isSuperAdmin') && Auth::user()->isSuperAdmin()))),
+                    MenuItem::make(__('Occupational Certificate'))->path('/settings/occupation-certificate')
+                        ->canSee(fn () => Auth::user() && ((method_exists(Auth::user(), 'isSuperAdmin') && Auth::user()->isSuperAdmin()))),
+                    MenuItem::make(__('Paper Certificate'))->path('/settings/paper-certificate')
+                        ->canSee(fn () => Auth::user() && ((method_exists(Auth::user(), 'isSuperAdmin') && Auth::user()->isSuperAdmin()))),
+                    MenuItem::resource(ObjectGroupCertificate::class)
                         ->canSee(fn () => Auth::user() && ((method_exists(Auth::user(), 'isSuperAdmin') && Auth::user()->isSuperAdmin()))),
                 ])->collapsedByDefault()->icon('cog'),
                 MenuSection::make(__('Interface'), [
@@ -432,6 +441,24 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                         ->minRows(1)->required(),
                 ]),
             ], [], 'quiz-random');
+
+            NovaSettings::addSettingsFields([
+                Panel::make(__('Electrical Certificate'), [
+                    Code::make(__('Electrical Certificate'), 'pdf_electrical_certificate')->language('javascript')->stacked()->fullWidth()->height(800),
+                ]),
+            ], [], 'electrical-certificate');
+
+            NovaSettings::addSettingsFields([
+                Panel::make(__('Occupational Certificate'), [
+                    Code::make(__('Occupational Certificate'), 'pdf_occupational_certificate')->language('javascript')->stacked()->fullWidth()->height(800),
+                ]),
+            ], [], 'occupation-certificate');
+
+            NovaSettings::addSettingsFields([
+                Panel::make(__('Paper Certificate'), [
+                    Code::make(__('Paper Certificate'), 'pdf_paper_certificate')->language('javascript')->stacked()->fullWidth()->height(800),
+                ]),
+            ], [], 'paper-certificate');
         } catch (Exception $e) {
             return;
         }

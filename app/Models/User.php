@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\CertificateConstant;
 use Harishdurga\LaravelQuiz\Models\Question;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -134,5 +135,25 @@ class User extends Authenticatable
     public function getRolesCountAttribute()
     {
         return $this->attributes['roles_count'] ?? $this->roles()->count();
+    }
+
+    public function certificate()
+    {
+        return $this->hasMany(Certificate::class);
+    }
+
+    public function occupationalCertificate()
+    {
+        return $this->certificate()->where('type', CertificateConstant::OCCUPATIONAL_SAFETY);
+    }
+
+    public function electricalCertificate()
+    {
+        return $this->certificate()->where('type', CertificateConstant::ELECTRICAL_SAFETY);
+    }
+
+    public function paperCertificate()
+    {
+        return $this->certificate()->where('type', CertificateConstant::PAPER_SAFETY);
     }
 }

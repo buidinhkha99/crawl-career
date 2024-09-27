@@ -66,7 +66,7 @@ class CertificatePolicy
      */
     public function delete(User $user, Certificate $certificate)
     {
-        return false;
+        return true;
     }
 
     /**

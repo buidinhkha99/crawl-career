@@ -166,48 +166,108 @@ class MediaController extends Controller
         $type = $payload->type ?? null;
 
         if ($type == CertificateConstant::OCCUPATIONAL_SAFETY) {
-            $frontSizeCards = [];
-            $backSizeCards = [];
-            $certificates = Certificate::with('user')->whereIn('id', $payload->ids)->get();
-            foreach ($certificates as $cert) {
-                $media = Media::find($cert->user->getAttribute('avatar'));
-                $avatar = base64_encode(Storage::disk('public')->get($media?->path.$media?->file_name));
-                $frontSizeCards[] = [
-                    'image' => $avatar,
-                    'certificate_id' => $cert->certificate_id,
-                ];
+            $pdf = $this->previewPDFOccuptionalCertificate($payload);
 
-                $backSizeCards[] = [
-                    'name' => $cert->user->name ?? null,
-                    'dob' => $cert->user->dob->format('d/m/Y') ?? null,
-                    'job' => $cert->job,
-                    'description' => $cert->card_info['description'] ?? null,
-                    'complete_from' => Carbon::parse($payload->complete_from)->format('d/m/Y'),
-                    'complete_to' => Carbon::parse($payload->complete_to)->format('d/m/Y'),
-                    'place' => $payload->place,
-                    'created_at' => Carbon::parse($cert->released_at)->format('d/m/Y'),
-                    'director_name' => $payload->director_name,
-                    'signature_photo' => $payload->signature_photo,
-                    'effective_to' => Carbon::parse($payload->effective_to)->format('d/m/Y'),
-                ];
-            }
+            // impotant can not change
+            return $pdf->setPaper([0, 0, 595, 893])->setOption(['fontDir' => storage_path('/fonts')])->stream();
+        }
 
-            $groupFonts = collect($frontSizeCards)->chunk(9)->map(fn($group) => $group->values());
-            $groupBacks = collect($backSizeCards)->chunk(9)->map(function($group) {
-                $valueReversed = $group->chunk(3)->map(fn ($groupCard) => $groupCard->reverse()->values());
-
-                return $valueReversed->collapse();
-            });
-            $pdf = BPDF::loadView('certificate-occupational', [
-                'total_group' => $groupFonts->count(),
-                'group_font_size_cards' => $groupFonts,
-                'group_back_size_cards' => $groupBacks,
-            ]);
+        if ($type == CertificateConstant::ELECTRICAL_SAFETY) {
+//            return $this->previewPDFElectricalCertificate($payload);
+            $pdf = $this->previewPDFElectricalCertificate($payload);
 
             // impotant can not change
             return $pdf->setPaper([0, 0, 595, 893])->setOption(['fontDir' => storage_path('/fonts')])->stream();
         }
 
         abort(404);
+    }
+
+    private function previewPDFOccuptionalCertificate($payload)
+    {
+        $frontSizeCards = [];
+        $backSizeCards = [];
+        $certificates = Certificate::with('user')->whereIn('id', $payload->ids)->get();
+        foreach ($certificates as $cert) {
+            $media = Media::find($cert->user->getAttribute('avatar'));
+            $avatar = base64_encode(Storage::disk('public')->get($media?->path.$media?->file_name));
+            $frontSizeCards[] = [
+                'image' => $avatar,
+                'certificate_id' => $cert->certificate_id,
+            ];
+
+            $backSizeCards[] = [
+                'name' => $cert->user->name ?? null,
+                'dob' => $cert->user->dob->format('d/m/Y') ?? null,
+                'job' => $cert->job,
+                'description' => $cert->card_info['description'] ?? null,
+                'complete_from' => Carbon::parse($payload->complete_from)->format('d/m/Y'),
+                'complete_to' => Carbon::parse($payload->complete_to)->format('d/m/Y'),
+                'place' => $payload->place,
+                'created_at' => Carbon::parse($cert->released_at)->format('d/m/Y'),
+                'director_name' => $payload->director_name,
+                'signature_photo' => $payload->signature_photo,
+                'effective_to' => Carbon::parse($payload->effective_to)->format('d/m/Y'),
+            ];
+        }
+
+        $groupFonts = collect($frontSizeCards)->chunk(9)->map(fn($group) => $group->values());
+        $groupBacks = collect($backSizeCards)->chunk(9)->map(function($group) {
+            $valueReversed = $group->chunk(3)->map(fn ($groupCard) => $groupCard->reverse()->values());
+
+            return $valueReversed->collapse();
+        });
+
+        $dummyFilePath = resource_path('views/dummy.blade.php');
+        // Write the html content to the blade file
+        file_put_contents($dummyFilePath, Setting::get('pdf_occupational_certificate'));
+
+        return BPDF::loadView('dummy', [
+            'total_group' => $groupFonts->count(),
+            'group_font_size_cards' => $groupFonts,
+            'group_back_size_cards' => $groupBacks,
+        ]);
+    }
+
+    private function previewPDFElectricalCertificate(mixed $payload)
+    {
+        $frontSizeCards = [];
+        $backSizeCards = [];
+        $certificates = Certificate::with('user')->whereIn('id', $payload->ids)->get();
+        foreach ($certificates as $cert) {
+            $media = Media::find($cert->user->getAttribute('avatar'));
+            $avatar = base64_encode(Storage::disk('public')->get($media?->path.$media?->file_name));
+            $frontSizeCards[] = [
+                'image' => $avatar,
+                'certificate_id' => $cert->certificate_id,
+            ];
+
+            $backSizeCards[] = [
+                'name' => $cert->user->name ?? null,
+                'dob' => $cert->user->dob->format('d/m/Y') ?? null,
+                'job' => $cert->job,
+                'description' => $cert->card_info['description'] ?? null,
+                'created_at' => Carbon::parse($cert->released_at)->format('d/m/Y'),
+                'director_name' => $payload->director_name,
+                'signature_photo' => $payload->signature_photo,
+            ];
+        }
+
+        $groupFonts = collect($frontSizeCards)->chunk(9)->map(fn($group) => $group->values());
+        $groupBacks = collect($backSizeCards)->chunk(9)->map(function($group) {
+            $valueReversed = $group->chunk(3)->map(fn ($groupCard) => $groupCard->reverse()->values());
+
+            return $valueReversed->collapse();
+        });
+
+        $dummyFilePath = resource_path('views/dummy.blade.php');
+        // Write the html content to the blade file
+        file_put_contents($dummyFilePath, Setting::get('pdf_electrical_certificate'));
+
+        return BPDF::loadView('dummy', [
+            'total_group' => $groupFonts->count(),
+            'group_font_size_cards' => $groupFonts,
+            'group_back_size_cards' => $groupBacks,
+        ]);
     }
 }
