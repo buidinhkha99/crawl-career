@@ -19,6 +19,7 @@ use App\Nova\LMS\Exam;
 use App\Nova\LMS\ExaminationInReport;
 use App\Nova\LMS\Lesson;
 use App\Nova\LMS\MockQuiz;
+use App\Nova\LMS\ObjectGroupCertificate;
 use App\Nova\LMS\Question;
 use App\Nova\LMS\QuestionType;
 use App\Nova\LMS\Quiz;
@@ -162,6 +163,8 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     MenuItem::make(__('Occupational Certificate'))->path('/settings/occupation-certificate')
                         ->canSee(fn () => Auth::user() && ((method_exists(Auth::user(), 'isSuperAdmin') && Auth::user()->isSuperAdmin()))),
                     MenuItem::make(__('Paper Certificate'))->path('/settings/paper-certificate')
+                        ->canSee(fn () => Auth::user() && ((method_exists(Auth::user(), 'isSuperAdmin') && Auth::user()->isSuperAdmin()))),
+                    MenuItem::resource(ObjectGroupCertificate::class)
                         ->canSee(fn () => Auth::user() && ((method_exists(Auth::user(), 'isSuperAdmin') && Auth::user()->isSuperAdmin()))),
                 ])->collapsedByDefault()->icon('cog'),
                 MenuSection::make(__('Interface'), [
