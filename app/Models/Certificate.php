@@ -71,7 +71,7 @@ class Certificate extends Model
     }
 
     // Helper method to set card_info
-    public function setCardInfoAttribute($key, $value)
+    public function setCardInfo($key, $value)
     {
         $cardInfo = $this->getCardInfoAttribute();
         $cardInfo[$key] = $value;
@@ -88,7 +88,7 @@ class Certificate extends Model
     // Helper method to format dates for setting
     public function setDateAttribute($key, $value)
     {
-        $this->setCardInfoAttribute($key, $value ? Carbon::parse($value)->format('Y-m-d') : null);
+        $this->setCardInfo($key, $value ? Carbon::parse($value)->format('Y-m-d') : null);
     }
 
     public function getCompleteFromAttribute()
@@ -148,7 +148,7 @@ class Certificate extends Model
 
     public function setLevelAttribute($value)
     {
-        $this->setCardInfoAttribute('level', $value);
+        $this->setCardInfo('level', $value);
     }
 
     public function getGenderAttribute()
@@ -158,7 +158,7 @@ class Certificate extends Model
 
     public function setGenderAttribute($value)
     {
-        $this->setCardInfoAttribute('gender', $value);
+        $this->setCardInfo('gender', $value);
     }
 
     public function getNationalityAttribute()
@@ -168,7 +168,7 @@ class Certificate extends Model
 
     public function setNationalityAttribute($value)
     {
-        $this->setCardInfoAttribute('nationality', $value);
+        $this->setCardInfo('nationality', $value);
     }
 
     public function getCccdAttribute()
@@ -178,7 +178,7 @@ class Certificate extends Model
 
     public function setCccdAttribute($value)
     {
-        $this->setCardInfoAttribute('cccd', $value);
+        $this->setCardInfo('cccd', $value);
     }
 
     public function getGroupAttribute()
@@ -188,7 +188,7 @@ class Certificate extends Model
 
     public function setGroupAttribute($value)
     {
-        $this->setCardInfoAttribute('group', $value);
+        $this->setCardInfo('group', $value);
     }
 
     public function getResultAttribute()
@@ -198,6 +198,6 @@ class Certificate extends Model
 
     public function setResultAttribute($value)
     {
-        $this->setCardInfoAttribute('result', $value);
+        $this->setCardInfo('result', $value);
     }
 }
