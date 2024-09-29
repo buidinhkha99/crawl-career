@@ -30,6 +30,8 @@ COPY bootstrap ./bootstrap
 COPY config ./config
 COPY database ./database
 COPY lang ./lang
+COPY nova-components ./nova-components
+COPY packages ./packages
 
 COPY public/build ./public/build
 COPY public/vendor ./public/vendor
