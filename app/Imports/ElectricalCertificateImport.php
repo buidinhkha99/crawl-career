@@ -35,9 +35,10 @@ class ElectricalCertificateImport extends CardImportCSV
             $row['index'] = $index;
             return $row;
         })->whereNotNull(2)->groupBy(function ($row, $key) {
-            if ($key == 0) {
+            if ($key == 0 || empty($row[2])) {
                 return;
             }
+
             // duplicate with card ID and year created
             return Carbon::createFromFormat('d/m/Y', $row[4])->year . '-' . $row[2];
         })->filter(function ($group) {
@@ -77,11 +78,11 @@ class ElectricalCertificateImport extends CardImportCSV
                 continue;
             }
 
-            // same Year created
-            $cards = $certificates->filter(function ($certificate) use ($released_at) {
-                return $certificate->released_at->year == $released_at->year;
-            });
             if (!empty($cardId)) {
+                // same Year created
+                $cards = $certificates->filter(function ($certificate) use ($released_at) {
+                    return $certificate->released_at->year == $released_at->year;
+                });
                 // same card ID
                 if ($other_card = $cards->where('user_id', '!=', $user->id)->where('card_id', $cardId)->first()) {
                     $this->notyError($key + 1, __('Card ID already exists in other user. Card ID. :card_id', [
@@ -91,12 +92,11 @@ class ElectricalCertificateImport extends CardImportCSV
                 }
 
                 $cards = $cards->where('card_id', $cardId);
-            }
-
-            $existed = $cards->where('user_id', $user->id);
-            if ($existed->first()) {
-                $this->notyError($key + 1, __('Card already exists'));
-                continue;
+                $existed = $cards->where('user_id', $user->id);
+                if ($existed->first()) {
+                    $this->notyError($key + 1, __('Card already exists'));
+                    continue;
+                }
             }
 
             try {

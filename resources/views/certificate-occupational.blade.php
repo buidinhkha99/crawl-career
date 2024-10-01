@@ -162,6 +162,10 @@
             height: 1px;
             background-color: black;
         }
+
+        .border-none {
+            border: none;
+        }
     </style>
 </head>
 <body>
@@ -222,35 +226,37 @@
                     $style = "card card-between column-gap";
                 }
                 ?>
-            <div class="{{$style}}">
-                <div class="card-inner">
-                    <div class="header-back">
-                        <div>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
-                        <div>Độc lập - Tự do - Hạnh phúc</div>
-                        <div class="underline"></div>
-                    </div>
-                    <div class="title-back">THẺ AN TOÀN LAO ĐỘNG</div>
-                    <div class="info">
-                        <div class="font-time">Họ và tên: <strong class="font-dejavu">{{$group_back_size_cards[$iGroup][$i - 1]['name'] ?? null}}</strong></div>
-                        <div class="font-time">Sinh ngày: {{$group_back_size_cards[$iGroup][$i - 1]['dob'] ?? null}}</div>
-                        <div class="font-time">Chức vụ: {{$group_back_size_cards[$iGroup][$i - 1]['job'] ?? null}}</div>
-                        <div class="font-time">
-                            Đã hoàn thành khóa huấn luyện: {{$group_back_size_cards[$iGroup][$i - 1]['description'] ?? null}}
+            <div class="{{$style}} {{!($group_back_size_cards[$iGroup][$i - 1]['is_fake'] ?? false) ? null : 'border-none'}}">
+                @if(!($group_back_size_cards[$iGroup][$i - 1]['is_fake'] ?? false))
+                    <div class="card-inner">
+                        <div class="header-back">
+                            <div>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+                            <div>Độc lập - Tự do - Hạnh phúc</div>
+                            <div class="underline"></div>
                         </div>
-                        <div class="font-time">Từ ngày {{$group_back_size_cards[$iGroup][$i - 1]['complete_from'] ?? null}} đến ngày {{$group_back_size_cards[$iGroup][$i - 1]['complete_to'] ?? null}}</div>
-                    </div>
-                    <div class="location">
-                        <div class="font-time">{{$group_back_size_cards[$iGroup][$i - 1]['place'] ?? null}}, ngày {{$group_back_size_cards[$iGroup][$i - 1]['created_at'] ?? null}}</div>
-                        <div><strong class="font-dejavu">GIÁM ĐỐC</strong></div>
-                        <div>
-                            <img class="signature" src="data:image/png;base64,{{$group_back_size_cards[$iGroup][$i - 1]['signature_photo'] ?? null}}">
+                        <div class="title-back">THẺ AN TOÀN LAO ĐỘNG</div>
+                        <div class="info">
+                            <div class="font-time">Họ và tên: <strong class="font-dejavu">{{$group_back_size_cards[$iGroup][$i - 1]['name'] ?? null}}</strong></div>
+                            <div class="font-time">Sinh ngày: {{$group_back_size_cards[$iGroup][$i - 1]['dob'] ?? null}}</div>
+                            <div class="font-time">Chức vụ: {{$group_back_size_cards[$iGroup][$i - 1]['job'] ?? null}}</div>
+                            <div class="font-time">
+                                Đã hoàn thành khóa huấn luyện: {{$group_back_size_cards[$iGroup][$i - 1]['description'] ?? null}}
+                            </div>
+                            <div class="font-time">Từ ngày {{$group_back_size_cards[$iGroup][$i - 1]['complete_from'] ?? null}} đến ngày {{$group_back_size_cards[$iGroup][$i - 1]['complete_to'] ?? null}}</div>
                         </div>
-                        <div><strong class="font-dejavu">{{$group_back_size_cards[$iGroup][$i - 1]['director_name'] ?? null}}</strong></div>
+                        <div class="location">
+                            <div class="font-time">{{$group_back_size_cards[$iGroup][$i - 1]['place'] ?? null}}, ngày {{$group_back_size_cards[$iGroup][$i - 1]['created_at'] ?? null}}</div>
+                            <div><strong class="font-dejavu">GIÁM ĐỐC</strong></div>
+                            <div>
+                                <img class="signature" src="data:image/png;base64,{{$group_back_size_cards[$iGroup][$i - 1]['signature_photo'] ?? null}}">
+                            </div>
+                            <div><strong class="font-dejavu">{{$group_back_size_cards[$iGroup][$i - 1]['director_name'] ?? null}}</strong></div>
+                        </div>
+                        <div class="footer-back">
+                            Thẻ có giá trị đến ngày {{$group_back_size_cards[$iGroup][$i - 1]['effective_to'] ?? null}}
+                        </div>
                     </div>
-                    <div class="footer-back">
-                        Thẻ có giá trị đến ngày {{$group_back_size_cards[$iGroup][$i - 1]['effective_to'] ?? null}}
-                    </div>
-                </div>
+                @endif
             </div>
         @endfor
     </div>

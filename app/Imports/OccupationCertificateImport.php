@@ -65,6 +65,7 @@ class OccupationCertificateImport extends CardImportCSV
                 continue;
             }
 
+            $cardId = $row[2];
             $user = $users->where('employee_code', Arr::get(explode("'", $row[0]), 1, $row[0]))->where('name', trim($row[1]))->first();
             $complete_from = Carbon::createFromFormat('d/m/Y', $row[4]);
             $complete_to = Carbon::createFromFormat('d/m/Y', $row[5]);
@@ -72,7 +73,11 @@ class OccupationCertificateImport extends CardImportCSV
             $effective_to = Carbon::createFromFormat('d/m/Y', $row[7]);
 
             $existDuplicate = $duplicateInfo->filter(function ($field, $keyDuplicate) use ($row, $released_at) {
-                return $keyDuplicate == $released_at->year . '-' . $row[2];
+                if (empty($cardId)) {
+                    return false;
+                }
+
+                return $keyDuplicate == $released_at->year . '-' . $cardId;
             })->first();
 
             if ($existDuplicate) {
@@ -82,26 +87,25 @@ class OccupationCertificateImport extends CardImportCSV
                 continue;
             }
 
-            // same Year created
-            $cards = $certificates->filter(function ($certificate) use ($released_at) {
-                return $certificate->released_at->year == $released_at->year;
-            });
-            if (!empty($row[2])) {
+            if (!empty($cardId)) {
+                // same Year created
+                $cards = $certificates->filter(function ($certificate) use ($released_at) {
+                    return $certificate->released_at->year == $released_at->year;
+                });
                 // same card ID
-                if ($other_card = $cards->where('user_id', '!=', $user->id)->where('card_id', $row[2])->first()) {
+                if ($other_card = $cards->where('user_id', '!=', $user->id)->where('card_id', $cardId)->first()) {
                     $this->notyError($key + 1, __('Card ID already exists in other user. Card ID. :card_id', [
                         'card_id' => $other_card->id
                     ]));
                     continue;
                 }
 
-                $cards = $cards->where('card_id', $row[2]);
-            }
-
-            $existed = $cards->where('user_id', $user->id);
-            if ($existed->first()) {
-                $this->notyError($key + 1, __('Card already exists'));
-                continue;
+                $cards = $cards->where('card_id', $cardId);
+                $existed = $cards->where('user_id', $user->id);
+                if ($existed->first()) {
+                    $this->notyError($key + 1, __('Card already exists'));
+                    continue;
+                }
             }
 
             try {
@@ -111,7 +115,7 @@ class OccupationCertificateImport extends CardImportCSV
                     'complete_to' => $complete_to,
                     'released_at' => $released_at,
                     'effective_to' => $effective_to,
-                    'card_id' => $row[2]
+                    'card_id' => $cardId
                 ]));
             } catch (Exception $e) {
                 $this->notyError($key + 1, $e->getMessage());

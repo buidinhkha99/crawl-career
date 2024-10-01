@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RolesAndPermissionsSeeder::class,
             CustomizationSeeder::class,
-            SettingSeeder::class,
+            SettingCertificateSeeder::class,
             QuestionTypeSeeder::class,
             FileTemplateSeeder::class,
             PageLmsSeeder::class,

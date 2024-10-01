@@ -187,7 +187,7 @@ class MediaController extends Controller
     {
         $frontSizeCards = [];
         $backSizeCards = [];
-        $certificates = Certificate::with('user')->whereIn('id', $payload->ids)->get();
+        $certificates = Certificate::with('user')->whereIn('id', $payload->ids)->get()->reverse();
         foreach ($certificates as $cert) {
             $media = Media::find($cert->user->getAttribute('avatar'));
             $avatar = base64_encode(Storage::disk('public')->get($media?->path.$media?->file_name));
@@ -213,7 +213,18 @@ class MediaController extends Controller
 
         $groupFonts = collect($frontSizeCards)->chunk(9)->map(fn($group) => $group->values());
         $groupBacks = collect($backSizeCards)->chunk(9)->map(function($group) {
-            $valueReversed = $group->chunk(3)->map(fn ($groupCard) => $groupCard->reverse()->values());
+            $valueReversed = $group->chunk(3)->map(function ($groupCard) {
+                $rowLose = 3 - $groupCard->count();
+             if ($rowLose > 0) {
+                 for ($i = 0; $i < $rowLose; $i++) {
+                     $groupCard[] = [
+                         'is_fake' => true,
+                     ];
+                 }
+             };
+
+             return $groupCard->reverse()->values();
+            });
 
             return $valueReversed->collapse();
         });
@@ -233,7 +244,7 @@ class MediaController extends Controller
     {
         $frontSizeCards = [];
         $backSizeCards = [];
-        $certificates = Certificate::with('user')->whereIn('id', $payload->ids)->get();
+        $certificates = Certificate::with('user')->whereIn('id', $payload->ids)->get()->reverse();
         foreach ($certificates as $cert) {
             $media = Media::find($cert->user->getAttribute('avatar'));
             $avatar = base64_encode(Storage::disk('public')->get($media?->path.$media?->file_name));
