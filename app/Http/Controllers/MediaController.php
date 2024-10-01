@@ -173,7 +173,6 @@ class MediaController extends Controller
         }
 
         if ($type == CertificateConstant::ELECTRICAL_SAFETY) {
-//            return $this->previewPDFElectricalCertificate($payload);
             $pdf = $this->previewPDFElectricalCertificate($payload);
 
             // impotant can not change
@@ -211,7 +210,21 @@ class MediaController extends Controller
             ];
         }
 
-        $groupFonts = collect($frontSizeCards)->chunk(9)->map(fn($group) => $group->values());
+        $groupFonts = collect($frontSizeCards)->chunk(9)->map(function($group) {
+            return $group->chunk(3)->map(function ($groupCard) {
+                $rowLose = 3 - $groupCard->count();
+                if ($rowLose > 0) {
+                    for ($i = 0; $i < $rowLose; $i++) {
+                        $groupCard[] = [
+                            'is_fake' => true,
+                        ];
+                    }
+                };
+
+                return $groupCard->values();
+            })->collapse();
+        });
+
         $groupBacks = collect($backSizeCards)->chunk(9)->map(function($group) {
             $valueReversed = $group->chunk(3)->map(function ($groupCard) {
                 $rowLose = 3 - $groupCard->count();
@@ -253,20 +266,47 @@ class MediaController extends Controller
                 'certificate_id' => $cert->certificate_id,
             ];
 
+            $release = Carbon::parse($cert->released_at);
             $backSizeCards[] = [
                 'name' => $cert->user->name ?? null,
-                'dob' => $cert->user->dob->format('d/m/Y') ?? null,
-                'job' => $cert->job,
-                'description' => $cert->card_info['description'] ?? null,
-                'created_at' => Carbon::parse($cert->released_at)->format('d/m/Y'),
+                'level' => $cert->level,
+                'day_created' => $release->day,
+                'month_created' => $release->month,
+                'year_created' => $release->year,
                 'director_name' => $payload->director_name,
                 'signature_photo' => $payload->signature_photo,
             ];
         }
 
-        $groupFonts = collect($frontSizeCards)->chunk(9)->map(fn($group) => $group->values());
-        $groupBacks = collect($backSizeCards)->chunk(9)->map(function($group) {
-            $valueReversed = $group->chunk(3)->map(fn ($groupCard) => $groupCard->reverse()->values());
+        $groupFonts = collect($frontSizeCards)->chunk(8)->map(function($group) {
+            return $group->chunk(2)->map(function ($groupCard) {
+                $rowLose = 2 - $groupCard->count();
+                if ($rowLose > 0) {
+                    for ($i = 0; $i < $rowLose; $i++) {
+                        $groupCard[] = [
+                            'is_fake' => true,
+                        ];
+                    }
+                };
+
+                return $groupCard->values();
+            })->collapse();
+        });
+
+
+        $groupBacks = collect($backSizeCards)->chunk(8)->map(function($group) {
+            $valueReversed = $group->chunk(2)->map(function ($groupCard) {
+                $rowLose = 2 - $groupCard->count();
+                if ($rowLose > 0) {
+                    for ($i = 0; $i < $rowLose; $i++) {
+                        $groupCard[] = [
+                            'is_fake' => true,
+                        ];
+                    }
+                };
+
+                return $groupCard->reverse()->values();
+            });
 
             return $valueReversed->collapse();
         });
