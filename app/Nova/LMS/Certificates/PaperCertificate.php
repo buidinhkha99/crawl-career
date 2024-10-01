@@ -7,6 +7,7 @@ use App\Enums\UserGender;
 use App\Models\Certificate;
 use App\Nova\Actions\DownloadExcelTemplate;
 use App\Nova\Actions\DownloadPDFElectricCertificate;
+use App\Nova\Actions\DownloadPDFPaperCertificate;
 use App\Nova\Actions\ImportCertificate;
 use App\Nova\Filters\CertificateEndTimeFilter;
 use App\Nova\Filters\CertificateIssueDateFromFilter;
@@ -200,6 +201,7 @@ class PaperCertificate extends Resource
                 ->canSee(fn ($request) => $request->user()->can('viewAny', \App\Models\Certificate::class))
                 ->canRun(fn ($request) => $request->user()->can('create', \App\Models\Certificate::class))
                 ->withName(__('Add paper certificate by excel file')),
+            (new DownloadPDFPaperCertificate())->exceptOnDetail()
         ];
     }
 }
