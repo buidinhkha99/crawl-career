@@ -200,4 +200,11 @@ class Certificate extends Model
     {
         $this->setCardInfo('result', $value);
     }
+
+    public function getDescriptionElectricCertificateAttribute()
+    {
+        $user = $this->user;
+
+        return $user->department . ". $user->factory_name - $user->position";
+    }
 }

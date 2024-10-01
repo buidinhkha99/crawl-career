@@ -235,7 +235,7 @@
                 @if(!($group_back_size_cards[$iGroup][$i - 1]['is_fake'] ?? false))
                     <div class="info">
                         <div>Họ tên: <strong class="font-dejavu">{{$group_back_size_cards[$iGroup][$i - 1]['name'] ?? null}}</strong></div>
-                        <div>Công việc, đơn vị công tác: {{$group_back_size_cards[$iGroup][$i - 1]['name'] ?? null}}</div>
+                        <div>Công việc, đơn vị công tác: {{$group_back_size_cards[$iGroup][$i - 1]['description'] ?? null}}</div>
                         <div>Bậc an toàn: {{$group_back_size_cards[$iGroup][$i - 1]['level'] ?? null}}</div>
                         <div>Cấp ngày {{$group_back_size_cards[$iGroup][$i - 1]['day_created'] ?? null}}
                             tháng {{$group_back_size_cards[$iGroup][$i - 1]['month_created'] ?? null}}

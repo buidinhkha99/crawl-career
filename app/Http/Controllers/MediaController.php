@@ -270,6 +270,7 @@ class MediaController extends Controller
             $backSizeCards[] = [
                 'name' => $cert->user->name ?? null,
                 'level' => $cert->level,
+                'description' => $cert->descriptionElectricCertificate,
                 'day_created' => $release->day,
                 'month_created' => $release->month,
                 'year_created' => $release->year,
