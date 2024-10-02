@@ -41,7 +41,8 @@ class Certificate extends Model
             return $this->card_id . '/LĐV/TATĐ';
         }
         if ($this->type == CertificateConstant::PAPER_SAFETY) {
-            return $this->card_id . '/' . $this->released_at->year;
+            // add 0 with number < 10
+            return str_pad($this->card_id, 2, '0', STR_PAD_LEFT) . '/GCN-ATLĐ';
         }
 
 
@@ -206,5 +207,16 @@ class Certificate extends Model
         $user = $this->user;
 
         return $user->department . ". $user->factory_name - $user->position";
+    }
+
+    public function getTrainingContentPaperCertificateAttribute()
+    {
+        $objectGroup = ObjectGroup::where('name', $this->card_info['group'] ?? null)->first();
+        if ($objectGroup) {
+            return $objectGroup->description;
+        }
+
+        // get description in same name group user group
+        return UserGroup::where('name', $this->card_info['group'] ?? null)->first()?->description;
     }
 }

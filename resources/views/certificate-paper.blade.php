@@ -48,6 +48,9 @@
         .card-background-back {
             background-color: #FFF7E9;
             color: #000000;
+            width: 538px;
+            height: 368px;
+            padding: 0 6px 12px 6px;
         }
 
         .card-bottom {
@@ -108,7 +111,7 @@
         .signature {
             margin: auto;
             width: 50px;
-            height: auto;
+            height: 29px;
             object-fit: contain;
         }
 
@@ -184,6 +187,14 @@
             line-height: 13px;
         }
 
+        .title-back-2 {
+            margin-top: 5px;
+            font-size: 12px;
+            line-height: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
         .header-1-back {
             font-size: 9px;
             text-align: center;
@@ -192,6 +203,24 @@
 
         .details {
             margin-top: -20px;
+            margin-right: 12px;
+            margin-left: 2px;
+            font-size: 8px;
+            line-height: 9px;
+            height: 155px;
+        }
+
+        .footer {
+            margin-top: 3px;
+            font-size: 8px;
+            line-height: 10px;
+            float: left;
+            margin-left: 120px;
+            text-align: center;
+        }
+
+        .info {
+            margin-top: 5px;
             font-size: 8px;
             line-height: 10px;
         }
@@ -202,17 +231,16 @@
     <div class="page-break page-after">
         @for($i= 1; $i <= count($group_font_size_cards[$iGroup]); $i++)
             <div
-                class="card-background-font {{ $i % 2 == 0 ? "card" : "card card-bottom"}} {{!($group_back_size_cards[$iGroup][$i - 1]['is_fake'] ?? false) ? null : 'backgroup-none'}}">
-                @if(!($group_back_size_cards[$iGroup][$i - 1]['is_fake'] ?? false))
+                class="card-background-font {{ $i % 2 == 0 ? "card" : "card card-bottom"}} {{!($group_font_size_cards[$iGroup][$i - 1]['is_fake'] ?? false) ? null : 'backgroup-none'}}">
+                @if(!($group_font_size_cards[$iGroup][$i - 1]['is_fake'] ?? false))
                     <div class="note font-time">
                         <div class="header font-mix"><strong>NHỮNG ĐIỀU CẦN LƯU Ý</strong></div>
                         <div>1- Xuất trình giấy khi được người có thẩm quyền yêu cầu.</div>
                         <div>2- Không được tẩy xóa, sửa chữa, tự ghi vào Giấy chứng nhận.</div>
                         <div>3- Không được cho người khác mượn.</div>
-                        <div>4- Khi thất lạc divhải báo ngay cho Tổ chức huấn luyện nơi cấdiv Giấy chứng nhận.</div>
+                        <div>4- Khi thất lạc phải báo ngay cho Tổ chức huấn luyện nơi cấp Giấy chứng nhận.</div>
                         <div>5- Trước khi Giấy chứng nhận huấn luyện hết hạn trong vòng 30 ngày, người được cấp phải
-                            tham
-                            dự huấn luyện định kỳ để được cấp Giấy chứng nhận mới.
+                            tham dự huấn luyện định kỳ để được cấp Giấy chứng nhận mới.
                         </div>
                     </div>
                     <div class="certificate">
@@ -234,65 +262,53 @@
 
     <div class="{{$iGroup + 1 < $total_group ? 'page-break' : null}} page-after">
         @for($i= 1; $i <= count($group_back_size_cards[$iGroup]); $i++)
+                <?php
+                    $image = $group_back_size_cards[$iGroup][$i - 1]['image'] ?? null;
+                    $data = $group_back_size_cards[$iGroup][$i - 1];
+                ?>
             <div
-                class="card-background-back {{ $i % 2 == 0 ? "card" : "card card-bottom"}} {{!($group_back_size_cards[$iGroup][$i - 1]['is_fake'] ?? false) ? null : 'backgroup-none'}}">
-                @if(!($group_back_size_cards[$iGroup][$i - 1]['is_fake'] ?? false))
+                class="{{ $i % 2 == 0 ? "card-background-back" : "card-background-back card-bottom"}} {{!($data['is_fake'] ?? false) ? null : 'backgroup-none'}}">
+                @if(!($data['is_fake'] ?? false))
                     <div class="note-back">
                         <div>
-                            {{--                        <div class="image-cover {{!$image ? 'border-image' : null}}">--}}
-                            <div class="image-cover border-image">
-                                {{--                            @if($image)--}}
-                                {{--                                <img class="image" src="data:image/png;base64,{{$image}}" alt="image">--}}
-                                {{--                            @else--}}
-                                {{--                                <div style="margin-top: 35px">Ảnh 3x4 <br> (đóng dấu giáp lai)</div>--}}
-                                {{--                            @endif--}}
-                                <div style="margin: 35px 14px">Ảnh 3x4 (đóng dấu giáp lai)</div>
+                            <div class="image-cover {{!$image ? 'border-image' : null}}">
+                                @if($image)
+                                    <img class="image" src="data:image/png;base64,{{$image}}" alt="image">
+                                @else
+                                    <div style="margin: 35px 14px">Ảnh 3x4 (đóng dấu giáp lai)</div>
+                                @endif
                             </div>
                             <div class="title-back header-1-back font-mix">
                                 <div>GIẤY CHỨNG NHẬN HUẤN LUYỆN</div>
                                 <div>AN TOÀN, VỆ SINH LAO ĐỘNG</div>
-                                <div>Số: 02/GCN-ATLĐ</div>
+                                <div>Số: {{$data['certificate_id']}}</div>
                             </div>
                         </div>
                         <div class="details font-time">
-                            <div>1. Họ và tên: <strong class="font-mix">Nguyễn Thị Mừng</strong></div>
-                            <div>2. Nam/Nữ: Nữ</div>
-                            <div>3. Ngày, tháng, năm sinh: 08/06/1981</div>
-                            <div>4. Quốc tịch: Việt Nam; Số CMND/Căn cước công dân/hộ chiếu: 0989328012</div>
-                            <div>5. Chức vụ: Công nhân lấy mẫu, phân tích quặng và sản phẩm luyện kim.</div>
-                            <div>6. Đơn vị công tác: Chi nhánh Luyện đồng Lào Cai - VIMICO</div>
-                            <div>7. Hoàn thành khóa huấn luyện: Ngày 23 tháng 10 năm 2024 đến ngày 28 tháng 10 năm 2024</div>
-                            <div>8. Kết quả đạt loại: Giỏi</div>
-                            <div>9. Giấy chứng nhận có giá trị 2 năm: Từ ngày 30 tháng 10 năm 2024 đến ngày 30 tháng 10 năm 2026</div>
+                            <div>1. Họ và tên: <strong class="font-mix">{{$data['name']}}</strong></div>
+                            <div>2. Nam/Nữ: {{$data['gender']}}</div>
+                            <div>3. Ngày, tháng, năm sinh: {{$data['dob']}}</div>
+                            <div>4. Quốc tịch: {{$data['nationality']}}; Số CMND/Căn cước công dân/hộ chiếu: {{$data['cccd']}}</div>
+                            <div>5. Chức vụ: {{$data['position']}}</div>
+                            <div>6. Đơn vị công tác: {{$data['work_unit']}}</div>
+                            <div>7. Đã hoàn thành khóa huấn luyện an toàn, vệ sinh lao động được tổ chức từ {{$data['complete_from']}} đến {{$data['complete_to']}}
+                            </div>
+                            <div>8. Kết quả đạt loại: {{$data['result']}}</div>
+                            <div>9. Giấy chứng nhận có giá trị {{$data['year_effect']}} năm. Từ {{$data['effective_from']}} đến {{$data['effective_to']}}</div>
                         </div>
-{{--                        <div class="footer">--}}
-{{--                            <p>Lào Cai, ngày 30 tháng 10 năm 2024</p>--}}
-{{--                            <p>Giám đốc</p>--}}
-{{--                            <div class="signature">--}}
-{{--                                <p><strong>Hoàng Ngọc Minh</strong></p>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
+                        <div class="footer font-mix">
+                            <div>{{$data['place'] ?? null}}, {{$data['create_at'] ?? null}}</div>
+                            <div><strong>Giám đốc</strong></div>
+                            <img class="signature"
+                                 src="data:image/png;base64,{{$data['signature_photo'] ?? null}}">
+                            <div><strong>{{$data['director_name'] ?? null}}</strong>
+                            </div>
+                        </div>
                     </div>
                     <div class="certificate-back">
-                                                <h1>NỘI DUNG HUẤN LUYỆN</h1>
-                        {{--                        <ul>--}}
-                        {{--                            <li>+ Kiến thức cơ bản về an toàn, vệ sinh lao động;</li>--}}
-                        {{--                            <li>+ Nội dung liên quan đến quyền và nghĩa vụ của người lao động;</li>--}}
-                        {{--                            <li>+ Chính sách liên quan đến an toàn, vệ sinh lao động đối với người lao động;</li>--}}
-                        {{--                            <li>+ Kiến thức cơ bản về yếu tố nguy hiểm, có hại tại nơi làm việc và phương pháp cải thiện--}}
-                        {{--                                điều kiện lao động;--}}
-                        {{--                            </li>--}}
-                        {{--                            <li>+ Chức năng, nhiệm vụ của mạng lưới an toàn, vệ sinh viên;</li>--}}
-                        {{--                            <li>+ Văn hóa an toàn trong sản xuất, kinh doanh;</li>--}}
-                        {{--                            <li>+ Nội quy an toàn, vệ sinh lao động, biển báo, biển chỉ dẫn an toàn, vệ sinh lao động và--}}
-                        {{--                                sử dụng các thiết bị an toàn, phương tiện bảo vệ cá nhân, nghiệp vụ, kỹ năng sơ cứu tai--}}
-                        {{--                                nạn lao động, phòng chống bệnh nghề nghiệp;--}}
-                        {{--                            </li>--}}
-                        {{--                            <li>+ Nội dung huấn luyện trực tiếp tại nơi làm việc: Huấn luyện về quy trình làm việc và--}}
-                        {{--                                yêu cầu cụ thể về an toàn, vệ sinh lao động nơi làm việc.--}}
-                        {{--                            </li>--}}
-                        {{--                        </ul>--}}
-
+                        <div class="title-back-2 font-dejavu">NỘI DUNG HUẤN LUYỆN</div>
+                        <div
+                            class="info font-time">{!! $data['info_certificate'] ?? null !!}</div>
                     </div>
                 @endif
             </div>

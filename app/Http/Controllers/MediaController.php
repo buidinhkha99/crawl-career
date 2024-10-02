@@ -180,7 +180,6 @@ class MediaController extends Controller
         }
 
         if ($type == CertificateConstant::PAPER_SAFETY) {
-//            return $this->previewPDFPaperCertificate($payload);
             $pdf = $this->previewPDFPaperCertificate($payload);
 
             // impotant can not change
@@ -339,21 +338,34 @@ class MediaController extends Controller
         foreach ($certificates as $cert) {
             $media = Media::find($cert->user->getAttribute('avatar'));
             $avatar = base64_encode(Storage::disk('public')->get($media?->path.$media?->file_name));
+            $completeFrom = Carbon::parse($cert->complete_from);
+            $completeTo = Carbon::parse($cert->complete_to);
+            $effectiveTo = Carbon::parse($cert->effective_to);
+            $effectiveFrom = Carbon::parse($cert->effective_from);
             $frontSizeCards[] = [
-                'image' => $avatar,
                 'certificate_id' => $cert->certificate_id,
             ];
-
-            $release = Carbon::parse($cert->released_at);
             $backSizeCards[] = [
+                'info_certificate' => $cert->training_content_paper_certificate,
+                'image' => $avatar,
+                'certificate_id' => $cert->certificate_id,
                 'name' => $cert->user->name ?? null,
-                'level' => $cert->level,
-                'description' => $cert->descriptionElectricCertificate,
-                'day_created' => $release->day,
-                'month_created' => $release->month,
-                'year_created' => $release->year,
+                'gender' => $cert->gender,
+                'dob' => $cert->dob->format('d/m/Y') ?? null,
+                'nationality' => $cert->nationality,
+                'cccd' => $cert->cccd,
+                'position' => $cert->user->position,
+                'work_unit' => $payload->work_unit ?? null,
+                'complete_from' => 'ngày ' . $completeFrom->day . ' tháng ' . $completeFrom->month . ' năm ' . $completeFrom->year,
+                'complete_to' => 'ngày ' . $completeTo->day . ' tháng ' . $completeTo->month . ' năm ' . $completeTo->year,
+                'result' => $cert->result,
+                'year_effect' => $effectiveTo->year - $effectiveFrom->year,
+                'effective_to' => 'ngày ' . $effectiveTo->day . ' tháng ' . $effectiveTo->month . ' năm ' . $effectiveTo->year,
+                'effective_from' => 'ngày ' . $effectiveFrom->day . ' tháng ' . $effectiveFrom->month . ' năm ' . $effectiveFrom->year,
                 'director_name' => $payload->director_name,
                 'signature_photo' => $payload->signature_photo,
+                'place' => $payload->place,
+                'create_at' => 'ngày ' . $cert->released_at->day . ' tháng ' . $cert->released_at->month . ' năm ' . $cert->released_at->year,
             ];
         }
 
@@ -390,16 +402,11 @@ class MediaController extends Controller
             return $valueReversed->collapse();
         });
 
-//        return view('certificate-paper', [
-//            'total_group' => $groupFonts->count(),
-//            'group_font_size_cards' => $groupFonts,
-//            'group_back_size_cards' => $groupBacks,
-//        ]);
         $dummyFilePath = resource_path('views/dummy.blade.php');
         // Write the html content to the blade file
         file_put_contents($dummyFilePath, Setting::get('pdf_paper_certificate'));
 
-        return BPDF::loadView('certificate-paper', [
+        return BPDF::loadView('dummy', [
             'total_group' => $groupFonts->count(),
             'group_font_size_cards' => $groupFonts,
             'group_back_size_cards' => $groupBacks,

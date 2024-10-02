@@ -9,6 +9,7 @@ use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Murdercode\TinymceEditor\TinymceEditor;
 
 class ObjectGroupCertificate extends Resource
 {
@@ -49,7 +50,7 @@ class ObjectGroupCertificate extends Resource
                 ->creationRules('unique:object_groups,name')
                 ->updateRules('unique:object_groups,name,{{resourceId}}')
                 ->sortable(),
-            Textarea::make(__('Description'), 'description')->required()->sortable()
+            TinymceEditor::make(__('Description'), 'description')->required()->sortable()
         ];
     }
 
