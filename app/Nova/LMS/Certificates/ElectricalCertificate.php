@@ -114,6 +114,18 @@ class ElectricalCertificate extends Resource
             Text::make(__('Level'), 'level')->required(),
             Date::make(__('Issue date'), 'released_at')
                 ->displayUsing(fn($value) => $value ? Carbon::parse($value)->format('d/m/Y') : null),
+
+            Text::make(__('Image font'), 'image_font_url')
+                ->resolveUsing(function ($value) {
+                    return '<img src="' . $value . '" style="max-width: 100%; height: auto;" alt="Hình ảnh" />';
+                })
+                ->asHtml(),
+
+            Text::make(__('Image back'), 'image_back_url')
+                ->resolveUsing(function ($value) {
+                    return '<img src="' . $value . '" style="max-width: 100%; height: auto;" alt="Hình ảnh" />';
+                })
+                ->asHtml(),
         ];
     }
 

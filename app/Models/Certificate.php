@@ -16,7 +16,11 @@ class Certificate extends Model
         'released_at',
         'type',
         'card_id',
-        'card_info'
+        'card_info',
+        'image_font',
+        'image_font_url',
+        'image_back',
+        'image_back_url',
     ];
 
     protected $casts = [

@@ -26,11 +26,13 @@ use Laravel\Nova\Exceptions\HelperNotSupported;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Date;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Outl1ne\MultiselectField\Multiselect;
+use Outl1ne\NovaMediaHub\Models\Media;
 use Outl1ne\NovaMediaHub\Nova\Fields\MediaHubField;
 
 class PaperCertificate extends Resource
@@ -149,6 +151,12 @@ class PaperCertificate extends Resource
             Date::make(__('Expiration to'), 'effective_to'),
             Date::make(__('Issue date'), 'released_at')
                 ->displayUsing(fn($value) => $value ? Carbon::parse($value)->format('d/m/Y') : null),
+
+            Text::make(__('Image back'), 'image_back_url')
+                ->resolveUsing(function ($value) {
+                    return '<img src="' . $value . '" style="max-width: 100%; height: auto;" alt="Hình ảnh" />';
+                })
+                ->asHtml(),
         ];
     }
 

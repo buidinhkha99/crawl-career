@@ -163,30 +163,8 @@ class MediaController extends Controller
 
         $hash = session('payload');
         $payload = json_decode(base64_decode($hash));
-        $type = $payload->type ?? null;
 
-        if ($type == CertificateConstant::OCCUPATIONAL_SAFETY) {
-            $pdf = $this->previewPDFOccuptionalCertificate($payload);
-
-            // impotant can not change
-            return $pdf->setPaper([0, 0, 595, 893])->setOption(['fontDir' => storage_path('/fonts')])->stream();
-        }
-
-        if ($type == CertificateConstant::ELECTRICAL_SAFETY) {
-            $pdf = $this->previewPDFElectricalCertificate($payload);
-
-            // impotant can not change
-            return $pdf->setPaper([0, 0, 595, 893])->setOption(['fontDir' => storage_path('/fonts')])->stream();
-        }
-
-        if ($type == CertificateConstant::PAPER_SAFETY) {
-            $pdf = $this->previewPDFPaperCertificate($payload);
-
-            // impotant can not change
-            return $pdf->setPaper([0, 0, 595, 893])->setOption(['fontDir' => storage_path('/fonts')])->stream();
-        }
-
-        abort(404);
+        return $this->handelPDF($payload);
     }
 
     private function previewPDFOccuptionalCertificate($payload)
@@ -411,5 +389,34 @@ class MediaController extends Controller
             'group_font_size_cards' => $groupFonts,
             'group_back_size_cards' => $groupBacks,
         ]);
+    }
+
+    public function handelPDF(mixed $payload, $actionType = 'stream')
+    {
+        $type = $payload->type ?? null;
+        $pdf = null;
+        if ($type == CertificateConstant::OCCUPATIONAL_SAFETY) {
+            $pdf = $this->previewPDFOccuptionalCertificate($payload);
+        }
+
+        if ($type == CertificateConstant::ELECTRICAL_SAFETY) {
+            $pdf = $this->previewPDFElectricalCertificate($payload);
+        }
+
+        if ($type == CertificateConstant::PAPER_SAFETY) {
+            $pdf = $this->previewPDFPaperCertificate($payload);
+        }
+
+        if ($pdf) {
+            $pdf = $pdf->setPaper([0, 0, 595, 893])->setOption(['fontDir' => storage_path('/fonts')]);
+            if ($actionType == 'save') {
+                // save for handel cut images
+                $pdf->save(storage_path('app/public/file.pdf'));;
+            }
+
+            return $pdf->stream();
+        }
+
+        abort(404);
     }
 }
