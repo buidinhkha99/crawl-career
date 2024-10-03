@@ -12,7 +12,8 @@ RUN install-php-extensions \
     opcache \
     redis \
     memcached \
-    pcov
+    pcov \ 
+    imagick/imagick@master
 
 RUN apt update && apt install -y wkhtmltopdf
 
