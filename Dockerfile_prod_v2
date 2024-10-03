@@ -15,7 +15,9 @@ RUN install-php-extensions \
     pcov \
     imagick/imagick@master
 
-RUN apt update && apt install -y wkhtmltopdf
+COPY docker/ImageMagick-6/policy.xml /etc/ImageMagick-6/policy.xml
+
+RUN apt update && apt install -y wkhtmltopdf ghostscript
 
 ARG SERVER_NAME=:80
 
@@ -23,8 +25,6 @@ ENV SERVER_NAME=$SERVER_NAME
 
 # Enable PHP production settings
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
-
-COPY docker/imagick-policy.xml /etc/ImageMagick-6/policy.xml
 
 WORKDIR /app
 
