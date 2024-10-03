@@ -1149,5 +1149,8 @@
     "Invalid" : "Không hợp lệ",
     "Not in any group": "Không thuộc nhóm nào",
     "Signature" : "Chữ ký",
-    "Name without comma" : "Tên nhóm không có dấu phẩy"
+    "Name without comma" : "Tên nhóm không có dấu phẩy",
+    "Lessons count": "Số buổi học",
+    "Start Date": "Ngày bắt đầu",
+    "End Date": "Ngày kết thúc"
 }

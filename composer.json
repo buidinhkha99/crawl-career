@@ -52,6 +52,7 @@
         "salt/reset-password": "*",
         "salt/title-dashboard": "@dev",
         "sereny/nova-permissions": "^1.2",
+        "simplesoftwareio/simple-qrcode": "^4.2",
         "simplesquid/nova-enum-field": "^3.1",
         "slash2nl/nova-back-button": "^2.0",
         "spatie/laravel-medialibrary": "^10.0.0",
