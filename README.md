@@ -3,6 +3,10 @@
 ## Setup project
 
 ### Cấu hình ImageMagick
+Cài đặt ghostscript
+```
+sudo apt-get install ghostscript
+```
 Tìm kiếm file policy.xml ImageMagick trên hệ thống, để có cho phép chuyển đổi pdf thành image:
 Xác định vị trí file policy.xml:
 ```angular2html
