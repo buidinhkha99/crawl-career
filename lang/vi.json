@@ -1149,5 +1149,11 @@
     "Invalid" : "Không hợp lệ",
     "Not in any group": "Không thuộc nhóm nào",
     "Signature" : "Chữ ký",
-    "Name without comma" : "Tên nhóm không có dấu phẩy"
+    "Document link" : "Link tài liệu",
+    "Document type" : "Loại tài liệu",
+    "Name without comma" : "Tên nhóm không có dấu phẩy",
+    "Normal text" : "Văn bản",
+    "Link driver" : "Link driver",
+    "Document link is required" : "Link tài liệu không được bỏ trống",
+    "Document content is required" : "Nội dung tài liệu không được bỏ trống"
 }
