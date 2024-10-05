@@ -3,11 +3,13 @@
 namespace App\Providers;
 
 use App\Listeners\OctaneReloadPermissions;
+use App\Models\Certificate;
 use App\Models\Customization;
 use App\Models\LessonQuestion;
 use App\Models\QuestionOption;
 use App\Models\Section;
 use App\Models\Setting;
+use App\Observers\CertificateObserver;
 use App\Observers\CustomizationObserver;
 use App\Observers\LessonQuestionObserver;
 use App\Observers\QuestionOptionObserver;
@@ -51,6 +53,7 @@ class EventServiceProvider extends ServiceProvider
         Customization::class => [CustomizationObserver::class],
         QuestionOption::class => [QuestionOptionObserver::class],
         LessonQuestion::class => [LessonQuestionObserver::class],
+        Certificate::class => [CertificateObserver::class],
     ];
 
     /**

@@ -44,3 +44,10 @@ Route::get('/media/report', [\App\Http\Controllers\MediaController::class, 'stre
     \Laravel\Nova\Http\Middleware\Authenticate::class,
     \Laravel\Nova\Http\Middleware\Authorize::class,
 ]);
+
+// certificates
+Route::get('/media/certificates', [\App\Http\Controllers\MediaController::class, 'streamCertificatesPdf'])->middleware([
+    'nova',
+    \Laravel\Nova\Http\Middleware\Authenticate::class,
+    \Laravel\Nova\Http\Middleware\Authorize::class,
+]);

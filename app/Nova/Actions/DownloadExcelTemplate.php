@@ -34,6 +34,18 @@ class DownloadExcelTemplate extends Action
         if ($this->type === 'question') {
             return Action::download('/storage/file_example_question.xlsx', 'file_mau_cau_hoi.xlsx');
         }
+
+        if ($this->type === 'occupational-certificate') {
+            return Action::download('/storage/the_atld.xlsx', 'the_atld.xlsx');
+        }
+
+        if ($this->type === 'electrical-certificate') {
+            return Action::download('/storage/the_atd.xlsx', 'the_atd.xlsx');
+        }
+
+        if ($this->type === 'paper-certificate') {
+            return Action::download('/storage/giay_chung_nhan.xlsx', 'giay_chung_nhan.xlsx');
+        }
     }
 
     /**

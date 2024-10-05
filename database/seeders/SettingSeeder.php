@@ -132,10 +132,24 @@ class SettingSeeder extends Seeder
                 'key' => 'content_page_pdf_report',
                 'value' => file_get_contents(resource_path('views/report.blade.php')),
             ],
+            [
+                'key' => 'pdf_occupational_certificate',
+                'value' => file_get_contents(resource_path('views/certificate-occupational.blade.php')),
+            ],
+            [
+                'key' => 'pdf_electrical_certificate',
+                'value' => file_get_contents(resource_path('views/certificate-electrical.blade.php')),
+            ],
+            [
+                'key' => 'pdf_paper_certificate',
+                'value' => file_get_contents(resource_path('views/certificate-paper.blade.php')),
+            ],
         ];
 
         collect($settings)->each(function ($setting) {
-            Setting::create($setting);
+            Setting::firstOrCreate([
+                'key' => $setting['key'],
+            ], $setting);
         });
     }
 }

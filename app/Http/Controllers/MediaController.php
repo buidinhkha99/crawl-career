@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CertificateConstant;
 use App\Enums\ExaminationStatus;
 use App\Enums\UserGender;
+use App\Models\Certificate;
 use App\Models\Examination;
 use App\Models\Setting;
 use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Outl1ne\NovaMediaHub\Models\Media;
+use Barryvdh\DomPDF\Facade\Pdf as BPDF;
 
 class MediaController extends Controller
 {
@@ -81,10 +85,16 @@ class MediaController extends Controller
                 'score' => $exam->getAttribute('score'),
                 'is_passed' => $exam->getAttribute('state') == ExaminationStatus::Pass,
             ],
-            'examination' => $exam->getAttribute('examination'),
+            'examination' => collect($exam->getAttribute('examination'))->map(fn($question) => array_merge($question,
+                [
+                    'index_answered' => collect($question['answers'])->where('id', $question['answered'])?->keys()?->first() ?? null,
+                    'index_correct_answer' => collect($question['answers'])->where('is_correct', true)?->keys()?->first() ?? null,
+                ])
+            ),
+            'max_answer' => collect($exam->examination)->map(fn($question) => count($question['answers']))->max(),
         ], true);
 
-        $filename = Str::snake("{$exam->exam_name}{$exam->name}_{$exam->username}").'.pdf';
+        $filename = Str::snake("{$exam->exam_name}{$exam->name}_{$exam->username}") . '.pdf';
 
         return PDF::loadHTML($html, 'UTF-8')->inline($filename);
     }
@@ -92,7 +102,7 @@ class MediaController extends Controller
     public function streamReportPdf(Request $request)
     {
         // check permissions
-        if (! Auth::user()?->can('viewAny', Examination::class)) {
+        if (!Auth::user()?->can('viewAny', Examination::class)) {
             abort(403);
         }
 
@@ -148,5 +158,271 @@ class MediaController extends Controller
         $filename = 'bao_cao_bai_thi.pdf';
 
         return PDF::loadHTML($html, 'UTF-8')->setPaper('a4')->setOrientation('landscape')->inline($filename);
+    }
+
+    public function streamCertificatesPdf(Request $request)
+    {
+        // check permissions
+        if (!Auth::user()) {
+            abort(403);
+        }
+
+        $hash = session('payload');
+        $payload = json_decode(base64_decode($hash));
+
+        return $this->handelPDF($payload);
+    }
+
+    private function previewPDFOccuptionalCertificate($payload)
+    {
+        $frontSizeCards = [];
+        $backSizeCards = [];
+        $certificates = Certificate::with('user')->whereIn('id', $payload->ids)->get()->reverse();
+        foreach ($certificates as $cert) {
+            $media = Media::find($cert->user->getAttribute('avatar'));
+            $avatar = base64_encode(Storage::disk('public')->get($media?->path.$media?->file_name));
+            $frontSizeCards[] = [
+                'image' => $avatar,
+                'certificate_id' => $cert->certificate_id,
+            ];
+
+            $backSizeCards[] = [
+                'name' => $cert->user->name ?? null,
+                'dob' => $cert->user->dob->format('d/m/Y') ?? null,
+                'job' => $cert->job,
+                'description' => $cert->card_info['description'] ?? null,
+                'complete_from' => Carbon::parse($payload->complete_from)->format('d/m/Y'),
+                'complete_to' => Carbon::parse($payload->complete_to)->format('d/m/Y'),
+                'place' => $payload->place,
+                'created_at' => Carbon::parse($cert->released_at)->format('d/m/Y'),
+                'director_name' => $payload->director_name,
+                'signature_photo' => $payload->signature_photo,
+                'effective_to' => Carbon::parse($payload->effective_to)->format('d/m/Y'),
+            ];
+        }
+
+        $groupFonts = collect($frontSizeCards)->chunk(9)->map(function($group) {
+            return $group->chunk(3)->map(function ($groupCard) {
+                $rowLose = 3 - $groupCard->count();
+                if ($rowLose > 0) {
+                    for ($i = 0; $i < $rowLose; $i++) {
+                        $groupCard[] = [
+                            'is_fake' => true,
+                        ];
+                    }
+                };
+
+                return $groupCard->values();
+            })->collapse();
+        });
+
+        $groupBacks = collect($backSizeCards)->chunk(9)->map(function($group) {
+            $valueReversed = $group->chunk(3)->map(function ($groupCard) {
+                $rowLose = 3 - $groupCard->count();
+             if ($rowLose > 0) {
+                 for ($i = 0; $i < $rowLose; $i++) {
+                     $groupCard[] = [
+                         'is_fake' => true,
+                     ];
+                 }
+             };
+
+             return $groupCard->reverse()->values();
+            });
+
+            return $valueReversed->collapse();
+        });
+
+        $dummyFilePath = resource_path('views/dummy.blade.php');
+        // Write the html content to the blade file
+        file_put_contents($dummyFilePath, Setting::get('pdf_occupational_certificate'));
+
+        return BPDF::loadView('dummy', [
+            'total_group' => $groupFonts->count(),
+            'group_font_size_cards' => $groupFonts,
+            'group_back_size_cards' => $groupBacks,
+        ]);
+    }
+
+    private function previewPDFElectricalCertificate(mixed $payload)
+    {
+        $frontSizeCards = [];
+        $backSizeCards = [];
+        $certificates = Certificate::with('user')->whereIn('id', $payload->ids)->get()->reverse();
+        foreach ($certificates as $cert) {
+            $media = Media::find($cert->user->getAttribute('avatar'));
+            $avatar = base64_encode(Storage::disk('public')->get($media?->path.$media?->file_name));
+            $frontSizeCards[] = [
+                'image' => $avatar,
+                'certificate_id' => $cert->certificate_id,
+            ];
+
+            $release = Carbon::parse($cert->released_at);
+            $backSizeCards[] = [
+                'name' => $cert->user->name ?? null,
+                'level' => $cert->level,
+                'description' => $cert->descriptionElectricCertificate,
+                'day_created' => $release->day,
+                'month_created' => $release->month,
+                'year_created' => $release->year,
+                'director_name' => $payload->director_name,
+                'signature_photo' => $payload->signature_photo,
+            ];
+        }
+
+        $groupFonts = collect($frontSizeCards)->chunk(8)->map(function($group) {
+            return $group->chunk(2)->map(function ($groupCard) {
+                $rowLose = 2 - $groupCard->count();
+                if ($rowLose > 0) {
+                    for ($i = 0; $i < $rowLose; $i++) {
+                        $groupCard[] = [
+                            'is_fake' => true,
+                        ];
+                    }
+                };
+
+                return $groupCard->values();
+            })->collapse();
+        });
+
+
+        $groupBacks = collect($backSizeCards)->chunk(8)->map(function($group) {
+            $valueReversed = $group->chunk(2)->map(function ($groupCard) {
+                $rowLose = 2 - $groupCard->count();
+                if ($rowLose > 0) {
+                    for ($i = 0; $i < $rowLose; $i++) {
+                        $groupCard[] = [
+                            'is_fake' => true,
+                        ];
+                    }
+                };
+
+                return $groupCard->reverse()->values();
+            });
+
+            return $valueReversed->collapse();
+        });
+
+        $dummyFilePath = resource_path('views/dummy.blade.php');
+        // Write the html content to the blade file
+        file_put_contents($dummyFilePath, Setting::get('pdf_electrical_certificate'));
+
+        return BPDF::loadView('dummy', [
+            'total_group' => $groupFonts->count(),
+            'group_font_size_cards' => $groupFonts,
+            'group_back_size_cards' => $groupBacks,
+        ]);
+    }
+
+    private function previewPDFPaperCertificate(mixed $payload)
+    {
+        $frontSizeCards = [];
+        $backSizeCards = [];
+        $certificates = Certificate::with('user')->whereIn('id', $payload->ids)->get()->reverse();
+        foreach ($certificates as $cert) {
+            $media = Media::find($cert->user->getAttribute('avatar'));
+            $avatar = base64_encode(Storage::disk('public')->get($media?->path.$media?->file_name));
+            $completeFrom = Carbon::parse($cert->complete_from);
+            $completeTo = Carbon::parse($cert->complete_to);
+            $effectiveTo = Carbon::parse($cert->effective_to);
+            $effectiveFrom = Carbon::parse($cert->effective_from);
+            $frontSizeCards[] = [
+                'certificate_id' => $cert->certificate_id,
+            ];
+            $backSizeCards[] = [
+                'info_certificate' => $cert->training_content_paper_certificate,
+                'image' => $avatar,
+                'certificate_id' => $cert->certificate_id,
+                'name' => $cert->user->name ?? null,
+                'gender' => $cert->gender,
+                'dob' => $cert->dob->format('d/m/Y') ?? null,
+                'nationality' => $cert->nationality,
+                'cccd' => $cert->cccd,
+                'position' => $cert->user->position,
+                'work_unit' => $payload->work_unit ?? null,
+                'complete_from' => 'ngày ' . $completeFrom->day . ' tháng ' . $completeFrom->month . ' năm ' . $completeFrom->year,
+                'complete_to' => 'ngày ' . $completeTo->day . ' tháng ' . $completeTo->month . ' năm ' . $completeTo->year,
+                'result' => $cert->result,
+                'year_effect' => $effectiveTo->year - $effectiveFrom->year,
+                'effective_to' => 'ngày ' . $effectiveTo->day . ' tháng ' . $effectiveTo->month . ' năm ' . $effectiveTo->year,
+                'effective_from' => 'ngày ' . $effectiveFrom->day . ' tháng ' . $effectiveFrom->month . ' năm ' . $effectiveFrom->year,
+                'director_name' => $payload->director_name,
+                'signature_photo' => $payload->signature_photo,
+                'place' => $payload->place,
+                'create_at' => 'ngày ' . $cert->released_at->day . ' tháng ' . $cert->released_at->month . ' năm ' . $cert->released_at->year,
+            ];
+        }
+
+        $groupFonts = collect($frontSizeCards)->chunk(2)->map(function($group) {
+            return $group->chunk(1)->map(function ($groupCard) {
+                $rowLose = 1 - $groupCard->count();
+                if ($rowLose > 0) {
+                    for ($i = 0; $i < $rowLose; $i++) {
+                        $groupCard[] = [
+                            'is_fake' => true,
+                        ];
+                    }
+                };
+
+                return $groupCard->values();
+            })->collapse();
+        });
+
+
+        $groupBacks = collect($backSizeCards)->chunk(2)->map(function($group) {
+            $valueReversed = $group->chunk(1)->map(function ($groupCard) {
+                $rowLose = 1 - $groupCard->count();
+                if ($rowLose > 0) {
+                    for ($i = 0; $i < $rowLose; $i++) {
+                        $groupCard[] = [
+                            'is_fake' => true,
+                        ];
+                    }
+                };
+
+                return $groupCard->reverse()->values();
+            });
+
+            return $valueReversed->collapse();
+        });
+
+        $dummyFilePath = resource_path('views/dummy.blade.php');
+        // Write the html content to the blade file
+        file_put_contents($dummyFilePath, Setting::get('pdf_paper_certificate'));
+
+        return BPDF::loadView('dummy', [
+            'total_group' => $groupFonts->count(),
+            'group_font_size_cards' => $groupFonts,
+            'group_back_size_cards' => $groupBacks,
+        ]);
+    }
+
+    public function handelPDF(mixed $payload, $actionType = 'stream')
+    {
+        $type = $payload->type ?? null;
+        $pdf = null;
+        if ($type == CertificateConstant::OCCUPATIONAL_SAFETY) {
+            $pdf = $this->previewPDFOccuptionalCertificate($payload);
+        }
+
+        if ($type == CertificateConstant::ELECTRICAL_SAFETY) {
+            $pdf = $this->previewPDFElectricalCertificate($payload);
+        }
+
+        if ($type == CertificateConstant::PAPER_SAFETY) {
+            $pdf = $this->previewPDFPaperCertificate($payload);
+        }
+
+        if ($pdf) {
+            $pdf = $pdf->setPaper([0, 0, 595, 893])->setOption(['fontDir' => storage_path('/fonts')]);
+            if ($actionType == 'save') {
+                // save for handel cut images
+                $pdf->save(storage_path('app/public/file.pdf'));;
+            }
+
+            return $pdf->stream();
+        }
+
+        abort(404);
     }
 }
