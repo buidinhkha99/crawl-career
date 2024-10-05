@@ -85,10 +85,16 @@ class MediaController extends Controller
                 'score' => $exam->getAttribute('score'),
                 'is_passed' => $exam->getAttribute('state') == ExaminationStatus::Pass,
             ],
-            'examination' => $exam->getAttribute('examination'),
+            'examination' => collect($exam->getAttribute('examination'))->map(fn($question) => array_merge($question,
+                [
+                    'index_answered' => collect($question['answers'])->where('id', $question['answered'])?->keys()?->first() ?? null,
+                    'index_correct_answer' => collect($question['answers'])->where('is_correct', true)?->keys()?->first() ?? null,
+                ])
+            ),
+            'max_answer' => collect($exam->examination)->map(fn($question) => count($question['answers']))->max(),
         ], true);
 
-        $filename = Str::snake("{$exam->exam_name}{$exam->name}_{$exam->username}").'.pdf';
+        $filename = Str::snake("{$exam->exam_name}{$exam->name}_{$exam->username}") . '.pdf';
 
         return PDF::loadHTML($html, 'UTF-8')->inline($filename);
     }
@@ -96,7 +102,7 @@ class MediaController extends Controller
     public function streamReportPdf(Request $request)
     {
         // check permissions
-        if (! Auth::user()?->can('viewAny', Examination::class)) {
+        if (!Auth::user()?->can('viewAny', Examination::class)) {
             abort(403);
         }
 
