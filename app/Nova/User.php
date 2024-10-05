@@ -2,6 +2,7 @@
 
 namespace App\Nova;
 
+use App\Enums\CertificateConstant;
 use App\Enums\LessonUserStatus;
 use App\Enums\UserGender;
 use App\Nova\Actions\AccountVerification;
@@ -11,6 +12,9 @@ use App\Nova\Actions\ImportUser;
 use App\Nova\Actions\ResetPassword;
 use App\Nova\Filters\GroupNameFilter;
 use App\Nova\Filters\UserStatusFilter;
+use App\Nova\LMS\Certificates\ElectricalCertificate;
+use App\Nova\LMS\Certificates\OccupationalCertificate;
+use App\Nova\LMS\Certificates\PaperCertificate;
 use App\Nova\LMS\ExaminationInUser;
 use App\Nova\LMS\Lesson;
 use App\Nova\LMS\Quiz;
@@ -246,7 +250,10 @@ class User extends Resource
                 ->canSee(fn () => false),
             BelongsToMany::make(__('Quiz'), 'quizzes', Quiz::class),
             HasMany::make(__('Tests'), 'examinations', ExaminationInUser::class),
-            Boolean::make(__('Status'), 'status')->sortable()->exceptOnForms()
+            Boolean::make(__('Status'), 'status')->sortable()->exceptOnForms(),
+            HasMany::make(__('Occupational Certificate'), 'occupationalCertificate', OccupationalCertificate::class),
+            HasMany::make(__('Electrical Certificate'), 'electricalCertificate', ElectricalCertificate::class),
+            HasMany::make(__('Paper Certificate'), 'paperCertificate', PaperCertificate::class),
         ];
     }
 

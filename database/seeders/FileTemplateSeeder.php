@@ -16,5 +16,9 @@ class FileTemplateSeeder extends Seeder
         copy(resource_path('/files/file_example_question.xlsx'), storage_path('/app/public/file_example_question.xlsx'));
         copy(resource_path('/files/file_example_user.xlsx'), storage_path('/app/public/file_example_user.xlsx'));
         copy(resource_path('/images/default_avatar_user.png'), storage_path('/app/public/default_avatar_user.png'));
+        copy(resource_path('/files/the_atld.xlsx'), storage_path('/app/public/the_atld.xlsx'));
+        copy(resource_path('/files/the_atd.xlsx'), storage_path('/app/public/the_atd.xlsx'));
+        copy(resource_path('/files/giay_chung_nhan.xlsx'), storage_path('/app/public/giay_chung_nhan.xlsx'));
+        copy(resource_path('/images/default_signature.png'), storage_path('/app/public/default_signature.png'));
     }
 }
