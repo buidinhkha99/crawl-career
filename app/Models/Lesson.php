@@ -11,7 +11,7 @@ class Lesson extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'content', 'document'];
+    protected $fillable = ['name', 'content', 'document', 'link', 'document_type'];
     protected $casts = [
         'document' => 'array'
     ];
@@ -49,5 +49,10 @@ class Lesson extends Model
     public function histories(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'lesson_user_question')->withPivot(['question_option_id', 'is_correct', 'question_id']);
+    }
+
+    public function getType(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class)->using(LessonUser::class)->withPivot('complete_theory');
     }
 }

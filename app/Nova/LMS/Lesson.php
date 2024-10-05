@@ -2,6 +2,7 @@
 
 namespace App\Nova\LMS;
 
+use App\Enums\LessonConstant;
 use App\Nova\Filters\TopicNameFilter;
 use App\Nova\Resource;
 use App\Nova\Traits\HasCallbacks;
@@ -110,10 +111,27 @@ class Lesson extends Resource
                 ->fillUsing(function ($request, $model, $attribute) {
                     unset($model[$attribute]);
                 })->readonly(fn () => ($request->viaResource() && $request->viaResource() != Lesson::class) && $request->get('editMode') != 'update'),
+            Multiselect::make(__('Document type'), 'document_type')
+                ->singleSelect()
+                ->options([
+                    LessonConstant::LESSON_TYPE_NORMAL_TEXT => __('Normal text'),
+                    LessonConstant::LESSON_TYPE_LINK_DRIVER => __('Link driver'),
+                ])
+                ->required(),
+            Text::make(__("Document link"), 'link')->rules([function ($attribute, $value, $fail) {
+                if (\request()->get('document_type') == LessonConstant::LESSON_TYPE_LINK_DRIVER && empty($value)) {
+                   return $fail(__('Document link is required'));
+                }
+            }]),
+        
             TinymceEditor::make(__('Lesson content'), 'content')
                 ->showOnIndex()
                 ->fullWidth()
-                ->rules('required')
+                ->rules([function ($attribute, $value, $fail) {
+                    if (\request()->get('document_type') == LessonConstant::LESSON_TYPE_NORMAL_TEXT && empty($value)) {
+                        return $fail(__('Document content is required'));
+                    }
+                }])
                 ->creationRules('unique:questions,name')
                 ->updateRules('unique:questions,name,{{resourceId}}'),
             MediaHubField::make(__('Lesson document'), 'document')

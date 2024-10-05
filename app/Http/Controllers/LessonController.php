@@ -22,6 +22,8 @@ class LessonController extends Controller
         return [
             'id' => $lesson->id,
             'name' => $lesson->name,
+            'type-show' => $lesson->document_type,
+            'link-driver' => $lesson->link,
             'content' => $lesson->content,
             'documents' => $lesson->documents,
             'next_lesson' => $this->nextLessonUrl($lesson),
