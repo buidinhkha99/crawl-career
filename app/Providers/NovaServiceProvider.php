@@ -166,8 +166,8 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                         ->canSee(fn () => Auth::user() && ((method_exists(Auth::user(), 'isSuperAdmin') && Auth::user()->isSuperAdmin()))),
                     MenuItem::make(__('Paper Certificate'))->path('/settings/paper-certificate')
                         ->canSee(fn () => Auth::user() && ((method_exists(Auth::user(), 'isSuperAdmin') && Auth::user()->isSuperAdmin()))),
-                    MenuItem::resource(ObjectGroupCertificate::class),
-                    MenuItem::make(__('Setting PDF Certificate'))->path('/settings/pdf-certificate')
+                    MenuItem::make(__('PDF Certificate'))->path('/settings/pdf-certificate')->canSee(fn () => Auth::user()),
+                    MenuItem::resource(ObjectGroupCertificate::class)->canSee(fn () => Auth::user()),
                 ])->collapsedByDefault()->icon('cog'),
                 MenuSection::make(__('Interface'), [
                     MenuItem::resource(PageStatic::class),
@@ -462,20 +462,20 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     Date::make(__('Complete From'), 'complete_from')->rules('required')->default(fn () => now()),
                     Date::make(__('Complete To'), 'complete_to')->rules('required')->default(fn () => now()),
                     Text::make(__('Director Name'), 'director_name_occupational')->rules('required'),
-                    Image::make(__('Signature Image'), 'signature_photo_occupational'),
+                    Image::make(__('Signature Image'), 'signature_photo_occupational')->required(),
                     Date::make(__('Effective To'), 'effective_to')->rules('required')->default(fn () => now()),
                 ]),
 
                 Panel::make(__('Electrical Certificate'), [
                     Text::make(__('Director Name'), 'director_name_electric')->rules('required'),
-                    Image::make(__('Signature Image'), 'signature_photo_electric'),
+                    Image::make(__('Signature Image'), 'signature_photo_electric')->required(),
                 ]),
 
                 Panel::make(__('Paper Certificate'), [
                     Text::make(__('Work unit'), 'work_unit')->rules('required')->default('Chi nhánh Luyện đồng Lào Cai - VIMICO'),
                     Text::make(__('Place'), 'place_paper')->default(fn () => __('Lào Cai'))->rules('required'),
                     Text::make(__('Director Name'), 'director_name_paper')->rules('required'),
-                    Image::make(__('Signature Image'), 'signature_photo_paper'),
+                    Image::make(__('Signature Image'), 'signature_photo_paper')->required(),
                 ]),
             ], [], 'pdf-certificate');
 
