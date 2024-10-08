@@ -21,13 +21,8 @@ class DownloadPDFElectricCertificate extends Action
     public function handle(ActionFields $fields, Collection $models): Action|\Laravel\Nova\Actions\ActionResponse
     {
         // custom image to base64
-        $fileData = file_get_contents($fields->get('signature_photo'));
-        $base64 = base64_encode($fileData);
-
         $payload = [
             'type' => CertificateConstant::ELECTRICAL_SAFETY,
-            'director_name' => $fields->get('director_name'),
-            'signature_photo' => $base64,
             'ids' => $models->pluck('id'),
         ];
 
@@ -40,8 +35,7 @@ class DownloadPDFElectricCertificate extends Action
     public function fields(NovaRequest $request)
     {
         return [
-            Text::make(__('Director Name'), 'director_name')->rules('required'),
-            Image::make(__('Signature Image'), 'signature_photo')->rules('required'),
+//
         ];
     }
 }

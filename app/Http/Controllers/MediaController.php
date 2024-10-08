@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Outl1ne\NovaMediaHub\Models\Media;
 use Barryvdh\DomPDF\Facade\Pdf as BPDF;
+use Spatie\Browsershot\Browsershot;
 
 class MediaController extends Controller
 {
@@ -173,7 +174,7 @@ class MediaController extends Controller
         return $this->handelPDF($payload);
     }
 
-    private function previewPDFOccuptionalCertificate($payload)
+    private function previewPDFOccupationalCertificate($payload, $handleType = 'stream')
     {
         $frontSizeCards = [];
         $backSizeCards = [];
@@ -181,22 +182,29 @@ class MediaController extends Controller
         foreach ($certificates as $cert) {
             $media = Media::find($cert->user->getAttribute('avatar'));
             $avatar = base64_encode(Storage::disk('public')->get($media?->path.$media?->file_name));
+
+            $mediaFont = Media::find($cert->image_font);
+            $imageFont = base64_encode(Storage::disk('public')->get($mediaFont?->path.$mediaFont?->file_name));
+            $mediaBack = Media::find($cert->image_back);
+            $imageBack = base64_encode(Storage::disk('public')->get($mediaBack?->path.$mediaBack?->file_name));
             $frontSizeCards[] = [
+                'image_card' => $imageFont,
                 'image' => $avatar,
                 'certificate_id' => $cert->certificate_id,
             ];
 
             $backSizeCards[] = [
+                'image_card' => $imageBack,
                 'name' => $cert->user->name ?? null,
                 'dob' => $cert->user->dob->format('d/m/Y') ?? null,
                 'job' => $cert->job,
                 'description' => $cert->card_info['description'] ?? null,
                 'complete_from' => Carbon::parse($payload->complete_from)->format('d/m/Y'),
                 'complete_to' => Carbon::parse($payload->complete_to)->format('d/m/Y'),
-                'place' => $payload->place,
+                'place' => $payload->place ?? null,
                 'created_at' => Carbon::parse($cert->released_at)->format('d/m/Y'),
-                'director_name' => $payload->director_name,
-                'signature_photo' => $payload->signature_photo,
+                'director_name' => $payload->director_name ?? null,
+                'signature_photo' => $payload->signature_photo ?? null,
                 'effective_to' => Carbon::parse($payload->effective_to)->format('d/m/Y'),
             ];
         }
@@ -233,6 +241,35 @@ class MediaController extends Controller
             return $valueReversed->collapse();
         });
 
+        if ($handleType == 'save') {
+            $html = view('single-certificate-occupational', [
+                'total_group' => $groupFonts->count(),
+                'group_font_size_cards' => $groupFonts,
+                'group_back_size_cards' => $groupBacks,
+            ])->render();
+
+            $pathFont = storage_path('app/public/font-card.jpg');
+            $pathBack = storage_path('app/public/back-card.jpg');
+            Browsershot::html($html)
+                ->noSandbox()
+                ->windowSize(595, 842)
+                ->deviceScaleFactor(2)
+                ->clip(20, 30, 178, 264)  // font clip
+                ->save($pathFont);
+
+            Browsershot::html($html)
+                ->noSandbox()
+                ->windowSize(595, 842)
+                ->deviceScaleFactor(2)
+                ->clip(20, 304, 178, 264) // back clip
+                ->save($pathBack);
+
+            return [
+                'path-font' => $pathFont,
+                'path-back' => $pathBack,
+            ];
+        }
+
         $dummyFilePath = resource_path('views/dummy.blade.php');
         // Write the html content to the blade file
         file_put_contents($dummyFilePath, Setting::get('pdf_occupational_certificate'));
@@ -244,7 +281,7 @@ class MediaController extends Controller
         ]);
     }
 
-    private function previewPDFElectricalCertificate(mixed $payload)
+    private function previewPDFElectricalCertificate(mixed $payload, $handleType = 'stream')
     {
         $frontSizeCards = [];
         $backSizeCards = [];
@@ -252,21 +289,27 @@ class MediaController extends Controller
         foreach ($certificates as $cert) {
             $media = Media::find($cert->user->getAttribute('avatar'));
             $avatar = base64_encode(Storage::disk('public')->get($media?->path.$media?->file_name));
+            $mediaFont = Media::find($cert->image_font);
+            $imageFont = base64_encode(Storage::disk('public')->get($mediaFont?->path.$mediaFont?->file_name));
+            $mediaBack = Media::find($cert->image_back);
+            $imageBack = base64_encode(Storage::disk('public')->get($mediaBack?->path.$mediaBack?->file_name));
             $frontSizeCards[] = [
+                'image_card' => $imageFont,
                 'image' => $avatar,
                 'certificate_id' => $cert->certificate_id,
             ];
 
             $release = Carbon::parse($cert->released_at);
             $backSizeCards[] = [
+                'image_card' => $imageBack,
                 'name' => $cert->user->name ?? null,
                 'level' => $cert->level,
                 'description' => $cert->descriptionElectricCertificate,
                 'day_created' => $release->day,
                 'month_created' => $release->month,
                 'year_created' => $release->year,
-                'director_name' => $payload->director_name,
-                'signature_photo' => $payload->signature_photo,
+                'director_name' => $payload->director_name ?? null,
+                'signature_photo' => $payload->signature_photo ?? null,
             ];
         }
 
@@ -303,6 +346,36 @@ class MediaController extends Controller
             return $valueReversed->collapse();
         });
 
+        if ($handleType == 'save') {
+            $html = view('single-certificate-electrical', [
+                'total_group' => $groupFonts->count(),
+                'group_font_size_cards' => $groupFonts,
+                'group_back_size_cards' => $groupBacks,
+            ])->render();
+
+            $pathFont = storage_path('app/public/font-card.jpg');
+            $pathBack = storage_path('app/public/back-card.jpg');
+            Browsershot::html($html)
+                ->noSandbox()
+                ->windowSize(595, 842)
+                ->deviceScaleFactor(2)
+                ->clip(20, 30, 245, 162)  // font clip
+                ->save($pathFont);
+
+            Browsershot::html($html)
+                ->noSandbox()
+                ->windowSize(595, 842)
+                ->deviceScaleFactor(2)
+                ->clip(20, 202, 245, 162) // back clip
+                ->save($pathBack);
+
+            return [
+                'path-font' => $pathFont,
+                'path-back' => $pathBack,
+            ];
+        }
+
+
         $dummyFilePath = resource_path('views/dummy.blade.php');
         // Write the html content to the blade file
         file_put_contents($dummyFilePath, Setting::get('pdf_electrical_certificate'));
@@ -314,7 +387,7 @@ class MediaController extends Controller
         ]);
     }
 
-    private function previewPDFPaperCertificate(mixed $payload)
+    private function previewPDFPaperCertificate(mixed $payload, $handleType = 'strim')
     {
         $frontSizeCards = [];
         $backSizeCards = [];
@@ -326,10 +399,17 @@ class MediaController extends Controller
             $completeTo = Carbon::parse($cert->complete_to);
             $effectiveTo = Carbon::parse($cert->effective_to);
             $effectiveFrom = Carbon::parse($cert->effective_from);
+            $mediaFont = Media::find($cert->image_font);
+            $imageFont = base64_encode(Storage::disk('public')->get($mediaFont?->path.$mediaFont?->file_name));
+            $mediaBack = Media::find($cert->image_back);
+            $imageBack = base64_encode(Storage::disk('public')->get($mediaBack?->path.$mediaBack?->file_name));
+
             $frontSizeCards[] = [
+                'image_card' => $imageFont,
                 'certificate_id' => $cert->certificate_id,
             ];
             $backSizeCards[] = [
+                'image_card' => $imageBack,
                 'info_certificate' => $cert->training_content_paper_certificate,
                 'image' => $avatar,
                 'certificate_id' => $cert->certificate_id,
@@ -346,9 +426,9 @@ class MediaController extends Controller
                 'year_effect' => $effectiveTo->year - $effectiveFrom->year,
                 'effective_to' => 'ngày ' . $effectiveTo->day . ' tháng ' . $effectiveTo->month . ' năm ' . $effectiveTo->year,
                 'effective_from' => 'ngày ' . $effectiveFrom->day . ' tháng ' . $effectiveFrom->month . ' năm ' . $effectiveFrom->year,
-                'director_name' => $payload->director_name,
-                'signature_photo' => $payload->signature_photo,
-                'place' => $payload->place,
+                'director_name' => $payload->director_name ?? null,
+                'signature_photo' => $payload->signature_photo ?? null,
+                'place' => $payload->place ?? null,
                 'create_at' => 'ngày ' . $cert->released_at->day . ' tháng ' . $cert->released_at->month . ' năm ' . $cert->released_at->year,
             ];
         }
@@ -386,6 +466,36 @@ class MediaController extends Controller
             return $valueReversed->collapse();
         });
 
+        if ($handleType == 'save') {
+            $html = view('single-certificate-paper', [
+                'total_group' => $groupFonts->count(),
+                'group_font_size_cards' => $groupFonts,
+                'group_back_size_cards' => $groupBacks,
+            ])->render();
+
+            $pathFont = storage_path('app/public/font-card.jpg');
+            $pathBack = storage_path('app/public/back-card.jpg');
+            Browsershot::html($html)
+                ->noSandbox()
+                ->windowSize(595, 842)
+                ->deviceScaleFactor(2)
+                ->clip(20, 30, 550, 392)  // font clip
+                ->save($pathFont);
+
+            Browsershot::html($html)
+                ->noSandbox()
+                ->windowSize(595, 842)
+                ->deviceScaleFactor(2)
+                ->clip(20, 467, 550, 380) // back clip
+                ->save($pathBack);
+
+            return [
+                'path-font' => $pathFont,
+                'path-back' => $pathBack,
+            ];
+        }
+
+
         $dummyFilePath = resource_path('views/dummy.blade.php');
         // Write the html content to the blade file
         file_put_contents($dummyFilePath, Setting::get('pdf_paper_certificate'));
@@ -402,23 +512,23 @@ class MediaController extends Controller
         $type = $payload->type ?? null;
         $pdf = null;
         if ($type == CertificateConstant::OCCUPATIONAL_SAFETY) {
-            $pdf = $this->previewPDFOccuptionalCertificate($payload);
+            $pdf = $this->previewPDFOccupationalCertificate($payload, $actionType);
         }
 
         if ($type == CertificateConstant::ELECTRICAL_SAFETY) {
-            $pdf = $this->previewPDFElectricalCertificate($payload);
+            $pdf = $this->previewPDFElectricalCertificate($payload, $actionType);
         }
 
         if ($type == CertificateConstant::PAPER_SAFETY) {
-            $pdf = $this->previewPDFPaperCertificate($payload);
+            $pdf = $this->previewPDFPaperCertificate($payload, $actionType);
         }
 
         if ($pdf) {
-            $pdf = $pdf->setPaper([0, 0, 595, 893])->setOption(['fontDir' => storage_path('/fonts')]);
             if ($actionType == 'save') {
-                // save for handel cut images
-                $pdf->save(storage_path('app/public/file.pdf'));;
+                return $pdf;
             }
+
+            $pdf = $pdf->setPaper([0, 0, 595, 893])->setOption(['fontDir' => storage_path('/fonts')]);
 
             return $pdf->stream();
         }

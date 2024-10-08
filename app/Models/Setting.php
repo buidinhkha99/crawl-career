@@ -19,6 +19,9 @@ class Setting extends Settings
         'tables_search' => 'collection',
         'error_pages' => 'collection',
         'kit' => 'collection',
+        'complete_from' => 'date',
+        'complete_to' => 'date',
+        'effective_to' => 'date',
     ];
 
     public function __construct(array $attributes = [])

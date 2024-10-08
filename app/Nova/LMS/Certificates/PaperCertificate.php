@@ -89,7 +89,6 @@ class PaperCertificate extends Resource
             Number::make(__('Card number'), 'card_id')->rules('required', function($attribute, $value, $fail)  use ($request){
                 $year = Carbon::parse($request->released_at)->year;
                 if (Certificate::where('type', CertificateConstant::PAPER_SAFETY)
-                    ->where('user_id', '!=', $this->user_id)
                     ->where('card_id', $value)
                     ->whereYear('released_at', $year)
                     ->exists()

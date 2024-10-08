@@ -5,19 +5,20 @@ namespace App\Jobs;
 use App\Enums\CertificateConstant;
 use App\Http\Controllers\MediaController;
 use App\Models\Certificate;
+use App\Models\Setting;
 use Exception;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Imagick;
-use ImagickException;
+use Outl1ne\NovaMediaHub\MediaHandler\Support\Filesystem;
 use Outl1ne\NovaMediaHub\MediaHub;
 
-class CreateImageCertificate implements ShouldQueue
+class CreateImageCertificate implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -50,9 +51,9 @@ class CreateImageCertificate implements ShouldQueue
             }
 
             match ($card->type) {
-                CertificateConstant::OCCUPATIONAL_SAFETY => $this->generateCertificateImageOccupation($card, [400, 570, 778, 20], [400, 570, 20, 20], [150, 150]),
-                CertificateConstant::ELECTRICAL_SAFETY => $this->generateCertificateImageElectric($card, [530, 370, 651, 30], [530, 370, 30, 30], [150, 150]),
-                CertificateConstant::PAPER_SAFETY => $this->generateCertificateImagePaper($card, [2600, 1600, 50, 100], null),
+                CertificateConstant::OCCUPATIONAL_SAFETY => $this->generateCertificateImageOccupation($card),
+                CertificateConstant::ELECTRICAL_SAFETY => $this->generateCertificateImageElectric($card),
+                CertificateConstant::PAPER_SAFETY => $this->generateCertificateImagePaper($card),
             };
 
         } catch (Exception $e) {
@@ -62,65 +63,93 @@ class CreateImageCertificate implements ShouldQueue
     }
 
     /**
+     * @param $card
+     * @throws Exception
+     */
+    private function generateCertificateImageOccupation($card): void
+    {
+        $defaultSignature = base64_encode(Storage::disk('public')->get(Setting::get('signature_photo_occupational')));
+        $data = (object)[
+            "type" => $card->type,
+            "complete_from" => Setting::get('complete_from', now()->day(1)),
+            "complete_to" => Setting::get('complete_to', now()->day(360)),
+            "effective_to" => Setting::get('effective_to', now()->day(730)),
+            "place" => Setting::get('place_occupational', "Lào Cai"),
+            "director_name" => Setting::get('director_name_occupational', "Họ và Tên"),
+            "signature_photo" => $defaultSignature,
+            "ids" => [$this->cardID]
+        ];
+
+        $this->generateCertificateImage($data, $card);
+    }
+
+    /**
+     * @param $card
+     * @throws Exception
+     */
+    private function generateCertificateImageElectric($card): void
+    {
+        $defaultSignature = base64_encode(Storage::disk('public')->get(Setting::get('signature_photo_electric')));
+        $data = (object)[
+            "type" => $card->type,
+            "director_name" => Setting::get('director_name_electric', "Họ và Tên"),
+            "signature_photo" => $defaultSignature,
+            "ids" => [$this->cardID]
+        ];
+
+        $this->generateCertificateImage($data, $card);
+    }
+
+    /**
+     * @param $card
+     * @return void
+     * @throws Exception
+     */
+    private function generateCertificateImagePaper($card): void
+    {
+        $defaultSignature = base64_encode(Storage::disk('public')->get(Setting::get('signature_photo_paper')));
+        $data = (object)[
+            "type" => $card->type,
+            "director_name" => Setting::get('director_name_paper', "Họ và Tên"),
+            "signature_photo" => $defaultSignature,
+            "work_unit" => Setting::get('work_unit', ),
+            "place" => Setting::get('place_paper'),
+            "ids" => [$this->cardID]
+        ];
+
+        $this->generateCertificateImage($data, $card);
+    }
+
+    /**
      * Generate certificate image and save to MediaHub.
      *
      * @param $data
      * @param  $card
-     * @param array $backCropParams
-     * @param array|null $frontCropParams
-     * @param array $resolution
-     * @throws ImagickException
+     * @throws Exception
      */
-    private function generateCertificateImage($data, $card, array $backCropParams, ?array $frontCropParams, array $resolution = []): void
+    private function generateCertificateImage($data, $card): void
     {
-        $this->mediaController->handelPDF($data, 'save');
+        $data = $this->mediaController->handelPDF($data, 'save');
 
-        // Process back image
-        $this->processImage('app/public/file.pdf', 1, $backCropParams, $card, 'image_back', $resolution);
-
-        // Process front image (if provided)
-        if ($frontCropParams) {
-            $this->processImage('app/public/file.pdf', 0, $frontCropParams, $card, 'image_font', $resolution);
+        if (empty($data['path-font']) || empty($data['path-back'])) {
+            throw new Exception('Can not get image card');
         }
-    }
 
-    /**
-     * Process the PDF to generate an image and save it to MediaHub.
-     *
-     * @param string $pdfPath
-     * @param int $pageNumber
-     * @param array $cropParams
-     * @param Certificate $card
-     * @param string $attribute
-     * @param array $resolution
-     * @throws ImagickException
-     */
-    private function processImage(string $pdfPath, int $pageNumber, array $cropParams, Certificate $card, string $attribute, array $resolution = []): void
-    {
-        $pdfFullPath = storage_path($pdfPath);
-        $img = new Imagick();
-        $img->setResolution($resolution[0] ?? 300, $resolution[1] ?? 300);
-        $img->readImage("{$pdfFullPath}[{$pageNumber}]");
+        $olderImageFont = $card->image_font;
+        $olderImageBack = $card->image_back;
+        $this->deleteMedia($olderImageFont);
+        $this->deleteMedia($olderImageBack);
 
-        // Crop the image based on parameters [width, height, x, y]
-        $img->cropImage($cropParams[0], $cropParams[1], $cropParams[2], $cropParams[3]);
+        $imageFont= $data['path-font'];
+        $imageBack = $data['path-back'];
+        $mediaFont = MediaHub::storeMediaFromBase64(base64_encode(file_get_contents($imageFont)), 'output_font_image.png', 'default', 'public', 'public');
+        $card->setAttribute('image_font', $mediaFont->getAttribute('id'));
+        $card->setAttribute("image_font_url", $mediaFont->getAttribute('url'));
 
-        $outputPath = storage_path('app/public/output_image.png');
-        $this->deleteExistingFile('public/output_image.png');
-
-        // Save the cropped image
-        $img->writeImage($outputPath);
-        $img->clear();
-        $img->destroy();
-
-        // Save the image to MediaHub
-        $media = MediaHub::storeMediaFromBase64(base64_encode(file_get_contents($outputPath)), 'output_image.png', 'default', 'public', 'public');
-        $card->setAttribute($attribute, $media->getAttribute('id'));
-        $card->setAttribute("{$attribute}_url", $media->getAttribute('url'));
+        $mediaBack = MediaHub::storeMediaFromBase64(base64_encode(file_get_contents($imageBack)), 'output_back_image.png', 'default', 'public', 'public');
+        $card->setAttribute('image_back', $mediaBack->getAttribute('id'));
+        $card->setAttribute("image_back_url", $mediaBack->getAttribute('url'));
         $card->save();
-
-        // Clear output image file
-//        $this->deleteExistingFile('public/output_image.png');
     }
 
     /**
@@ -135,63 +164,18 @@ class CreateImageCertificate implements ShouldQueue
         }
     }
 
-    /**
-     * @param $card
-     * @param array $backCropParams
-     * @param array $frontCropParams
-     * @param int[] $resolution
-     * @throws ImagickException
-     */
-    private function generateCertificateImageOccupation($card, array $backCropParams, array $frontCropParams, $resolution = [100, 100]): void
+    private function deleteMedia($mediaID)
     {
-        $defaultSignature = base64_encode(Storage::disk('public')->get('default_signature.png'));
-        $data = (object)[
-            "type" => $card->type,
-            "complete_from" => now()->day(1),
-            "complete_to" => now()->day(360),
-            "effective_to" => now()->day(730),
-            "place" => "Lào Cai",
-            "director_name" => "Họ và Tên ",
-            "signature_photo" => $defaultSignature,
-            "ids" => [$this->cardID]
-        ];
-        $this->generateCertificateImage($data, $card, $backCropParams, $frontCropParams, $resolution);
+        $media = MediaHub::getQuery()->find($mediaID);
+        if (!empty($media)) {
+            $fileSystem = app()->make(Filesystem::class);
+            $fileSystem->deleteFromMediaLibrary($media);
+            $media->delete();
+        }
     }
 
-    /**
-     * @param $card
-     * @param array $backCropParams
-     * @param array $frontCropParams
-     * @throws ImagickException
-     */
-    private function generateCertificateImageElectric($card, array $backCropParams, array $frontCropParams, $resolution = [100, 100]): void
+    public function uniqueId(): string
     {
-        $defaultSignature = base64_encode(Storage::disk('public')->get('default_signature.png'));
-        $data = (object)[
-            "type" => $card->type,
-            "director_name" => "Họ và Tên",
-            "signature_photo" => $defaultSignature,
-            "ids" => [$this->cardID]
-        ];
-
-        $this->generateCertificateImage($data, $card, $backCropParams, $frontCropParams, $resolution);
-    }
-
-    /**
-     * @throws ImagickException
-     */
-    private function generateCertificateImagePaper($card, array $backCropParams): void
-    {
-        $defaultSignature = base64_encode(Storage::disk('public')->get('default_signature.png'));
-        $data = (object)[
-            "type" => $card->type,
-            "director_name" => "Họ và Tên",
-            "signature_photo" => $defaultSignature,
-            "work_unit" => "Chi nhánh Luyện đồng Lào Cai - VIMICO",
-            "place" => "Lào Cai",
-            "ids" => [$this->cardID]
-        ];
-
-        $this->generateCertificateImage($data, $card, $backCropParams, null);
+        return $this->cardID;
     }
 }

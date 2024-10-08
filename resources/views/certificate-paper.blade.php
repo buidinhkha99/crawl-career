@@ -177,8 +177,8 @@
         }
 
         .image {
-            width: 85px; /* Kích thước khung ảnh */
-            height: 113px; /* Kích thước khung ảnh */
+            width: 538px;
+            height: 368px;
         }
 
         .title-back {
@@ -233,28 +233,7 @@
             <div
                 class="card-background-font {{ $i % 2 == 0 ? "card" : "card card-bottom"}} {{!($group_font_size_cards[$iGroup][$i - 1]['is_fake'] ?? false) ? null : 'backgroup-none'}}">
                 @if(!($group_font_size_cards[$iGroup][$i - 1]['is_fake'] ?? false))
-                    <div class="note font-time">
-                        <div class="header font-mix"><strong>NHỮNG ĐIỀU CẦN LƯU Ý</strong></div>
-                        <div>1- Xuất trình giấy khi được người có thẩm quyền yêu cầu.</div>
-                        <div>2- Không được tẩy xóa, sửa chữa, tự ghi vào Giấy chứng nhận.</div>
-                        <div>3- Không được cho người khác mượn.</div>
-                        <div>4- Khi thất lạc phải báo ngay cho Tổ chức huấn luyện nơi cấp Giấy chứng nhận.</div>
-                        <div>5- Trước khi Giấy chứng nhận huấn luyện hết hạn trong vòng 30 ngày, người được cấp phải
-                            tham dự huấn luyện định kỳ để được cấp Giấy chứng nhận mới.
-                        </div>
-                    </div>
-                    <div class="certificate">
-                        <div class="header-1 font-mix">
-                            <div>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
-                            <div>Độc lập - Tự do - Hạnh phúc</div>
-                            <div class="underline"></div>
-                        </div>
-
-                        <div class="title">
-                            <div class="header-3 font-mix">GIẤY CHỨNG NHẬN</div>
-                            <div class="header-2 font-mix">HUẤN LUYỆN AN TOÀN, VỆ SINH LAO ĐỘNG</div>
-                        </div>
-                    </div>
+                    <img class="image" src="data:image/png;base64,{{$group_font_size_cards[$iGroup][$i - 1]['image_card']}}" alt="image">
                 @endif
             </div>
         @endfor
@@ -269,47 +248,7 @@
             <div
                 class="{{ $i % 2 == 0 ? "card-background-back" : "card-background-back card-bottom"}} {{!($data['is_fake'] ?? false) ? null : 'backgroup-none'}}">
                 @if(!($data['is_fake'] ?? false))
-                    <div class="note-back">
-                        <div>
-                            <div class="image-cover {{!$image ? 'border-image' : null}}">
-                                @if($image)
-                                    <img class="image" src="data:image/png;base64,{{$image}}" alt="image">
-                                @else
-                                    <div style="margin: 35px 14px">Ảnh 3x4 (đóng dấu giáp lai)</div>
-                                @endif
-                            </div>
-                            <div class="title-back header-1-back font-mix">
-                                <div>GIẤY CHỨNG NHẬN HUẤN LUYỆN</div>
-                                <div>AN TOÀN, VỆ SINH LAO ĐỘNG</div>
-                                <div>Số: {{$data['certificate_id']}}</div>
-                            </div>
-                        </div>
-                        <div class="details font-time">
-                            <div>1. Họ và tên: <strong class="font-mix">{{$data['name']}}</strong></div>
-                            <div>2. Nam/Nữ: {{$data['gender']}}</div>
-                            <div>3. Ngày, tháng, năm sinh: {{$data['dob']}}</div>
-                            <div>4. Quốc tịch: {{$data['nationality']}}; Số CMND/Căn cước công dân/hộ chiếu: {{$data['cccd']}}</div>
-                            <div>5. Chức vụ: {{$data['position']}}</div>
-                            <div>6. Đơn vị công tác: {{$data['work_unit']}}</div>
-                            <div>7. Đã hoàn thành khóa huấn luyện an toàn, vệ sinh lao động được tổ chức từ {{$data['complete_from']}} đến {{$data['complete_to']}}
-                            </div>
-                            <div>8. Kết quả đạt loại: {{$data['result']}}</div>
-                            <div>9. Giấy chứng nhận có giá trị {{$data['year_effect']}} năm. Từ {{$data['effective_from']}} đến {{$data['effective_to']}}</div>
-                        </div>
-                        <div class="footer font-mix">
-                            <div>{{$data['place'] ?? null}}, {{$data['create_at'] ?? null}}</div>
-                            <div><strong>Giám đốc</strong></div>
-                            <img class="signature"
-                                 src="data:image/png;base64,{{$data['signature_photo'] ?? null}}">
-                            <div><strong>{{$data['director_name'] ?? null}}</strong>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="certificate-back">
-                        <div class="title-back-2 font-dejavu">NỘI DUNG HUẤN LUYỆN</div>
-                        <div
-                            class="info font-time">{!! $data['info_certificate'] ?? null !!}</div>
-                    </div>
+                    <img class="image" src="data:image/png;base64,{{$group_back_size_cards[$iGroup][$i - 1]['image_card']}}" alt="image">
                 @endif
             </div>
         @endfor

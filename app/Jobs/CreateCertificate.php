@@ -52,13 +52,15 @@ class CreateCertificate implements ShouldQueue
                 CertificateConstant::PAPER_SAFETY => $this->getDataPaper(),
             };
 
-            Certificate::create([
+            $certificate = Certificate::create([
                 'user_id' => $this->userID,
                 'type' => $this->type,
                 'card_info' => $cardInfo,
                 'released_at' => $this->info['released_at'],
                 'card_id' => $this->info['card_id'] ?? getNextNumberCardID($this->type, Carbon::parse($this->info['released_at'])->year)
             ]);
+
+            dispatch_sync(new CreateImageCertificate($certificate->id));
         } catch (Exception $e) {
             Log::error('[CERTIFICATE-SERVICE] Create certificate failed. UserID:' . $this->userID . ' Error: ' . $e->getMessage());
 

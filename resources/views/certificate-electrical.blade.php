@@ -103,13 +103,10 @@
         }
 
         .image {
-            width: 55px;
-            height: 83px;
+            width: 241px;
+            height: 150px;
         }
 
-        .border-image {
-            border: 1px solid #E5E5E5;
-        }
 
         .photo-box span {
             font-size: 12px;
@@ -191,25 +188,7 @@
 
             <div class="{{$style}} {{!($group_font_size_cards[$iGroup][$i - 1]['is_fake'] ?? false) ? null : 'backgroup-none'}}">
                 @if(!($group_font_size_cards[$iGroup][$i - 1]['is_fake'] ?? false))
-                    <div class="company">TỔNG CÔNG TY KHOÁNG SẢN-TKV</div>
-                    <div class="branch">CHI NHÁNH LUYỆN ĐỒNG LÀO CAI-VIMICO</div>
-                    <div class="content">
-                            <?php $image = $group_font_size_cards[$iGroup][$i - 1]['image'] ?? null ?>
-                        <div class="photo-box {{!$image ? 'border-image' : null}}">
-                            @if($image)
-                                <img class="image" src="data:image/png;base64,{{$image}}" alt="image">
-                            @else
-                                <div class="img-noty">Ảnh 2x3<br>(đóng dấu giáp lai)</div>
-                            @endif
-                        </div>
-                        <div class="safety-card">
-                            <div class="safety-card-header">THẺ</div>
-                            <div>AN TOÀN ĐIỆN</div>
-                            <div class="card-number">
-                                Số: {{$group_font_size_cards[$iGroup][$i - 1]['certificate_id'] ?? null}}
-                            </div>
-                        </div>
-                    </div>
+                    <img class="image" src="data:image/png;base64,{{$group_font_size_cards[$iGroup][$i - 1]['image_card']}}" alt="image">
                 @endif
             </div>
         @endfor
@@ -233,21 +212,7 @@
                 ?>
             <div class="{{$style}} {{!($group_back_size_cards[$iGroup][$i - 1]['is_fake'] ?? false) ? null : 'backgroup-none'}}">
                 @if(!($group_back_size_cards[$iGroup][$i - 1]['is_fake'] ?? false))
-                    <div class="info">
-                        <div>Họ tên: <strong class="font-dejavu">{{$group_back_size_cards[$iGroup][$i - 1]['name'] ?? null}}</strong></div>
-                        <div>Công việc, đơn vị công tác: {{$group_back_size_cards[$iGroup][$i - 1]['description'] ?? null}}</div>
-                        <div>Bậc an toàn: {{$group_back_size_cards[$iGroup][$i - 1]['level'] ?? null}}</div>
-                        <div>Cấp ngày {{$group_back_size_cards[$iGroup][$i - 1]['day_created'] ?? null}}
-                            tháng {{$group_back_size_cards[$iGroup][$i - 1]['month_created'] ?? null}}
-                            năm {{$group_back_size_cards[$iGroup][$i - 1]['year_created'] ?? null}}</div>
-                    </div>
-                    <div class="location">
-                        <div><strong class="font-time">PHÓ GIÁM ĐỐC</strong></div>
-                        <div>
-                            <img class="signature" src="data:image/png;base64,{{$group_back_size_cards[$iGroup][$i - 1]['signature_photo'] ?? null}}">
-                        </div>
-                        <div><strong class="font-time">{{$group_back_size_cards[$iGroup][$i - 1]['director_name'] ?? null}}</strong></div>
-                    </div>
+                    <img class="image" src="data:image/png;base64,{{$group_back_size_cards[$iGroup][$i - 1]['image_card']}}" alt="image">
                 @endif
             </div>
         @endfor

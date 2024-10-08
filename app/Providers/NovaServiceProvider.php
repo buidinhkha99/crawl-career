@@ -62,6 +62,8 @@ use Laravel\Nova\Events\ServingNova;
 use Laravel\Nova\Exceptions\NovaExceptionHandler;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\Code;
+use Laravel\Nova\Fields\Date;
+use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
@@ -164,8 +166,8 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                         ->canSee(fn () => Auth::user() && ((method_exists(Auth::user(), 'isSuperAdmin') && Auth::user()->isSuperAdmin()))),
                     MenuItem::make(__('Paper Certificate'))->path('/settings/paper-certificate')
                         ->canSee(fn () => Auth::user() && ((method_exists(Auth::user(), 'isSuperAdmin') && Auth::user()->isSuperAdmin()))),
-                    MenuItem::resource(ObjectGroupCertificate::class)
-                        ->canSee(fn () => Auth::user() && ((method_exists(Auth::user(), 'isSuperAdmin') && Auth::user()->isSuperAdmin()))),
+                    MenuItem::make(__('PDF Certificate'))->path('/settings/pdf-certificate')->canSee(fn () => Auth::user()),
+                    MenuItem::resource(ObjectGroupCertificate::class)->canSee(fn () => Auth::user()),
                 ])->collapsedByDefault()->icon('cog'),
                 MenuSection::make(__('Interface'), [
                     MenuItem::resource(PageStatic::class),
@@ -453,6 +455,29 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     Code::make(__('Occupational Certificate'), 'pdf_occupational_certificate')->language('javascript')->stacked()->fullWidth()->height(800),
                 ]),
             ], [], 'occupation-certificate');
+
+            NovaSettings::addSettingsFields([
+                Panel::make(__('Occupational Certificate'), [
+                    Text::make(__('Place'), 'place_occupational')->default(fn () => __('Lào Cai'))->rules('required'),
+                    Date::make(__('Complete From'), 'complete_from')->rules('required')->default(fn () => now()),
+                    Date::make(__('Complete To'), 'complete_to')->rules('required')->default(fn () => now()),
+                    Text::make(__('Director Name'), 'director_name_occupational')->rules('required'),
+                    Image::make(__('Signature Image'), 'signature_photo_occupational')->required(),
+                    Date::make(__('Effective To'), 'effective_to')->rules('required')->default(fn () => now()),
+                ]),
+
+                Panel::make(__('Electrical Certificate'), [
+                    Text::make(__('Director Name'), 'director_name_electric')->rules('required'),
+                    Image::make(__('Signature Image'), 'signature_photo_electric')->required(),
+                ]),
+
+                Panel::make(__('Paper Certificate'), [
+                    Text::make(__('Work unit'), 'work_unit')->rules('required')->default('Chi nhánh Luyện đồng Lào Cai - VIMICO'),
+                    Text::make(__('Place'), 'place_paper')->default(fn () => __('Lào Cai'))->rules('required'),
+                    Text::make(__('Director Name'), 'director_name_paper')->rules('required'),
+                    Image::make(__('Signature Image'), 'signature_photo_paper')->required(),
+                ]),
+            ], [], 'pdf-certificate');
 
             NovaSettings::addSettingsFields([
                 Panel::make(__('Paper Certificate'), [

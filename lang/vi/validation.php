@@ -121,7 +121,7 @@ return [
     'string' => 'Trường :attribute phải là một chuỗi kí tự.',
     'timezone' => 'Trường :attribute phải là một múi giờ hợp lệ.',
     'unique' => 'Thông tin đã tồn tại',
-    'uploaded' => 'Trường :attribute tải lên thất bại.',
+    'uploaded' => 'File quá giới hạn cho phép 25M.',
     'url' => 'Trường :attribute không giống với định dạng một URL.',
     'uuid' => 'Trường :attribute phải là một chuỗi UUID hợp lệ.',
     'custom' => [

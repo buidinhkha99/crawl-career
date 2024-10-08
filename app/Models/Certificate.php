@@ -38,7 +38,7 @@ class Certificate extends Model
     public function getCertificateIDAttribute()
     {
         if ($this->type == CertificateConstant::OCCUPATIONAL_SAFETY) {
-            return $this->card_id . '/' . $this->released_at->year . '/TATLĐ';
+            return $this->card_id . '/' . $this->released_at?->year . '/TATLĐ';
         }
 
         if ($this->type == CertificateConstant::ELECTRICAL_SAFETY) {
