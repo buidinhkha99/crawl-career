@@ -36,15 +36,15 @@ class DownloadExcelTemplate extends Action
         }
 
         if ($this->type === 'occupational-certificate') {
-            return Action::download('/storage/the_atld.xlsx', 'the_atld.xlsx');
+            return Action::download('/storage/file_mau_the_ATLD.xlsx', 'file_mau_the_ATLD.xlsx');
         }
 
         if ($this->type === 'electrical-certificate') {
-            return Action::download('/storage/the_atd.xlsx', 'the_atd.xlsx');
+            return Action::download('/storage/file_mau_the_ATD.xlsx', 'file_mau_the_ATD.xlsx');
         }
 
         if ($this->type === 'paper-certificate') {
-            return Action::download('/storage/giay_chung_nhan.xlsx', 'giay_chung_nhan.xlsx');
+            return Action::download('/storage/file_mau_giay_chung_nhan.xlsx', 'file_mau_giay_chung_nhan.xlsx');
         }
     }
 
