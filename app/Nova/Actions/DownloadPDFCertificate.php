@@ -5,6 +5,7 @@ namespace App\Nova\Actions;
 use App\Enums\CertificateConstant;
 use App\Models\Setting;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Nova\Actions\Action;
 use Laravel\Nova\Fields\ActionFields;
 use Laravel\Nova\Fields\Date;
@@ -22,8 +23,15 @@ class DownloadPDFCertificate extends Action
 
     public function handle(ActionFields $fields, Collection $models): Action|\Laravel\Nova\Actions\ActionResponse
     {
+        $defaultSignature = base64_encode(Storage::disk('public')->get(Setting::get('signature_photo_occupational')));
         $payload = [
             'type' => CertificateConstant::OCCUPATIONAL_SAFETY,
+            'complete_from' => Setting::get('complete_from', now()->day(1)),
+            'complete_to' => Setting::get('complete_to', now()->day(360)),
+            'effective_to' => Setting::get('effective_to', now()->day(730)),
+            'place' => Setting::get('place_occupational', 'Lào Cai'),
+            'director_name' => Setting::get('director_name_occupational', 'Họ và Tên'),
+            'signature_photo' => $defaultSignature,
             'ids' => $models->pluck('id'),
         ];
 
