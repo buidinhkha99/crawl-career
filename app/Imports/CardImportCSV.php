@@ -59,7 +59,7 @@ abstract class CardImportCSV extends DefaultValueBinder implements ToCollection,
 
         Auth::user()->notify(
             NovaNotification::make()
-                ->message(__('Row :key add user error. Error: :error', [
+                ->message(__('Row :key add card error. Error: :error', [
                     'key' => $key,
                     'error' => $errorMessage,
                 ]))
