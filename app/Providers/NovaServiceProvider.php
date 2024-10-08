@@ -118,7 +118,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
         </div>');
         });
 
-        Nova::style('custom.css', resource_path('css/nova_custom.css'));
+        Nova::style('custom.css', asset('css/nova_custom.css'));
 
         Nova::mainMenu(function (Request $request) {
             return [
