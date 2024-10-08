@@ -89,11 +89,13 @@ class PaperCertificate extends Resource
             Number::make(__('Card number'), 'card_id')->rules('required', function($attribute, $value, $fail)  use ($request){
                 $year = Carbon::parse($request->released_at)->year;
                 if (Certificate::where('type', CertificateConstant::PAPER_SAFETY)
+                    ->where('user_id', $this->user_id)
                     ->where('card_id', $value)
+                    ->where('id', '!=', $this->id)
                     ->whereYear('released_at', $year)
                     ->exists()
                 ) {
-                    return $fail(__('Card number used by other users in year :year', [
+                    return $fail(__('Card number used in year :year', [
                         'year' => $year
                     ]));
                 }

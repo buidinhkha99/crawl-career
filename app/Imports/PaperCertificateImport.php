@@ -92,13 +92,6 @@ class PaperCertificateImport extends CardImportCSV
                 $cards = $certificates->filter(function ($certificate) use ($released_at) {
                     return $certificate->released_at->year == $released_at->year;
                 });
-                // same card ID
-                if ($other_card = $cards->where('user_id', '!=', $user->id)->where('card_id', $cardId)->first()) {
-                    $this->notyError($key + 1, __('Card ID already exists in other user. Card ID. :card_id', [
-                        'card_id' => $other_card->id
-                    ]));
-                    continue;
-                }
 
                 $cards = $cards->where('card_id', $cardId);
                 $existed = $cards->where('user_id', $user->id);
