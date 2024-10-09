@@ -120,6 +120,12 @@ class OccupationCertificateImport extends CardImportCSV
             } catch (Exception $e) {
                 $this->notyError($key + 1, $e->getMessage());
             }
+
+            $newCertificates = Certificate::select('id', 'user_id', 'released_at', 'card_id')
+                ->whereNotIn('id', $certificates->pluck('id')->toArray())
+                ->where('type', $this->cardType)
+                ->get();
+            $certificates->push(...$newCertificates);
         }
 
         return true;

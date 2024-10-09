@@ -81,6 +81,8 @@ use Laravel\Nova\Panel;
 use Murdercode\TinymceEditor\TinymceEditor;
 use Outl1ne\NovaColorField\Color;
 use Outl1ne\NovaMediaHub\MediaHub;
+use Outl1ne\NovaMediaHub\Models\Media;
+use Outl1ne\NovaMediaHub\Nova\Fields\MediaHubField;
 use Outl1ne\NovaSettings\NovaSettings;
 use Outl1ne\NovaSimpleRepeatable\SimpleRepeatable;
 use Salt\ResetPassword\ResetPassword;
@@ -468,20 +470,57 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     Date::make(__('Complete From'), 'complete_from')->rules('required')->default(fn () => now()),
                     Date::make(__('Complete To'), 'complete_to')->rules('required')->default(fn () => now()),
                     Text::make(__('Director Name'), 'director_name_occupational')->rules('required'),
-                    Image::make(__('Signature Image'), 'signature_photo_occupational')->required(),
+                    MediaHubField::make(__('Signature Image'), 'signature_photo_occupational')->required()
+                        ->defaultCollection('settings')
+                        ->rules(fn ($request) => [
+                            function ($attribute, $value, $fail) {
+                                $mime_types = collect(['image/jpeg', 'image/png']);
+                                $media = Media::select('id', 'mime_type')->find($value);
+                                if ($media && ! $mime_types->contains($media?->mime_type)) {
+                                    return $fail(__('The :attribute does not match the format :format.', [
+                                        'attribute' => $attribute,
+                                        'format' => $mime_types->join(', '),
+                                    ]));
+                                }
+                            },
+                        ]),
                     Date::make(__('Effective To'), 'effective_to')->rules('required')->default(fn () => now()),
                 ]),
 
                 Panel::make(__('Electrical Certificate'), [
                     Text::make(__('Director Name'), 'director_name_electric')->rules('required'),
-                    Image::make(__('Signature Image'), 'signature_photo_electric')->required(),
+                    MediaHubField::make(__('Signature Image'), 'signature_photo_electric')->required()->defaultCollection('settings')
+                        ->rules(fn ($request) => [
+                            function ($attribute, $value, $fail) {
+                                $mime_types = collect(['image/jpeg', 'image/png']);
+                                $media = Media::select('id', 'mime_type')->find($value);
+                                if ($media && ! $mime_types->contains($media?->mime_type)) {
+                                    return $fail(__('The :attribute does not match the format :format.', [
+                                        'attribute' => $attribute,
+                                        'format' => $mime_types->join(', '),
+                                    ]));
+                                }
+                            },
+                        ]),
                 ]),
 
                 Panel::make(__('Paper Certificate'), [
                     Text::make(__('Work unit'), 'work_unit')->rules('required')->default('Chi nhánh Luyện đồng Lào Cai - VIMICO'),
                     Text::make(__('Place'), 'place_paper')->default(fn () => __('Lào Cai'))->rules('required'),
                     Text::make(__('Director Name'), 'director_name_paper')->rules('required'),
-                    Image::make(__('Signature Image'), 'signature_photo_paper')->required(),
+                    MediaHubField::make(__('Signature Image'), 'signature_photo_paper')->required()->defaultCollection('settings')
+                        ->rules(fn ($request) => [
+                            function ($attribute, $value, $fail) {
+                                $mime_types = collect(['image/jpeg', 'image/png']);
+                                $media = Media::select('id', 'mime_type')->find($value);
+                                if ($media && ! $mime_types->contains($media?->mime_type)) {
+                                    return $fail(__('The :attribute does not match the format :format.', [
+                                        'attribute' => $attribute,
+                                        'format' => $mime_types->join(', '),
+                                    ]));
+                                }
+                            },
+                        ]),
                 ]),
             ], [], 'pdf-certificate');
 
