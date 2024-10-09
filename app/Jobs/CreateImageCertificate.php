@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Outl1ne\NovaMediaHub\MediaHandler\Support\Filesystem;
 use Outl1ne\NovaMediaHub\MediaHub;
+use Outl1ne\NovaMediaHub\Models\Media;
 
 class CreateImageCertificate implements ShouldQueue, ShouldBeUnique
 {
@@ -68,7 +69,8 @@ class CreateImageCertificate implements ShouldQueue, ShouldBeUnique
      */
     private function generateCertificateImageOccupation($card): void
     {
-        $defaultSignature = base64_encode(Storage::disk('public')->get(Setting::get('signature_photo_occupational')));
+        $media = Media::find(Setting::get('signature_photo_occupational'));
+        $defaultSignature = base64_encode(Storage::disk($media->disk)->get($media->path . $media->file_name));
         $data = (object)[
             "type" => $card->type,
             "complete_from" => Setting::get('complete_from', now()->day(1)),
@@ -89,7 +91,9 @@ class CreateImageCertificate implements ShouldQueue, ShouldBeUnique
      */
     private function generateCertificateImageElectric($card): void
     {
-        $defaultSignature = base64_encode(Storage::disk('public')->get(Setting::get('signature_photo_electric')));
+        // custom image to base64
+        $media = Media::find(Setting::get('signature_photo_electric'));
+        $defaultSignature = base64_encode(Storage::disk($media->disk)->get($media->path . $media->file_name));
         $data = (object)[
             "type" => $card->type,
             "director_name" => Setting::get('director_name_electric', "Họ và Tên"),
@@ -107,7 +111,9 @@ class CreateImageCertificate implements ShouldQueue, ShouldBeUnique
      */
     private function generateCertificateImagePaper($card): void
     {
-        $defaultSignature = base64_encode(Storage::disk('public')->get(Setting::get('signature_photo_paper')));
+        // custom image to base64
+        $media = Media::find(Setting::get('signature_photo_paper'));
+        $defaultSignature = base64_encode(Storage::disk($media->disk)->get($media->path . $media->file_name));
         $data = (object)[
             "type" => $card->type,
             "director_name" => Setting::get('director_name_paper', "Họ và Tên"),

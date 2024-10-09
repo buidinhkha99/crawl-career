@@ -13,6 +13,8 @@ use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Outl1ne\MultiselectField\Multiselect;
+use Outl1ne\NovaMediaHub\MediaHub;
+use Outl1ne\NovaMediaHub\Models\Media;
 
 class DownloadPDFCertificate extends Action
 {
@@ -23,7 +25,9 @@ class DownloadPDFCertificate extends Action
 
     public function handle(ActionFields $fields, Collection $models): Action|\Laravel\Nova\Actions\ActionResponse
     {
-        $defaultSignature = base64_encode(Storage::disk('public')->get(Setting::get('signature_photo_occupational')));
+        $media = Media::find(Setting::get('signature_photo_occupational'));
+        $defaultSignature = base64_encode(Storage::disk($media->disk)->get($media->path . $media->file_name));
+
         $payload = [
             'type' => CertificateConstant::OCCUPATIONAL_SAFETY,
             'complete_from' => Setting::get('complete_from', now()->day(1)),
