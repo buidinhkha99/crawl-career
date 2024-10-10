@@ -43,7 +43,9 @@ class RolesAndPermissionsSeeder extends Seeder
             'Question',
             'Examination',
             'Lesson',
-            'MockQuiz'
+            'MockQuiz',
+            'Classroom',
+            'Attendance',
             // ... // List all your Models you want to have Permissions for.
         ]);
 

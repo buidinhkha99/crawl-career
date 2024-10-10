@@ -7,6 +7,8 @@ use App\Exceptions\Handler;
 use App\Http\Middleware\OverrideSectionEditModeWhenUpdate;
 use App\Models\PageStaticSection;
 use App\Models\Setting;
+use App\Nova\Attendance;
+use App\Nova\Classroom;
 use App\Nova\Customization;
 use App\Nova\Dashboards\Main;
 use App\Nova\Dashboards\Review;
@@ -118,7 +120,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
         </div>');
         });
 
-        Nova::style('custom.css', resource_path('css/nova_custom.css'));
+        Nova::style('custom.css', asset('css/nova_custom.css'));
 
         Nova::mainMenu(function (Request $request) {
             return [
@@ -130,6 +132,10 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     MenuItem::resource(UserGroup::class),
                     MenuItem::resource(User::class),
                 ])->collapsedByDefault()->icon('user-group'),
+                MenuSection::make(__('Classroom'), [
+                    MenuItem::resource(Classroom::class),
+                    MenuItem::resource(Attendance::class),
+                ])->icon('question-mark-circle')->collapsedByDefault(),
                 MenuSection::make(__('Training content'), [
                     MenuItem::resource(Topic::class),
                     MenuItem::resource(Question::class),
