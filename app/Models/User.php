@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Enums\CertificateConstant;
-use Harishdurga\LaravelQuiz\Models\Question;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -124,6 +123,15 @@ class User extends Authenticatable
 
     public function questions () {
         return $this->belongsToMany(Question::class, 'question_user')->using(QuestionUser::class)->withPivot('question_option_id');
+    }
+
+    public function lessonLearned(): BelongsToMany
+    {
+        return $this->lessons()->where('is_complete', true);
+    }
+
+    public function questionLearned () {
+        return $this->questions()->wherePivot('is_correct', true);
     }
 
 

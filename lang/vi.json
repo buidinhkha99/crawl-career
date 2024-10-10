@@ -1197,5 +1197,7 @@
   "Fast to slow": "Từ nhanh nhất đến chậm nhất",
   "Slow to fast": "Từ chậm nhất đến nhanh nhất",
   "PDF Certificate" : "Cấu hình xuất PDF",
-  "Work unit" : "Đơn vị làm việc"
+  "Work unit" : "Đơn vị làm việc",
+    "Lesson Learned" : "Bài giảng đã học",
+    "Question Learned" : "Đã trả lời"
 }
