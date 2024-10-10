@@ -20,5 +20,7 @@ class FileTemplateSeeder extends Seeder
         copy(resource_path('/files/file_mau_the_ATD.xlsx'), storage_path('/app/public/file_mau_the_ATD.xlsx'));
         copy(resource_path('/files/file_mau_giay_chung_nhan.xlsx'), storage_path('/app/public/file_mau_giay_chung_nhan.xlsx'));
         copy(resource_path('/images/default_signature.png'), storage_path('/app/public/default_signature.png'));
+        copy(resource_path('/fonts/ARIAL.TTF'), storage_path('/app/public/ARIAL.TTF'));
+        copy(resource_path('/fonts/times.ttf'), storage_path('/app/public/times.ttf'));
     }
 }
