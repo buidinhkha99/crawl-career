@@ -21,36 +21,36 @@
         }
 
         .page-after {
-            margin-top: 30px;
+            margin-top: 40px;
             margin-left: 20px;
         }
 
         .card {
             display: inline-block;
-            width: 170px;
-            height: 256px;
+            width: 190px;
+            height: 285px;
             /*border: 3px solid #324376;*/
             /*padding: 1px;*/
         }
 
         .card-inner {
-            width: 168px;
-            height: 254px;
-            border: 1px solid #324376;
+            width: 190px;
+            height: 285px;
+            /*border: 1px solid #324376;*/
             text-align: center;
         }
 
         .image {
-            width: 170px;
-            height: 256px;
+            width: 190px;
+            height: 285px;
         }
 
         .card-between {
-            margin-right: 6px;
+            margin-right: 12px;
         }
 
         .column-gap {
-            margin-bottom: 3px;
+            margin-bottom: 7px;
         }
     </style>
 </head>

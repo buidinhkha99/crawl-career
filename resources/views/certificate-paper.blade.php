@@ -36,8 +36,8 @@
         }
 
         .card {
-            width: 538px;
-            height: 368px;
+            width: 600px;
+            height: 410px;
             padding: 12px 6px 12px 6px;
         }
 
@@ -48,8 +48,8 @@
         .card-background-back {
             background-color: #FFF7E9;
             color: #000000;
-            width: 538px;
-            height: 368px;
+            width: 600px;
+            height: 410px;
             padding: 0 6px 12px 6px;
         }
 

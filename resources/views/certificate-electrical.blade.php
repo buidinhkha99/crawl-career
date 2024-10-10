@@ -37,11 +37,11 @@
 
         .card {
             display: inline-block;
-            width: 241px;
-            height: 150px;
+            width: 268px;
+            height: 167px;
             background-color: #ffff99;
             position: relative;
-            padding: 6px 2px 6px 2px;
+            /*padding: 6px 2px 6px 2px;*/
         }
 
         .card-bottom {
@@ -103,8 +103,8 @@
         }
 
         .image {
-            width: 241px;
-            height: 150px;
+            width: 268px;
+            height: 167px;
         }
 
 
