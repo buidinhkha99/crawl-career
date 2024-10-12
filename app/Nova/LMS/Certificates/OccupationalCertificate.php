@@ -27,6 +27,8 @@ use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Panel;
+use Outl1ne\NovaMediaHub\Models\Media;
 use Outl1ne\NovaMediaHub\Nova\Fields\MediaHubField;
 
 class OccupationalCertificate extends Resource
@@ -103,6 +105,28 @@ class OccupationalCertificate extends Resource
             Date::make(__('Training end date'), 'complete_to')->required(),
             Date::make(__('Issue date'), 'released_at')->required(),
             Date::make(__('Expiration date'), 'effective_to')->required(),
+
+            Panel::make(__('Setting Generate Certificate'), [
+                Text::make(__('Place'), 'place_printed')->default(fn () => __('Lào Cai'))->rules('required'),
+                Date::make(__('Complete From'), 'complete_from_printed')->rules('required')->default(fn () => now()),
+                Date::make(__('Complete To'), 'complete_to_printed')->rules('required')->default(fn () => now()),
+                Text::make(__('Director Name'), 'director_name_printed')->rules('required'),
+                MediaHubField::make(__('Signature Image'), 'signature_photo_printed')->required()
+                    ->defaultCollection('setting-certificate')
+                    ->rules(fn ($request) => [
+                        function ($attribute, $value, $fail) {
+                            $mime_types = collect(['image/jpeg', 'image/png']);
+                            $media = Media::select('id', 'mime_type')->find($value);
+                            if ($media && ! $mime_types->contains($media?->mime_type)) {
+                                return $fail(__('The :attribute does not match the format :format.', [
+                                    'attribute' => $attribute,
+                                    'format' => $mime_types->join(', '),
+                                ]));
+                            }
+                        },
+                    ]),
+                Date::make(__('Effective To'), 'effective_to_printed')->rules('required')->default(fn () => now()),
+            ]),
         ];
     }
 
@@ -160,9 +184,6 @@ class OccupationalCertificate extends Resource
         return [
             (new CertificateIssueDateFromFilter()),
             (new CertificateIssueDateToFilter()),
-//            (new CertificateStartTimeFilter()),
-//            (new CertificateEndTimeFilter()),
-//            (new CertificateExpirationDateFilter()),
             (new GroupUserCertificateFilter())->singleSelect(),
             (new DepartmentCertificateFilter())->singleSelect(),
             (new PositionCertificateFilter())->singleSelect(),

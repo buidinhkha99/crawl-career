@@ -21,11 +21,21 @@ class Certificate extends Model
         'image_font_url',
         'image_back',
         'image_back_url',
+        'place_printed',
+        'complete_from_printed',
+        'complete_to_printed',
+        'director_name_printed',
+        'signature_photo_printed',
+        'effective_to_printed',
+        'work_unit_printed'
     ];
 
     protected $casts = [
         'card_info' => 'json',
-        'released_at' => 'date'
+        'released_at' => 'date',
+        'complete_from_printed' => 'date',
+        'complete_to_printed' => 'date',
+        'effective_to_printed' => 'date',
     ];
 
     protected $appends = ['certificate_id'];
