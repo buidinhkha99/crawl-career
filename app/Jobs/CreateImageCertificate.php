@@ -69,15 +69,15 @@ class CreateImageCertificate implements ShouldQueue, ShouldBeUnique
      */
     private function generateCertificateImageOccupation($card): void
     {
-        $media = Media::find(Setting::get('signature_photo_occupational'));
+        $media = Media::find($card->signature_photo_printed);
         $defaultSignature = base64_encode(Storage::disk($media->disk)->get($media->path . $media->file_name));
         $data = (object)[
             "type" => $card->type,
-            "complete_from" => Setting::get('complete_from', now()->day(1)),
-            "complete_to" => Setting::get('complete_to', now()->day(360)),
-            "effective_to" => Setting::get('effective_to', now()->day(730)),
-            "place" => Setting::get('place_occupational', "Lào Cai"),
-            "director_name" => Setting::get('director_name_occupational', "Họ và Tên"),
+            "complete_from" => $card->complete_from_printed,
+            "complete_to" => $card->complete_to_printed,
+            "effective_to" => $card->effective_to_printed,
+            "place" => $card->place_printed,
+            "director_name" => $card->director_name_printed,
             "signature_photo" => $defaultSignature,
             "ids" => [$this->cardID]
         ];
@@ -92,11 +92,11 @@ class CreateImageCertificate implements ShouldQueue, ShouldBeUnique
     private function generateCertificateImageElectric($card): void
     {
         // custom image to base64
-        $media = Media::find(Setting::get('signature_photo_electric'));
+        $media = Media::find($card->signature_photo_printed);
         $defaultSignature = base64_encode(Storage::disk($media->disk)->get($media->path . $media->file_name));
         $data = (object)[
             "type" => $card->type,
-            "director_name" => Setting::get('director_name_electric', "Họ và Tên"),
+            "director_name" => $card->director_name_printed,
             "signature_photo" => $defaultSignature,
             "ids" => [$this->cardID]
         ];
@@ -112,14 +112,14 @@ class CreateImageCertificate implements ShouldQueue, ShouldBeUnique
     private function generateCertificateImagePaper($card): void
     {
         // custom image to base64
-        $media = Media::find(Setting::get('signature_photo_paper'));
+        $media = Media::find($card->signature_photo_printed);
         $defaultSignature = base64_encode(Storage::disk($media->disk)->get($media->path . $media->file_name));
         $data = (object)[
             "type" => $card->type,
-            "director_name" => Setting::get('director_name_paper', "Họ và Tên"),
+            "director_name" => $card->director_name_printed,
             "signature_photo" => $defaultSignature,
-            "work_unit" => Setting::get('work_unit', ),
-            "place" => Setting::get('place_paper'),
+            "work_unit" => $card->work_unit_printed,
+            "place" => $card->place_printed,
             "ids" => [$this->cardID]
         ];
 

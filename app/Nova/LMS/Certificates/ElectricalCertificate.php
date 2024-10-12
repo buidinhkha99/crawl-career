@@ -25,6 +25,8 @@ use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Panel;
+use Outl1ne\NovaMediaHub\Models\Media;
 use Outl1ne\NovaMediaHub\Nova\Fields\MediaHubField;
 
 class ElectricalCertificate extends Resource
@@ -93,6 +95,24 @@ class ElectricalCertificate extends Resource
             }),
             Text::make(__('Level'), 'level')->required(),
             Date::make(__('Issue date'), 'released_at')->required(),
+
+            Panel::make(__('Setting Generate Certificate'), [
+                Text::make(__('Director Name'), 'director_name_printed')->rules('required'),
+                MediaHubField::make(__('Signature Image'), 'signature_photo_printed')->required()
+                    ->defaultCollection('setting-certificate')
+                    ->rules(fn ($request) => [
+                        function ($attribute, $value, $fail) {
+                            $mime_types = collect(['image/jpeg', 'image/png']);
+                            $media = Media::select('id', 'mime_type')->find($value);
+                            if ($media && ! $mime_types->contains($media?->mime_type)) {
+                                return $fail(__('The :attribute does not match the format :format.', [
+                                    'attribute' => $attribute,
+                                    'format' => $mime_types->join(', '),
+                                ]));
+                            }
+                        },
+                    ]),
+            ]),
         ];
     }
 
