@@ -95,6 +95,13 @@ class User extends Authenticatable
             ->withPivotValue('participant_type', User::class);
     }
 
+    public function mockQuizzes(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(MockQuiz::class, 'quiz_attempts', 'participant_id', 'quiz_id')
+            ->withPivotValue('participant_type', User::class);
+    }
+
+
     public function examinations(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Examination::class, 'user_id');

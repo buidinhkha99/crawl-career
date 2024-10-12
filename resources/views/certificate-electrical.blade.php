@@ -1,115 +1,120 @@
 @php
     $fonts = [
-            ['name' => 'Font1', 'path' => 'fonts/times.ttf'],
+            ['name' => 'Arial', 'path' => 'ARIAL.TTF'],
     ];
 @endphp
-    <!DOCTYPE html>
-<html lang="vi">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Thẻ An Toàn Điện</title>
-    <style>
-        @foreach($fonts as $font)
-        @font-face {
-            font-family: '{{ $font['name'] }}';
-            src: url('{{ resource_path($font['path']) }}') format('truetype');
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+
+    <style type="text/css">
+        body {
+            margin: 0;
         }
 
-        @endforeach
-        * {
-            margin-left: 0;
-            margin-right: 0;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-
-        .page-break {
-            page-break-after: always;
-            page-break-inside: avoid;
-        }
-
-        .page-after {
-            margin-top: 30px;
-            margin-left: 20px;
+        .page {
+            margin-left: 1cm;
+            margin-right: 1cm;
+            margin-bottom: 6.5cm;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            height: 29.7cm;
         }
 
         .card {
-            display: inline-block;
-            width: 268px;
-            height: 167px;
-            background-color: #ffff99;
-            position: relative;
-            /*padding: 6px 2px 6px 2px;*/
+            border: 1px solid red;
+            width: 95mm;
+            height: 63mm
         }
 
-        .card-bottom {
-            margin-bottom: 49px;
-        }
-
-        .card-next {
-            margin-right: 50px;
-        }
-
-        .card h1, .card h2 {
+        .card-inner {
+            width: 85mm;
+            height: 53mm;
+            margin: 0.5cm;
+            border: 1px solid #000000;
             text-align: center;
-            margin: 0;
+            font-size: 16px;
+            font-weight: 400;
+            color: #000000;
+            background-color: #ffff99;
+        }
+
+        .bold-text {
+            font-family: 'Arial', serif; /* Sử dụng phông chữ Times New Roman Bold */
+        }
+
+        .normal-text {
+            font-family: 'Arial', serif; /* Sử dụng phông chữ Times New Roman Bold */
         }
 
         .company {
             margin-top: 6px;
-            font-size: 12px;
+            font-size: 16px;
             font-weight: 400;
             text-align: center;
-            font-family: 'Roboto', 'DejaVu Sans', sans-serif;
         }
 
         .branch {
-            font-size: 12px;
-            font-weight: 600;
+            margin-top: 3px;
+            font-size: 16px;
+            font-weight: 700;
             text-align: center;
-            letter-spacing: -0.1em;
-            font-family: 'Roboto', 'DejaVu Sans', sans-serif;
+            letter-spacing: -0.03em;
         }
 
         .safety-card {
             margin-left: 70px;
             width: 167px;
             height: 85px;
-            font-size: 20px;
+            font-size: 22px;
             color: #E40613;;
             font-weight: 600;
             text-align: center;
             word-spacing: -0.1em;
         }
 
+        .safety-card {
+            margin-left: 109px;
+            width: 205px;
+            height: 85px;
+            font-size: 29px;
+            color: #E40613;
+            font-weight: 700;
+            text-align: center;
+        }
+
         .card-number {
-            font-size: 12px;
+            font-size: 16px;
             text-align: center;
             font-weight: 400;
-            margin-top: 13px;
+            margin-top: 26px;
             color: #000000;
             letter-spacing: 0em;
         }
 
         .photo-box {
             position: absolute;
-            width: 55px;
-            height: 83px;
+            width: 2cm;
+            height: 3cm;
             margin-right: 13px;
-            font-size: 12px;
+            font-size: 16px;
             letter-spacing: -0.1em;
+            margin-left: 1px;
         }
 
         .image {
-            width: 268px;
-            height: 167px;
+            width: 2cm;
+            height: 3cm;
         }
 
+        .border-image {
+            border: 1px solid #E5E5E5;
+        }
 
         .photo-box span {
-            font-size: 12px;
+            font-size: 16px;
             text-align: center;
         }
 
@@ -124,95 +129,119 @@
             padding: 21px 0 21px 0;
         }
 
-        .safety-card-header {
-            margin-bottom: -6px
-        }
-
         .backgroup-none {
             background: none;
         }
 
         .font-dejavu {
-            font-family: 'DejaVu Sans', sans-serif;
-            font-size: 12px;
+            font-size: 16px;
         }
 
         .signature {
             margin: auto;
             width: 50px;
-            height: auto;
+            height: 29px;
             object-fit: contain;
         }
 
         .location {
-            margin-top: 5px;
-            font-family: 'Font1', sans-serif;
+            margin-top: 15px;
             margin-left: 110px;
             text-align: center;
-            font-size: 10px;
-            line-height: 11px;
+            font-size: 16px;
+            /*line-height: 11px;*/
         }
 
         .info {
-            font-size: 12px;
-            margin-top: 0px;
-            margin-left: 6px;
-            line-height: 11px;
+            font-size: 16px;
+            margin-top: 8px;
+            margin-left: 15px;
+            line-height: 17px;
             text-align: left;
-            height: 84px;
+            height: 111px;
         }
 
-        .font-time {
-            font-family: 'Font1', 'DejaVu Sans', sans-serif;
+        .level-save {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            -webkit-line-clamp: 1;
+            max-height: 20px;
         }
+
+        .work-description {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            -webkit-line-clamp: 4;
+        }
+
     </style>
+
 </head>
 <body>
 @for ($iGroup = 0; $iGroup < $total_group; $iGroup++)
-    <div class="page-break page-after">
+    <div class="page">
         @for($i= 1; $i <= count($group_font_size_cards[$iGroup]); $i++)
                 <?php
-                $style = "";
-                if ($i % 2 == 0 && $i + 2 < 9) {
-                    $style = "card card-bottom";
-                } elseif ($i + 2 >= 9) {
-                    if ($i % 2 == 0) {
-                        $style = "card";
-                    } else {
-                        $style = "card card-next";
-                    }
-                } else {
-                    $style = "card card-next card-bottom";
-                }
+                $data_font_size_cards = $group_font_size_cards[$iGroup][$i - 1];
                 ?>
+            <div class="card">
 
-            <div class="{{$style}} {{!($group_font_size_cards[$iGroup][$i - 1]['is_fake'] ?? false) ? null : 'backgroup-none'}}">
-                @if(!($group_font_size_cards[$iGroup][$i - 1]['is_fake'] ?? false))
-                    <img class="image" src="data:image/png;base64,{{$group_font_size_cards[$iGroup][$i - 1]['image_card']}}" alt="image">
+                @if(!($data_font_size_cards['is_fake'] ?? false))
+                    <div class="card-inner">
+                        <div class="company normal-text">TỔNG CÔNG TY KHOÁNG SẢN-TKV</div>
+                        <div class="branch bold-text">CHI NHÁNH LUYỆN ĐỒNG LÀO CAI-VIMICO</div>
+                        <div class="content">
+                                <?php $image = $data_font_size_cards['image'] ?? null ?>
+                            <div class="photo-box {{!$image ? 'border-image' : null}}">
+                                @if($image)
+                                    <img class="image" src="data:image/png;base64,{{$image}}" alt="image">
+                                @else
+                                    <div class="img-noty normal-text">Ảnh 2x3<br>(đóng dấu <br> giáp lai)</div>
+                                @endif
+                            </div>
+                            <div class="safety-card bold-text">
+                                <div class="safety-card-header bold-text">THẺ</div>
+                                <div>AN TOÀN ĐIỆN</div>
+                                <div class="card-number normal-text">
+                                    Số: {{$data_font_size_cards['certificate_id'] ?? null}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 @endif
             </div>
         @endfor
     </div>
 
-    <div class="{{$iGroup + 1 < $total_group ? 'page-break' : null}} page-after">
+    <div class="page">
         @for($i= 1; $i <= count($group_back_size_cards[$iGroup]); $i++)
                 <?php
-                $style = "";
-                if ($i % 2 == 0 && $i + 2 < 9) {
-                    $style = "card card-bottom";
-                } elseif ($i + 2 >= 9) {
-                    if ($i % 2 == 0) {
-                        $style = "card";
-                    } else {
-                        $style = "card card-next";
-                    }
-                } else {
-                    $style = "card card-next card-bottom";
-                }
+                $data_back_size_cards = $group_back_size_cards[$iGroup][$i - 1];
                 ?>
-            <div class="{{$style}} {{!($group_back_size_cards[$iGroup][$i - 1]['is_fake'] ?? false) ? null : 'backgroup-none'}}">
-                @if(!($group_back_size_cards[$iGroup][$i - 1]['is_fake'] ?? false))
-                    <img class="image" src="data:image/png;base64,{{$group_back_size_cards[$iGroup][$i - 1]['image_card']}}" alt="image">
+            <div class="card">
+                @if(!($data_back_size_cards['is_fake'] ?? false))
+                    <div class="card-inner">
+                        <div class="info normal-text">
+                            <div>Họ tên: <strong class="bold-text">{{$data_back_size_cards['name'] ?? null}}</strong>
+                            </div>
+                            <div class="work-description">Công việc, đơn vị công tác: {{$data_back_size_cards['description'] ?? null}}</div>
+                            <div class="level-save">Bậc an toàn: {{$data_back_size_cards['level'] ?? null}}</div>
+                            <div>Cấp ngày {{$data_back_size_cards['day_created'] ?? null}}
+                                tháng {{$data_back_size_cards['month_created'] ?? null}}
+                                năm {{$data_back_size_cards['year_created'] ?? null}}</div>
+                        </div>
+                        <div class="location">
+                            <div><strong class="bold-text">PHÓ GIÁM ĐỐC</strong></div>
+                            <div>
+                                <img class="signature"
+                                     src="data:image/png;base64,{{$data_back_size_cards['signature_photo'] ?? null}}">
+                            </div>
+                            <div><strong class="bold-text">{{$data_back_size_cards['director_name'] ?? null}}</strong>
+                            </div>
+                        </div>
+                    </div>
                 @endif
             </div>
         @endfor

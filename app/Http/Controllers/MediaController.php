@@ -277,7 +277,7 @@ class MediaController extends Controller
         // Write the html content to the blade file
         file_put_contents($dummyFilePath, Setting::get('pdf_occupational_certificate'));
 
-        return BPDF::loadView('dummy', [
+        return view('dummy', [
             'total_group' => $groupFonts->count(),
             'group_font_size_cards' => $groupFonts,
             'group_back_size_cards' => $groupBacks,
@@ -385,7 +385,7 @@ class MediaController extends Controller
         // Write the html content to the blade file
         file_put_contents($dummyFilePath, Setting::get('pdf_electrical_certificate'));
 
-        return BPDF::loadView('dummy', [
+        return view('dummy', [
             'total_group' => $groupFonts->count(),
             'group_font_size_cards' => $groupFonts,
             'group_back_size_cards' => $groupBacks,
@@ -507,7 +507,7 @@ class MediaController extends Controller
         // Write the html content to the blade file
         file_put_contents($dummyFilePath, Setting::get('pdf_paper_certificate'));
 
-        return BPDF::loadView('dummy', [
+        return view('dummy', [
             'total_group' => $groupFonts->count(),
             'group_font_size_cards' => $groupFonts,
             'group_back_size_cards' => $groupBacks,
@@ -519,28 +519,19 @@ class MediaController extends Controller
         $type = $payload->type ?? null;
         $pdf = null;
         if ($type == CertificateConstant::OCCUPATIONAL_SAFETY) {
-            $sizePage = [0, 0, 570, 990];
             $pdf = $this->previewPDFOccupationalCertificate($payload, $actionType);
         }
 
         if ($type == CertificateConstant::ELECTRICAL_SAFETY) {
-            $sizePage = [0, 0, 585, 990];
             $pdf = $this->previewPDFElectricalCertificate($payload, $actionType);
         }
 
         if ($type == CertificateConstant::PAPER_SAFETY) {
-            $sizePage = [0, 0, 590, 990];
-            $pdf = $this->previewPDFPaperCertificate($payload, $actionType);
+            $pdf =  $this->previewPDFPaperCertificate($payload, $actionType);
         }
 
         if ($pdf) {
-            if ($actionType == 'save') {
-                return $pdf;
-            }
-
-            $pdf = $pdf->setPaper($sizePage)->setOption(['fontDir' => storage_path('/fonts')]);
-
-            return $pdf->stream();
+            return $pdf;
         }
 
         abort(404);
