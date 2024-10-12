@@ -3,6 +3,8 @@
 namespace App\Policies;
 
 use App\Enums\ExamStatus;
+use App\Models\Lesson;
+use App\Models\Question;
 use App\Models\Quiz;
 use App\Models\User;
 use Carbon\Carbon;
@@ -86,5 +88,20 @@ class UserPolicy extends BasePolicy
                 ! $quiz->exam()->where('end_at', '<=', Carbon::now())->exists()
             ) ||
             $user->isSuperAdmin();
+    }
+
+    public function attachAnyLesson(User $user, User $model): bool
+    {
+        return false;
+    }
+
+    public function attachAnyQuestion(User $user, User $model): bool
+    {
+        return false;
+    }
+
+    public function attachAnyMockQuiz(User $user, User $model): bool
+    {
+        return false;
     }
 }

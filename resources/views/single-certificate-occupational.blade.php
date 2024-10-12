@@ -1,7 +1,6 @@
 @php
     $fonts = [
-            ['name' => 'Font SVN-Times New Roman', 'path' => 'fonts/SVN-Times New Roman.ttf'],
-            ['name' => 'Font Times New Roman Bold', 'path' => 'fonts/times new roman bold.ttf'],
+            ['name' => 'Font Times New Roman', 'path' => 'times.ttf'],
     ];
 @endphp
     <!DOCTYPE html>
@@ -15,7 +14,7 @@
         @foreach($fonts as $font)
         @font-face {
             font-family: '{{ $font['name'] }}';
-            src: url('{{ resource_path($font['path']) }}') format('truetype');
+            src: url("/storage/{{$font['path']}}") format('truetype');
         }
 
         @endforeach
@@ -27,11 +26,11 @@
         }
 
         .bold-text {
-            font-family: 'Font Times New Roman Bold', 'Font SVN-Times New Roman', serif; /* Sử dụng phông chữ Times New Roman Bold */
+            font-family: 'Font Times New Roman', serif; /* Sử dụng phông chữ Times New Roman Bold */
         }
 
         .normal-text {
-            font-family: 'Font SVN-Times New Roman', serif; /* Sử dụng phông chữ Times New Roman Bold */
+            font-family: 'Font Times New Roman', serif; /* Sử dụng phông chữ Times New Roman Bold */
         }
 
         .page-break {

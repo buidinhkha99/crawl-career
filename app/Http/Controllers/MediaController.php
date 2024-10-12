@@ -248,19 +248,22 @@ class MediaController extends Controller
                 'group_back_size_cards' => $groupBacks,
             ])->render();
 
+            $dummyFilePath = storage_path('app/public/dummy.html');
+            // Write the html content to the blade file
+            file_put_contents($dummyFilePath, $html);
+
             $pathFont = storage_path('app/public/font-card.jpg');
             $pathBack = storage_path('app/public/back-card.jpg');
-            Browsershot::html($html)
+            Browsershot::url(url('/storage/dummy.html'))
                 ->noSandbox()
-                ->windowSize(595, 842)
-                ->deviceScaleFactor(2)
+                ->deviceScaleFactor(3)
                 ->clip(20, 30, 178, 264)  // font clip
                 ->save($pathFont);
 
-            Browsershot::html($html)
+            Browsershot::url(url('/storage/dummy.html'))
                 ->noSandbox()
                 ->windowSize(595, 842)
-                ->deviceScaleFactor(2)
+                ->deviceScaleFactor(3)
                 ->clip(20, 304, 178, 264) // back clip
                 ->save($pathBack);
 
@@ -274,7 +277,7 @@ class MediaController extends Controller
         // Write the html content to the blade file
         file_put_contents($dummyFilePath, Setting::get('pdf_occupational_certificate'));
 
-        return BPDF::loadView('dummy', [
+        return view('dummy', [
             'total_group' => $groupFonts->count(),
             'group_font_size_cards' => $groupFonts,
             'group_back_size_cards' => $groupBacks,
@@ -353,18 +356,20 @@ class MediaController extends Controller
                 'group_back_size_cards' => $groupBacks,
             ])->render();
 
+            $dummyFilePath = storage_path('app/public/dummy.html');
+            // Write the html content to the blade file
+            file_put_contents($dummyFilePath, $html);
+
             $pathFont = storage_path('app/public/font-card.jpg');
             $pathBack = storage_path('app/public/back-card.jpg');
-            Browsershot::html($html)
+            Browsershot::url(url('/storage/dummy.html'))
                 ->noSandbox()
-                ->windowSize(595, 842)
                 ->deviceScaleFactor(2)
                 ->clip(20, 30, 245, 162)  // font clip
                 ->save($pathFont);
 
-            Browsershot::html($html)
+            Browsershot::url(url('/storage/dummy.html'))
                 ->noSandbox()
-                ->windowSize(595, 842)
                 ->deviceScaleFactor(2)
                 ->clip(20, 202, 245, 162) // back clip
                 ->save($pathBack);
@@ -380,7 +385,7 @@ class MediaController extends Controller
         // Write the html content to the blade file
         file_put_contents($dummyFilePath, Setting::get('pdf_electrical_certificate'));
 
-        return BPDF::loadView('dummy', [
+        return view('dummy', [
             'total_group' => $groupFonts->count(),
             'group_font_size_cards' => $groupFonts,
             'group_back_size_cards' => $groupBacks,
@@ -473,19 +478,21 @@ class MediaController extends Controller
                 'group_back_size_cards' => $groupBacks,
             ])->render();
 
+        $dummyFilePath = storage_path('app/public/dummy.html');
+        // Write the html content to the blade file
+        file_put_contents($dummyFilePath, $html);
+
             $pathFont = storage_path('app/public/font-card.jpg');
             $pathBack = storage_path('app/public/back-card.jpg');
-            Browsershot::html($html)
+            Browsershot::url(url('/storage/dummy.html'))
                 ->noSandbox()
-                ->windowSize(595, 842)
-                ->deviceScaleFactor(2)
+                ->deviceScaleFactor(3)
                 ->clip(20, 30, 550, 392)  // font clip
                 ->save($pathFont);
 
-            Browsershot::html($html)
+            Browsershot::url(url('/storage/dummy.html'))
                 ->noSandbox()
-                ->windowSize(595, 842)
-                ->deviceScaleFactor(2)
+                ->deviceScaleFactor(3)
                 ->clip(20, 467, 550, 380) // back clip
                 ->save($pathBack);
 
@@ -500,7 +507,7 @@ class MediaController extends Controller
         // Write the html content to the blade file
         file_put_contents($dummyFilePath, Setting::get('pdf_paper_certificate'));
 
-        return BPDF::loadView('dummy', [
+        return view('dummy', [
             'total_group' => $groupFonts->count(),
             'group_font_size_cards' => $groupFonts,
             'group_back_size_cards' => $groupBacks,
@@ -520,17 +527,11 @@ class MediaController extends Controller
         }
 
         if ($type == CertificateConstant::PAPER_SAFETY) {
-            $pdf = $this->previewPDFPaperCertificate($payload, $actionType);
+            $pdf =  $this->previewPDFPaperCertificate($payload, $actionType);
         }
 
         if ($pdf) {
-            if ($actionType == 'save') {
-                return $pdf;
-            }
-
-            $pdf = $pdf->setPaper([0, 0, 595, 893])->setOption(['fontDir' => storage_path('/fonts')]);
-
-            return $pdf->stream();
+            return $pdf;
         }
 
         abort(404);

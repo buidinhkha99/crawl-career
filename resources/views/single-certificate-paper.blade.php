@@ -1,7 +1,6 @@
 @php
     $fonts = [
-            ['name' => 'Font SVN-Times New Roman', 'path' => 'fonts/SVN-Times New Roman.ttf'],
-            ['name' => 'Font Times New Roman Bold', 'path' => 'fonts/times new roman bold.ttf'],
+            ['name' => 'Font Times New Roman', 'path' => 'times.ttf'],
     ];
 @endphp
     <!DOCTYPE html>
@@ -15,7 +14,7 @@
         @foreach($fonts as $font)
         @font-face {
             font-family: '{{ $font['name'] }}';
-            src: url('{{ resource_path($font['path']) }}') format('truetype');
+            src: url("/storage/{{$font['path']}}") format('truetype');
         }
 
         @endforeach
@@ -24,15 +23,15 @@
             margin-right: 0;
             margin-bottom: 0;
             padding-bottom: 0;
-            font-family: 'Font SVN-Times New Roman', serif; /* Sử dụng phông chữ Times New Roman Bold */
+            font-family: 'Font Times New Roman', serif; /* Sử dụng phông chữ Times New Roman Bold */
         }
 
         .bold-text {
-            font-family: 'Font Times New Roman Bold', 'Font SVN-Times New Roman', serif; /* Sử dụng phông chữ Times New Roman Bold */
+            font-family: 'Font Times New Roman', serif; /* Sử dụng phông chữ Times New Roman Bold */
         }
 
         .normal-text {
-            font-family: 'Font SVN-Times New Roman', serif; /* Sử dụng phông chữ Times New Roman Bold */
+            font-family: 'Font Times New Roman', serif; /* Sử dụng phông chữ Times New Roman Bold */
         }
 
         .page-break {
@@ -139,7 +138,7 @@
         }
 
         .header-1 {
-            font-size: 11px;
+            font-size: 12px;
             text-align: center;
             font-weight: 700;
             margin-bottom: 146px;
@@ -152,7 +151,7 @@
         }
 
         .header-3 {
-            font-size: 20px;
+            font-size: 22px;
             text-align: center;
             font-weight: 700;
             margin-bottom: 5px;
@@ -204,7 +203,7 @@
             margin-top: 5px;
             margin-right: 12px;
             margin-left: 2px;
-            font-size: 8px;
+            font-size: 9px;
             line-height: 10px;
             height: 155px;
         }
@@ -304,7 +303,7 @@
                     <div class="certificate-back">
                         <div class="title-back-2 font-dejavu">NỘI DUNG HUẤN LUYỆN</div>
                         <div
-                            class="info font-time">{!! $data['info_certificate'] ?? null !!}</div>
+                            class="info">{!! $data['info_certificate'] ?? null !!}</div>
                     </div>
             </div>
         @endfor

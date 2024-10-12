@@ -1,10 +1,9 @@
 @php
     $fonts = [
-            ['name' => 'Font SVN-Times New Roman', 'path' => 'fonts/SVN-Times New Roman.ttf'],
-            ['name' => 'Font Times New Roman Bold', 'path' => 'fonts/times new roman bold.ttf'],
+            ['name' => 'Arial', 'path' => 'ARIAL.TTF'],
     ];
 @endphp
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -15,7 +14,7 @@
         @foreach($fonts as $font)
         @font-face {
             font-family: '{{ $font['name'] }}';
-            src: url('{{ resource_path($font['path']) }}') format('truetype');
+            src: url("/storage/{{$font['path']}}") format('truetype');
         }
 
         @endforeach
@@ -27,11 +26,11 @@
         }
 
         .bold-text {
-            font-family: 'Font Times New Roman Bold', 'Font SVN-Times New Roman', serif; /* Sử dụng phông chữ Times New Roman Bold */
+            font-family: 'Arial', serif; /* Sử dụng phông chữ Times New Roman Bold */
         }
 
         .normal-text {
-            font-family: 'Font SVN-Times New Roman', serif; /* Sử dụng phông chữ Times New Roman Bold */
+            font-family: 'Arial', serif; /* Sử dụng phông chữ Times New Roman Bold */
         }
 
         .page-break {
@@ -75,7 +74,7 @@
             margin-left: 70px;
             width: 167px;
             height: 85px;
-            font-size: 20px;
+            font-size: 22px;
             color: #E40613;;
             font-weight: 600;
             text-align: center;
@@ -86,7 +85,7 @@
             font-size: 12px;
             text-align: center;
             font-weight: 400;
-            margin-top: 13px;
+            margin-top: 26px;
             color: #000000;
             letter-spacing: 0em;
         }
@@ -125,10 +124,6 @@
             padding: 21px 0 21px 0;
         }
 
-        .safety-card-header {
-            margin-bottom: -6px
-        }
-
         .backgroup-none {
             background: none;
         }
@@ -145,7 +140,7 @@
         }
 
         .location {
-            margin-top: 5px;
+            margin-top: 15px;
             margin-left: 110px;
             text-align: center;
             font-size: 10px;
@@ -156,7 +151,7 @@
             font-size: 12px;
             margin-top: 0px;
             margin-left: 6px;
-            line-height: 11px;
+            line-height: 12px;
             text-align: left;
             height: 84px;
         }

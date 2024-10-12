@@ -17,6 +17,8 @@ use App\Nova\LMS\Certificates\OccupationalCertificate;
 use App\Nova\LMS\Certificates\PaperCertificate;
 use App\Nova\LMS\ExaminationInUser;
 use App\Nova\LMS\Lesson;
+use App\Nova\LMS\MockQuiz;
+use App\Nova\LMS\Question;
 use App\Nova\LMS\Quiz;
 use App\Rules\DoesntContainEmojis;
 use App\Rules\FullnameRule;
@@ -254,6 +256,10 @@ class User extends Resource
             HasMany::make(__('Occupational Certificate'), 'occupationalCertificate', OccupationalCertificate::class),
             HasMany::make(__('Electrical Certificate'), 'electricalCertificate', ElectricalCertificate::class),
             HasMany::make(__('Paper Certificate'), 'paperCertificate', PaperCertificate::class),
+
+            BelongsToMany::make(__('Lesson Learned'), 'lessons', Lesson::class),
+            BelongsToMany::make(__('Question Learned'), 'questions', Question::class),
+            BelongsToMany::make(__('Mock Quiz Done'), 'mockQuizzes', MockQuiz::class),
         ];
     }
 
