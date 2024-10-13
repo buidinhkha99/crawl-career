@@ -79,11 +79,8 @@ class CreateCertificate implements ShouldQueue
             'released_at' => $this->info['released_at'],
             'card_id' => $this->info['card_id'] ?? getNextNumberCardID($this->type, Carbon::parse($this->info['released_at'])->year),
             'place_printed' => Setting::get('place_occupational', "Lào Cai"),
-            'complete_from_printed' => Setting::get('complete_from', now()->day(1)),
-            'complete_to_printed' => Setting::get('complete_to', now()->day(360)),
             'director_name_printed' => Setting::get('director_name_occupational', "Họ và Tên"),
-            'signature_photo_printed' => Setting::get('signature_photo_occupational', "Họ và Tên"),
-            'effective_to_printed' => Setting::get('effective_to', now()->day(730)),
+            'signature_photo_printed' => Setting::get('signature_photo_occupational'),
         ];
     }
 
@@ -99,7 +96,6 @@ class CreateCertificate implements ShouldQueue
             'card_info' => $cardInfo,
             'released_at' => $this->info['released_at'],
             'card_id' => $this->info['card_id'] ?? getNextNumberCardID($this->type, Carbon::parse($this->info['released_at'])->year),
-
             'director_name_printed' => Setting::get('director_name_electric', "Họ và Tên"),
             'signature_photo_printed' => Setting::get('signature_photo_electric', "Họ và Tên"),
         ];
