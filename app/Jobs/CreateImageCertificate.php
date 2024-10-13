@@ -58,7 +58,7 @@ class CreateImageCertificate implements ShouldQueue, ShouldBeUnique
             };
 
         } catch (Exception $e) {
-            Log::error('[IMAGE-CERTIFICATE-SERVICE] Create image for certificate failed. UserID:' . $this->cardID . ' Error: ' . $e->getMessage());
+            Log::error('[IMAGE-CERTIFICATE-SERVICE] Create image for certificate failed. UserID:' . $this->cardID . ' Error: ' . $e->getMessage() . ' File: ' . $e->getFile() . ' Line: ' . $e->getLine());
             throw new Exception($e->getMessage());
         }
     }
@@ -70,12 +70,12 @@ class CreateImageCertificate implements ShouldQueue, ShouldBeUnique
     private function generateCertificateImageOccupation($card): void
     {
         $media = Media::find($card->signature_photo_printed);
-        $defaultSignature = base64_encode(Storage::disk($media->disk)->get($media->path . $media->file_name));
+        $defaultSignature = $media ? base64_encode(Storage::disk($media->disk)->get($media->path . $media->file_name)) : null;
         $data = (object)[
             "type" => $card->type,
-            "complete_from" => $card->complete_from_printed,
-            "complete_to" => $card->complete_to_printed,
-            "effective_to" => $card->effective_to_printed,
+            "complete_from" => $card->complete_from,
+            "complete_to" => $card->complete_to,
+            "effective_to" => $card->effective_to,
             "place" => $card->place_printed,
             "director_name" => $card->director_name_printed,
             "signature_photo" => $defaultSignature,

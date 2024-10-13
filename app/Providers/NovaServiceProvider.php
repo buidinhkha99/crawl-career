@@ -467,8 +467,6 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
             NovaSettings::addSettingsFields([
                 Panel::make(__('Occupational Certificate'), [
                     Text::make(__('Place'), 'place_occupational')->default(fn () => __('Lào Cai'))->rules('required'),
-                    Date::make(__('Complete From'), 'complete_from')->rules('required')->default(fn () => now()),
-                    Date::make(__('Complete To'), 'complete_to')->rules('required')->default(fn () => now()),
                     Text::make(__('Director Name'), 'director_name_occupational')->rules('required'),
                     MediaHubField::make(__('Signature Image'), 'signature_photo_occupational')->required()
                         ->defaultCollection('setting-certificate')
@@ -484,7 +482,6 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                                 }
                             },
                         ]),
-                    Date::make(__('Effective To'), 'effective_to')->rules('required')->default(fn () => now()),
                 ]),
 
                 Panel::make(__('Electrical Certificate'), [
