@@ -5,20 +5,54 @@ namespace App\Http\Controllers;
 use App\Enums\ExaminationStatus;
 use App\Models\ExaminationMockQuiz;
 use App\Models\MockQuiz;
+use App\Models\QuizGroup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
 
 class MockQuizController extends Controller
 {
+    public function groups(Request $request)
+    {
+        $groups = QuizGroup::orderBy('id', 'ASC')->get();
+
+        return [
+            'data' => $groups->map(fn($group) => [
+                'id' => $group->id,
+                'name' => $group->name,
+                'count' => $group->quizzes()->count(),
+            ]) ?: []
+        ];
+    }
+
+    public function groupQuizzes(Request $request, $id)
+    {
+        $group = QuizGroup::with('quizzes')->where('id', $id)->firstOrFail();
+        $user = auth('api')?->user();
+
+        return [
+            'data' => $group->quizzes->map(fn($quiz) => [
+                'id' => $quiz->id,
+                'group_id' => $quiz->group_id,
+                'group_name' => $group->name,
+                'status' => $user ? ExaminationMockQuiz::where('quiz_id', $quiz->id)
+                    ->where('user_id', $user->id)
+                    ->first()?->state ?? ExaminationStatus::NotYet : null,
+                'index' => $quiz->sort_order,
+            ]) ?: []
+        ];
+    }
+
     public function show(Request $request)
     {
-        $quizzes = MockQuiz::orderBy('id', 'ASC')->get();
+        $quizzes = MockQuiz::with('group')->orderBy('id', 'ASC')->get();
         $user = auth('api')?->user();
 
         return [
             'data' => $quizzes->map(fn($quiz) => [
                 'id' => $quiz->id,
+                'group_id' => $quiz->group_id,
+                'group_name' => $quiz->group?->name ?? null,
                 'status' => $user ? ExaminationMockQuiz::where('quiz_id', $quiz->id)
                     ->where('user_id', $user->id)
                     ->first()?->state ?? ExaminationStatus::NotYet : null,

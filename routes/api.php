@@ -41,6 +41,9 @@ Route::post('/lessons/{id}/submit', [\App\Http\Controllers\LessonController::cla
 
 Route::get('/exam-random', [ExamRandomController::class, 'topics']);
 
+Route::get('/mock-quiz-groups', [\App\Http\Controllers\MockQuizController::class, 'groups']);
+Route::get('/mock-quiz-groups/{id}', [\App\Http\Controllers\MockQuizController::class, 'groupQuizzes']);
+
 Route::get('/mock-quizzes', [\App\Http\Controllers\MockQuizController::class, 'show']);
 Route::get('/mock-quizzes/{id}', [\App\Http\Controllers\MockQuizController::class, 'detail']);
 Route::post('/mock-quizzes/{id}/submit', [\App\Http\Controllers\QuizController::class, 'saveAnswerMockQuiz']);

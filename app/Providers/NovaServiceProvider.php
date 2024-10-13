@@ -25,6 +25,7 @@ use App\Nova\LMS\ObjectGroupCertificate;
 use App\Nova\LMS\Question;
 use App\Nova\LMS\QuestionType;
 use App\Nova\LMS\Quiz;
+use App\Nova\LMS\QuizGroup;
 use App\Nova\LMS\Topic;
 use App\Nova\Observer\FormObserver;
 use App\Nova\Observer\LessonObserver;
@@ -149,8 +150,9 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
 
                MenuSection::make(__('Review'), [
                    MenuItem::resource(MockQuiz::class),
-                   MenuItem::make(__('Random Quiz'))->path('/settings/quiz-random')->canSee(fn () => Auth::user() && ((method_exists(Auth::user(), 'isSuperAdmin') && Auth::user()->isSuperAdmin())
-                           || Auth::user()->hasPermissionTo('view'.SettingType::QuizRandom))),
+                    MenuItem::resource(QuizGroup::class),
+//                   MenuItem::make(__('Random Quiz'))->path('/settings/quiz-random')->canSee(fn () => Auth::user() && ((method_exists(Auth::user(), 'isSuperAdmin') && Auth::user()->isSuperAdmin())
+//                           || Auth::user()->hasPermissionTo('view'.SettingType::QuizRandom))),
                ])->icon('document-text')->collapsedByDefault(),
 
                 MenuSection::make(__('Certificate'), [

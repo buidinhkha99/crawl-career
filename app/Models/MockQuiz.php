@@ -80,6 +80,11 @@ class MockQuiz extends Model implements Sortable
         );
     }
 
+    public function group()
+    {
+        return $this->belongsTo(QuizGroup::class, 'group_id');
+    }
+
     public function topics()
     {
         return $this->morphToMany(config('laravel-quiz.models.topic'), 'topicable');
