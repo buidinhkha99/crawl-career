@@ -7,12 +7,14 @@ use App\Models\Certificate;
 use App\Models\Customization;
 use App\Models\LessonQuestion;
 use App\Models\QuestionOption;
+use App\Models\QuizAttempt;
 use App\Models\Section;
 use App\Models\Setting;
 use App\Observers\CertificateObserver;
 use App\Observers\CustomizationObserver;
 use App\Observers\LessonQuestionObserver;
 use App\Observers\QuestionOptionObserver;
+use App\Observers\QuizAttemptObserver;
 use App\Observers\SectionObserver;
 use App\Observers\SettingObserver;
 use Illuminate\Auth\Events\Registered;
@@ -54,6 +56,7 @@ class EventServiceProvider extends ServiceProvider
         QuestionOption::class => [QuestionOptionObserver::class],
         LessonQuestion::class => [LessonQuestionObserver::class],
         Certificate::class => [CertificateObserver::class],
+        QuizAttempt::class => [QuizAttemptObserver::class],
     ];
 
     /**

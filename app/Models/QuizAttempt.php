@@ -4,7 +4,6 @@ namespace App\Models;
 
 class QuizAttempt extends \Harishdurga\LaravelQuiz\Models\QuizAttempt
 {
-
     protected $with = ['quiz', 'participant'];
 
     protected $appends = ['examination'];
@@ -27,14 +26,14 @@ class QuizAttempt extends \Harishdurga\LaravelQuiz\Models\QuizAttempt
                     return [
                         'data' => $anw['name'],
                         'is_correct' => $anw['is_correct'],
-                        'is_choose' => $answer->question_option_id == $anw['id']
+                        'is_choose' => (bool)$answer->question_option_id == $anw['id']
                     ];
                 })
             ];
         });
     }
 
-    public function getStateAttribute(): string|null
+    public function getStateAttribute(): bool
     {
         return ($this->examination->where('is_correct', true)->count() / $this->quiz->question_amount_quiz * 10) >= $this->quiz->score_pass_quiz;
     }

@@ -21,6 +21,7 @@ use App\Nova\LMS\MockQuiz;
 use App\Nova\LMS\QuizAttempt;
 use App\Nova\LMS\Question;
 use App\Nova\LMS\Quiz;
+use App\Nova\Metrics\NumberDoMockQuizUser;
 use App\Rules\DoesntContainEmojis;
 use App\Rules\FullnameRule;
 use Carbon\Carbon;
@@ -269,7 +270,9 @@ class User extends Resource
      */
     public function cards(NovaRequest $request): array
     {
-        return [];
+        return [
+            (new NumberDoMockQuizUser($request->get('resourceId')))->width('1/3')->onlyOnDetail()
+        ];
     }
 
     /**

@@ -14,6 +14,7 @@ use App\Nova\Metrics\Filterable\PercentQuestionsInTopicFilter;
 use App\Nova\Metrics\Filterable\PercentUsersInGroupFilter;
 use App\Nova\Metrics\Filterable\TopExaminationInExamFilter;
 use App\Nova\Metrics\Filterable\TopExaminationResultInExamFilter;
+use App\Nova\Metrics\NumberDoMockQuiz;
 use App\Nova\Metrics\NumberExams;
 use App\Nova\Metrics\NumberLessons;
 use App\Nova\Metrics\NumberMockQuizzes;
@@ -58,6 +59,7 @@ class Main extends Dashboard
                 (new PercentQuestionsInTopic())->width('1/3')->canSee(fn() => $can_view_Examinations || $can_view_Review),
                 (new PercentExaminations())->width('1/3')->canSee(fn() => $can_view_Examinations),
                 (new NumberMockQuizzes())->width('1/3')->canSee(fn() => $can_view_Review),
+                (new NumberDoMockQuiz())->width('1/3')->canSee(fn() => $can_view_Review),
 
                 // filter
                 (new NovaGlobalFilter([

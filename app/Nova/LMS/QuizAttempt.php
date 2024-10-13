@@ -2,22 +2,12 @@
 
 namespace App\Nova\LMS;
 
-use App\Enums\ExaminationStatus;
-use App\Enums\QuizType;
 use App\Nova\Resource;
 use App\Nova\Traits\HasCallbacks;
-use App\Nova\User;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 use Laravel\Nova\Fields\Badge;
-use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\Boolean;
-use Laravel\Nova\Fields\Hidden;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
-use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Murdercode\TinymceEditor\TinymceEditor;
@@ -66,7 +56,7 @@ class QuizAttempt extends Resource
         return [
             ID::make(),
             Text::make(__('Quiz'), 'quiz->id', function () {
-                return '<a class="link-default" href="'.sprintf(
+                return '<a class="link-default" href="' . sprintf(
                         '%s/resources/%s/%d', config('nova.path'),
                         Quiz::uriKey(), $this->quiz->id) . '">' . ($this->quiz->name ?? $this->quiz->id) . '</a>';
             })->asHtml(),
@@ -81,7 +71,7 @@ class QuizAttempt extends Resource
                 true => __('Pass'),
             ])->filterable(),
             SimpleRepeatable::make(__('Examination'), 'examination', [
-                Text::make(__('Order Question'), 'order')->displayUsing(fn ($value) => $value ? __('Order Question')." $value" : ''),
+                Text::make(__('Order Question'), 'order')->displayUsing(fn($value) => $value ? __('Order Question') . " $value" : ''),
                 TinymceEditor::make(__('Question'), 'question_content'),
                 Boolean::make(__('Right answer'), 'is_correct'),
                 SimpleRepeatable::make(__('Answer sheet'), 'answers', [

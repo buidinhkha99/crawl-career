@@ -1201,5 +1201,6 @@
     "Lesson Learned" : "Bài giảng đã học",
     "Question Learned" : "Đã trả lời",
     "Mock Quiz Done" : "Đề thi thử đã làm",
-    "Setting Generate Certificate" : "Cấu hình tạo thẻ"
+    "Setting Generate Certificate" : "Cấu hình tạo thẻ",
+    "Percentage of test passes/failures" : "Phần trăm số lượt thi thử đạt/chưa đạt"
 }
