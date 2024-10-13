@@ -18,6 +18,7 @@ use App\Nova\LMS\Certificates\PaperCertificate;
 use App\Nova\LMS\ExaminationInUser;
 use App\Nova\LMS\Lesson;
 use App\Nova\LMS\MockQuiz;
+use App\Nova\LMS\QuizAttempt;
 use App\Nova\LMS\Question;
 use App\Nova\LMS\Quiz;
 use App\Rules\DoesntContainEmojis;
@@ -259,7 +260,7 @@ class User extends Resource
 
             BelongsToMany::make(__('Lesson Learned'), 'lessons', Lesson::class),
             BelongsToMany::make(__('Question Learned'), 'questions', Question::class),
-            BelongsToMany::make(__('Mock Quiz Done'), 'mockQuizzes', MockQuiz::class),
+            HasMany::make(__('Mock Quiz Done'), 'quizAttempts', QuizAttempt::class),
         ];
     }
 

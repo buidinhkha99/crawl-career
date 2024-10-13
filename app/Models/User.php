@@ -100,6 +100,12 @@ class User extends Authenticatable
         return $this->belongsToMany(MockQuiz::class, 'quiz_attempts', 'participant_id', 'quiz_id')
             ->withPivotValue('participant_type', User::class);
     }
+    
+    public function quizAttempts(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        // TODO: check type quiz
+        return $this->hasMany(QuizAttempt::class, 'participant_id');
+    }
 
 
     public function examinations(): \Illuminate\Database\Eloquent\Relations\HasMany
