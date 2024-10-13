@@ -108,8 +108,6 @@ class OccupationalCertificate extends Resource
 
             Panel::make(__('Setting Generate Certificate'), [
                 Text::make(__('Place'), 'place_printed')->default(fn () => __('Lào Cai'))->rules('required'),
-                Date::make(__('Complete From'), 'complete_from_printed')->rules('required')->default(fn () => now()),
-                Date::make(__('Complete To'), 'complete_to_printed')->rules('required')->default(fn () => now()),
                 Text::make(__('Director Name'), 'director_name_printed')->rules('required'),
                 MediaHubField::make(__('Signature Image'), 'signature_photo_printed')->required()
                     ->defaultCollection('setting-certificate')
@@ -125,7 +123,6 @@ class OccupationalCertificate extends Resource
                             }
                         },
                     ]),
-                Date::make(__('Effective To'), 'effective_to_printed')->rules('required')->default(fn () => now()),
             ]),
         ];
     }

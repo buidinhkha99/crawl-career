@@ -199,13 +199,13 @@ class MediaController extends Controller
                 'dob' => $cert->user->dob->format('d/m/Y') ?? null,
                 'job' => $cert->job,
                 'description' => $cert->card_info['description'] ?? null,
-                'complete_from' => Carbon::parse($payload->complete_from)->format('d/m/Y'),
-                'complete_to' => Carbon::parse($payload->complete_to)->format('d/m/Y'),
+                'complete_from' => Carbon::parse($cert->complete_from)->format('d/m/Y'),
+                'complete_to' => Carbon::parse($cert->complete_to)->format('d/m/Y'),
                 'place' => $payload->place ?? null,
                 'created_at' => Carbon::parse($cert->released_at)->format('d/m/Y'),
                 'director_name' => $payload->director_name ?? null,
                 'signature_photo' => $payload->signature_photo ?? null,
-                'effective_to' => Carbon::parse($payload->effective_to)->format('d/m/Y'),
+                'effective_to' => Carbon::parse($cert->effective_to)->format('d/m/Y'),
             ];
         }
 
