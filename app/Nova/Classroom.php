@@ -3,6 +3,7 @@
 namespace App\Nova;
 
 use App\Nova\Actions\AttachGroupUserInClass;
+use App\Nova\Actions\DownloadAttendanceExcel;
 use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\Date;
 use Laravel\Nova\Fields\HasMany;
@@ -107,7 +108,12 @@ class Classroom extends Resource
     {
 
         return [
-            (new AttachGroupUserInClass())->showInline()->showOnDetail()
+            (new AttachGroupUserInClass())->showInline()->showOnDetail(),
+            (new DownloadAttendanceExcel())
+                ->canRun(fn () => $request->user()->can('viewAny', \App\Models\Classroom::class))
+                ->confirmButtonText(__('Download'))
+                ->cancelButtonText(__('Cancel'))
+                ->onlyOnDetail(),
         ];
     }
 }
