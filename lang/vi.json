@@ -1202,5 +1202,21 @@
     "Question Learned" : "Câu hỏi đã trả lời",
     "Mock Quiz Done" : "Đề thi thử đã làm",
     "Setting Generate Certificate" : "Cấu hình tạo thẻ",
-    "Percentage of test passes/failures" : "Phần trăm số lượt thi thử đạt/chưa đạt"
+    "Percentage of test passes/failures" : "Phần trăm số lượt thi thử đạt/chưa đạt",
+    "Classroom": "Lớp học",
+    "Classrooms": "Lớp học",
+    "Attendance": "Điểm danh",
+    "Attendances": "Điểm danh",
+    "Attendees": "Người tham gia",
+    "Attendance User": "Người tham gia lớp học",
+    "Attended": "Đã tham gia",
+    "Attended At": "Thời gian tham gia",
+    "User already attended!": "Người dùng đã điểm danh!",
+    "Attendance added successfully!": "Đã điểm danh thành công!",
+    "Lessons count": "Số bài giảng",
+    "Start Date": "Ngày bắt đầu",
+    "End Date": "Ngày kết thúc",
+    "QR Code URL": "Đường dẫn mã QR",
+    "QR Code": "Mã QR",
+    "Quiz Group": "Nhóm đề thi"
 }

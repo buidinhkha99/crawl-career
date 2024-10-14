@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\Hidden;
 use Laravel\Nova\Fields\ID;
@@ -63,6 +64,7 @@ class MockQuiz extends Resource
     {
         return [
             ID::make(),
+            BelongsTo::make(__('Group'), 'group', QuizGroup::class),
             Number::make(__('Order'), 'sort_order')->readonly()->exceptOnForms(),
             Number::make(__('Duration (minute)'), 'duration')->rules('required'),
             Number::make(__('Score Pass'), 'score_pass_quiz')

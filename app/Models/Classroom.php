@@ -18,7 +18,7 @@ class Classroom extends Model
 
     public function attendees(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class)->using(ClassroomUser::class);
     }
 
     public function attendances(): \Illuminate\Database\Eloquent\Relations\HasMany

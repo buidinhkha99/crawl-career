@@ -41,6 +41,9 @@ Route::post('/lessons/{id}/submit', [\App\Http\Controllers\LessonController::cla
 
 Route::get('/exam-random', [ExamRandomController::class, 'topics']);
 
+Route::get('/mock-quiz-groups', [\App\Http\Controllers\MockQuizController::class, 'groups']);
+Route::get('/mock-quiz-groups/{id}', [\App\Http\Controllers\MockQuizController::class, 'groupQuizzes']);
+
 Route::get('/mock-quizzes', [\App\Http\Controllers\MockQuizController::class, 'show']);
 Route::get('/mock-quizzes/{id}', [\App\Http\Controllers\MockQuizController::class, 'detail']);
 Route::post('/mock-quizzes/{id}/submit', [\App\Http\Controllers\QuizController::class, 'saveAnswerMockQuiz']);
@@ -63,7 +66,25 @@ Route::middleware('auth:api')->group(function () {
         $attendance = \App\Models\Attendance::findOrFail($id);
         $user = auth('api')->user();
 
-        $attendance->attendees()->sync($user, false);
+        $attended = $attendance->attendees()
+            ->whereNull('created_at')
+            ->where(['attendance_id' => $attendance->id, 'user_id' => $user->id])
+            ->first();
+
+        if (is_null($attended)) {
+            return response()->json([
+                'message' => __('User already attended!'),
+                'data' => [
+                    'classroom' => $attendance->classroom->name,
+                    'lesson' => $attendance->name,
+                    'date' => $attendance->date,
+                ]
+            ]);
+        }
+
+        $attended->created_at = now();
+        $attended->updated_at = now();
+        $attended->save();
 
         return response()->json([
             'message' => __('Attendance added successfully!'),

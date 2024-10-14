@@ -3,15 +3,19 @@
 namespace App\Nova;
 
 use Chaseconey\ExternalImage\ExternalImage;
+use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Avatar;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\Date;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
+use Laravel\Nova\Fields\URL;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use NovaAttachMany\AttachMany;
+use Outl1ne\MultiselectField\Multiselect;
 
 class Attendance extends Resource
 {
@@ -22,7 +26,7 @@ class Attendance extends Resource
      */
     public static $model = \App\Models\Attendance::class;
 
-    public static $clickAction = 'edit';
+//    public static $clickAction = 'edit';
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -40,6 +44,11 @@ class Attendance extends Resource
         'name',
     ];
 
+    public static function label(): string
+    {
+        return __('Attendance');
+    }
+
     /**
      * Get the fields displayed by the resource.
      *
@@ -51,21 +60,25 @@ class Attendance extends Resource
         return [
             ID::make()->sortable(),
 
-            Image::make('QR Code', 'qr_code_url')
+            Image::make(__('QR Code'), 'qr_code_url')
                 ->readonly()
                 ->thumbnail(fn() => $this->qr_code_url)
                 ->preview(fn() => $this->qr_code_url)
                 ->hideWhenCreating()
                 ->disableDownload(),
 
+            URL::make(__('QR Code URL'), 'qr_code_url')->onlyOnDetail(),
+
             BelongsTo::make(__('Classroom'), 'classroom', Classroom::class)->required()->sortable()->searchable(),
-            Text::make(__('Name'), "name")->required()->rules('required')->sortable(),
-            Date::make(__('Date'), 'date')->sortable(),
+            Text::make(__('Name'), "name")->rules('required')->sortable(),
+            Date::make(__('Date'), 'date')->rules('required')->sortable(),
             Textarea::make(__('Description'), 'description'),
 
-            AttachMany::make(__('Attendees'), 'attendees', User::class)
-                ->showCounts()
-                ->showPreview(),
+//            AttachMany::make(__('Attendees'), 'attendees', User::class)
+//                ->showCounts()
+//                ->showPreview(),
+
+            HasMany::make(__('Attendees'), 'attendees', AttendanceUser::class),
         ];
     }
 

@@ -15,14 +15,32 @@ class Attendance extends Model
         'date' => 'date',
     ];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($attendance) {
+            $attendees = $attendance->classroom->attendees;
+
+            foreach ($attendees as $attendee) {
+                AttendanceClassroom::create([
+                    'attendance_id' => $attendance->id,
+                    'user_id' => $attendee->id,
+                    'created_at' => null,
+                    'updated_at' => null,
+                ]);
+            }
+        });
+    }
+
     public function classroom(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Classroom::class);
     }
 
-    public function attendees(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function attendees(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->belongsToMany(User::class, 'attendance_classroom', 'attendance_id', 'user_id')->withTimestamps();
+        return $this->hasMany(AttendanceClassroom::class, 'attendance_id', 'id');
     }
 
     public function getRegisterUrlAttribute()

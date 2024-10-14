@@ -2,7 +2,7 @@
 
 namespace App\Nova;
 
-use Illuminate\Http\Request;
+use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\Date;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
@@ -10,7 +10,6 @@ use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use NovaAttachMany\AttachMany;
 
 class Classroom extends Resource
 {
@@ -20,6 +19,11 @@ class Classroom extends Resource
      * @var class-string<\App\Models\Classroom>
      */
     public static $model = \App\Models\Classroom::class;
+
+    public static function label(): string
+    {
+        return __('Classroom');
+    }
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -47,17 +51,15 @@ class Classroom extends Resource
     {
         return [
             ID::make()->sortable(),
-            Text::make(__('Name'), "name")->required()->rules('required')->sortable(),
-            Number::make(__('Lessons count'), 'lessons_count')->min(1)->step(1)->required(),
+            Text::make(__('Name'), "name")->rules('required')->sortable(),
+            Number::make(__('Lessons count'), 'lessons_count')->min(1)->step(1)->rules('required'),
             Textarea::make(__('Description'), 'description'),
             Date::make(__('Start Date'), 'started_at'),
             Date::make(__('End Date'), 'ended_at'),
 
-            AttachMany::make(__('Attendees'), 'attendees', User::class)
-                ->showCounts()
-                ->showPreview(),
+            BelongsToMany::make(__('Attendees'), 'attendees', User::class)->searchable()->sortable(),
 
-            HasMany::make('Attendances', 'attendances', Attendance::class),
+            HasMany::make(__('Attendances'), 'attendances', Attendance::class),
         ];
     }
 
