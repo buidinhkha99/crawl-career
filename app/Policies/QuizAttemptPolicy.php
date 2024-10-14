@@ -12,7 +12,7 @@ use Sereny\NovaPermissions\Policies\BasePolicy;
 
 class QuizAttemptPolicy extends BasePolicy
 {
-    protected $key = 'quiz_attempt';
+    protected $key = 'quizAttempt';
 
     public function create(Model $user): bool
     {

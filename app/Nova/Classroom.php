@@ -2,6 +2,7 @@
 
 namespace App\Nova;
 
+use App\Nova\Actions\AttachGroupUserInClass;
 use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\Date;
 use Laravel\Nova\Fields\HasMany;
@@ -104,6 +105,9 @@ class Classroom extends Resource
      */
     public function actions(NovaRequest $request)
     {
-        return [];
+
+        return [
+            (new AttachGroupUserInClass())->showInline()->showOnDetail()
+        ];
     }
 }

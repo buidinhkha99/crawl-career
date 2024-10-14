@@ -176,8 +176,8 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                         ->canSee(fn () => Auth::user() && ((method_exists(Auth::user(), 'isSuperAdmin') && Auth::user()->isSuperAdmin()))),
                     MenuItem::make(__('Paper Certificate'))->path('/settings/paper-certificate')
                         ->canSee(fn () => Auth::user() && ((method_exists(Auth::user(), 'isSuperAdmin') && Auth::user()->isSuperAdmin()))),
-                    MenuItem::make(__('PDF Certificate'))->path('/settings/pdf-certificate')->canSee(fn () => Auth::user()),
-                    MenuItem::resource(ObjectGroupCertificate::class)->canSee(fn () => Auth::user()),
+                    MenuItem::make(__('PDF Certificate'))->path('/settings/pdf-certificate')->canSee(fn () => Auth::user() && Gate::allows('viewAny', [Setting::class, 'PdfCertificate'])),
+                    MenuItem::resource(ObjectGroupCertificate::class)->canSee(fn () => Auth::user() && Gate::allows('viewAny', ObjectGroupCertificate::class)),
                 ])->collapsedByDefault()->icon('cog'),
                 MenuSection::make(__('Interface'), [
                     MenuItem::resource(PageStatic::class),

@@ -46,6 +46,12 @@ class RolesAndPermissionsSeeder extends Seeder
             'MockQuiz',
             'Classroom',
             'Attendance',
+            'AttendanceClassroom',
+            'QuizAttempt',
+            'QuizGroup',
+            'Certificate',
+            'PdfCertificate',
+            'ObjectGroup'
             // ... // List all your Models you want to have Permissions for.
         ]);
 
