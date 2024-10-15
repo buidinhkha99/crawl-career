@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 
 class AttendanceClassroomPolicy extends BasePolicy
 {
-    public $key = 'attendance_classroom';
+    public $key = 'attendanceClassroom';
 
     public function create(Model $user)
     {

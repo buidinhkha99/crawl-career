@@ -14,7 +14,7 @@ class CertificateController extends Controller
         $user = auth('api')->user();
         $certificateOccupation = Certificate::where('user_id', $user?->id)->where('type', CertificateConstant::OCCUPATIONAL_SAFETY)->orderBy('released_at', 'desc')->first();
         $certificateElectric = Certificate::where('user_id', $user?->id)->where('type', CertificateConstant::ELECTRICAL_SAFETY)->orderBy('released_at', 'desc')->first();
-        $certificatePaper = Certificate::where('user_id', $user?->id)->where('type', CertificateConstant::PAPER_SAFETY)->orderBy('released_at', 'desc')->first();
+        $certificatePaper = Certificate::where('user_id', $user?->id)->where('type', CertificateConstant::PAPER_SAFETY)->orderBy('released_at', 'desc')->orderBy('card_id', 'desc')->first();
 
         $certificates = [
             [
