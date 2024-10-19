@@ -9,10 +9,12 @@ class Attendance extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["classroom_id", "name", "description", "date"];
+    protected $fillable = ["classroom_id", "name", "description", "date", "start_attendance", "end_attendance"];
 
     protected $casts = [
         'date' => 'date',
+        'start_attendance' => 'datetime',
+        'end_attendance' => 'datetime',
     ];
 
     public static function boot()

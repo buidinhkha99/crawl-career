@@ -59,11 +59,7 @@ class Classroom extends Resource
             Textarea::make(__('Description'), 'description'),
             Date::make(__('Start Date'), 'started_at'),
             Date::make(__('End Date'), 'ended_at'),
-            DateTime::make(__('Start Attendance'), 'start_attendance'),
-            DateTime::make(__('End Attendance'), 'end_attendance'),
-
             BelongsToMany::make(__('Attendees'), 'attendees', User::class)->searchable()->sortable(),
-
             HasMany::make(__('Attendances'), 'attendances', Attendance::class),
         ];
     }

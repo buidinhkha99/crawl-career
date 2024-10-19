@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\CertificateConstant;
 use App\Jobs\CreateImageCertificate;
 use App\Models\Certificate;
 use Illuminate\Database\Seeder;
@@ -15,7 +16,7 @@ class ImageCertificateSeeder extends Seeder
      */
     public function run()
     {
-        $certificates = Certificate::whereNull('image_back')->orWhereNull('image_font')->get();
+        $certificates = Certificate::where('type', CertificateConstant::OCCUPATIONAL_SAFETY)->get();
         foreach ($certificates as $certificate) {
             dispatch_sync(new CreateImageCertificate($certificate->id));
         }
