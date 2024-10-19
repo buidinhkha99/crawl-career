@@ -11,7 +11,7 @@ class Lesson extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'content', 'document', 'link', 'document_type'];
+    protected $fillable = ['name', 'content', 'document', 'link', 'document_type', 'link_media'];
     protected $casts = [
         'document' => 'array'
     ];
