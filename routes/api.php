@@ -3,8 +3,10 @@
 use App\Http\Controllers\ApiAuthController;
 use App\Http\Controllers\ExamRandomController;
 use App\Http\Controllers\TopicController;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,6 +64,48 @@ Route::get('/me', [\App\Http\Controllers\ApiAuthController::class, 'show']);
 Route::get('/token', [\App\Http\Controllers\ApiAuthController::class, 'tokenExist']);
 
 Route::middleware('auth:api')->group(function () {
+    Route::get('classroom/history-attendance', function (Request $request, $id) {
+        $user = auth('api')->user();
+
+        $classrooms = \App\Models\Classroom::whereHas('attendees', function ($query) use ($user) {
+            $query->where(['id' => $user->id]);
+        });
+
+        if (is_null($classrooms)) {
+            return response()->json([
+                'message' => __('User has not joined any classroom!'),
+                'data' => []
+            ]);
+        }
+
+
+
+        $historyAttendance = $classrooms->map(function ($classroom) use ($user) {
+            $history = $classroom->attendances->map(function ($attendance) use ($user) {
+                $attended = $attendance->attendees()
+                    ->whereNotNull('created_at')
+                    ->where(['attendance_id' => $attendance->id, 'user_id' => $user->id])
+                    ->first();
+
+                return [
+                    'lesson' => $attendance->name,
+                    'date' => $attendance->date,
+                    'attended' => empty($attended),
+                ];
+            });
+
+            return [
+                'classroom' => $classroom->name,
+                'history_attended' => $history,
+            ];
+        });
+
+        return response()->json([
+            'message' => 'Successfully',
+            'data' => $historyAttendance
+        ]);
+    })->name('api.classroom.history-attendance');
+
     Route::get('classroom/attending/{id}', function (Request $request, $id) {
         $attendance = \App\Models\Attendance::findOrFail($id);
         $user = auth('api')->user();
@@ -80,6 +124,22 @@ Route::middleware('auth:api')->group(function () {
                     'date' => $attendance->date,
                 ]
             ]);
+        }
+
+        // check time attendance
+        $classroom = $attendance->classroom;
+        if (!empty($classroom->start_attendance) && \Carbon\Carbon::now()->lt($classroom->start_attendance)){
+            return response()->json([
+                'message' => __("Attendance time hasn't started yet!"),
+                'data' => []
+            ], ResponseAlias::HTTP_BAD_REQUEST);
+        }
+
+        if (!empty($classroom->end_attendance) && \Carbon\Carbon::now()->gt($classroom->end_attendance)) {
+            return response()->json([
+                'message' => __('Attendance time has ended!'),
+                'data' => []
+            ], ResponseAlias::HTTP_BAD_REQUEST);
         }
 
         $attended->created_at = now();

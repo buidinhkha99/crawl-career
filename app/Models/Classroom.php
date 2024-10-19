@@ -9,11 +9,13 @@ class Classroom extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["name", "description", "lessons_count", "started_at", "ended_at"];
+    protected $fillable = ["name", "description", "lessons_count", "started_at", "ended_at", "start_attendance", "end_attendance"];
 
     protected $casts = [
         'started_at' => 'date',
         'ended_at' => 'date',
+        'start_attendance' => 'datetime',
+        'end_attendance' => 'datetime',
     ];
 
     public function attendees(): \Illuminate\Database\Eloquent\Relations\BelongsToMany

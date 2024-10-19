@@ -6,6 +6,7 @@ use App\Nova\Actions\AttachGroupUserInClass;
 use App\Nova\Actions\DownloadAttendanceExcel;
 use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\Date;
+use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
@@ -58,6 +59,8 @@ class Classroom extends Resource
             Textarea::make(__('Description'), 'description'),
             Date::make(__('Start Date'), 'started_at'),
             Date::make(__('End Date'), 'ended_at'),
+            DateTime::make(__('Start Attendance'), 'start_attendance'),
+            DateTime::make(__('End Attendance'), 'end_attendance'),
 
             BelongsToMany::make(__('Attendees'), 'attendees', User::class)->searchable()->sortable(),
 
