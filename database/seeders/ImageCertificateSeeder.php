@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Enums\CertificateConstant;
 use App\Jobs\CreateImageCertificate;
 use App\Models\Certificate;
 use Illuminate\Database\Seeder;
