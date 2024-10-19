@@ -16,7 +16,7 @@ class ImageCertificateSeeder extends Seeder
      */
     public function run()
     {
-        $certificates = Certificate::where('type', CertificateConstant::OCCUPATIONAL_SAFETY)->get();
+        $certificates = Certificate::whereNull('image_back')->orWhereNull('image_font')->get();
         foreach ($certificates as $certificate) {
             dispatch_sync(new CreateImageCertificate($certificate->id));
         }

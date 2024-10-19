@@ -218,7 +218,7 @@
                     <div class="normal-text">Sinh
                         ngày: {{$data_back_size_cards['dob'] ?? null}}</div>
                     <div class="normal-text job">Công
-                        việc: Trạm 01 - Công nhân kỹ thuật, Công nhân kỹ thuật, Công nhân kỹ thuật, Công nhân kỹ thuật, Công nhân kỹ thuật</div>
+                        việc: {{$data_back_size_cards['job'] ?? null}}</div>
                     <div class="normal-text">
                         Đã hoàn thành khóa huấn
                         luyện: {{$data_back_size_cards['description'] ?? null}}
