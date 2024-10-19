@@ -168,6 +168,10 @@
         .border-none {
             border: none;
         }
+
+        .small-font {
+            font-size: 8px; /* Decrease font size by 1 */
+        }
     </style>
 </head>
 <body>
@@ -213,7 +217,7 @@
                     </div>
                     <div class="normal-text">Sinh
                         ngày: {{$data_back_size_cards['dob'] ?? null}}</div>
-                    <div class="normal-text">Công
+                    <div class="normal-text job">Công
                         việc: {{$data_back_size_cards['job'] ?? null}}</div>
                     <div class="normal-text">
                         Đã hoàn thành khóa huấn
@@ -242,5 +246,18 @@
         </div>
     </div>
 @endfor
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var textContent = document.querySelector('.job');
+        var lineHeight = parseInt(window.getComputedStyle(textContent).lineHeight);
+        console.log(lineHeight)
+        var maxHeight = lineHeight * 3; // 3 lines limit
+
+        if (textContent.scrollHeight > maxHeight) {
+            textContent.classList.add('small-font');
+        }
+    });
+</script>
 </body>
 </html>

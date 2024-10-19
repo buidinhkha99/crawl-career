@@ -3,6 +3,7 @@
 use App\Http\Controllers\ApiAuthController;
 use App\Http\Controllers\ExamRandomController;
 use App\Http\Controllers\TopicController;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
@@ -62,40 +63,8 @@ Route::get('/me', [\App\Http\Controllers\ApiAuthController::class, 'show']);
 Route::get('/token', [\App\Http\Controllers\ApiAuthController::class, 'tokenExist']);
 
 Route::middleware('auth:api')->group(function () {
-    Route::get('classroom/attending/{id}', function (Request $request, $id) {
-        $attendance = \App\Models\Attendance::findOrFail($id);
-        $user = auth('api')->user();
-
-        $attended = $attendance->attendees()
-            ->whereNull('created_at')
-            ->where(['attendance_id' => $attendance->id, 'user_id' => $user->id])
-            ->first();
-
-        if (is_null($attended)) {
-            return response()->json([
-                'message' => __('User already attended!'),
-                'data' => [
-                    'classroom' => $attendance->classroom->name,
-                    'lesson' => $attendance->name,
-                    'date' => $attendance->date,
-                ]
-            ]);
-        }
-
-        $attended->created_at = now();
-        $attended->updated_at = now();
-        $attended->save();
-
-        return response()->json([
-            'message' => __('Attendance added successfully!'),
-            'data' => [
-                'classroom' => $attendance->classroom->name,
-                'lesson' => $attendance->name,
-                'date' => $attendance->date,
-            ]
-        ]);
-    })->name('api.attendance.add');
-
+    Route::get('/classroom/history-attendance', [\App\Http\Controllers\ClassroomController::class, 'historyAttendance']);
+    Route::get('/classroom/attending/{id}', [\App\Http\Controllers\ClassroomController::class, 'attending'] )->name('api.attendance.add');
     Route::get('certificates', [\App\Http\Controllers\CertificateController::class, 'certificates'])->name('api.certificates.get');
 });
 

@@ -8,6 +8,7 @@ use Laravel\Nova\Fields\Avatar;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\Date;
+use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Image;
@@ -73,6 +74,8 @@ class Attendance extends Resource
             Text::make(__('Name'), "name")->rules('required')->sortable(),
             Date::make(__('Date'), 'date')->rules('required')->sortable(),
             Textarea::make(__('Description'), 'description'),
+            DateTime::make(__('Start Attendance'), 'start_attendance'),
+            DateTime::make(__('End Attendance'), 'end_attendance'),
 
 //            AttachMany::make(__('Attendees'), 'attendees', User::class)
 //                ->showCounts()
