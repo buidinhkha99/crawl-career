@@ -32,13 +32,6 @@ class ClassroomController extends Controller
 
         $data = $query->paginate($request->get('per_page', 10));
         $attendances = $data->getCollection();
-        if (is_null($attendances)) {
-            return response()->json([
-                'message' => __('User has not joined any lesson!'),
-                'data' => []
-            ]);
-        }
-
         $historyAttendance = $attendances->map(fn($attendance) => [
             'classroom' => $attendance->classroom->name,
             'lesson' => $attendance->name,
