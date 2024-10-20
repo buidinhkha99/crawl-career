@@ -123,7 +123,7 @@ class Lesson extends Resource
                    return $fail(__('Document link is required'));
                 }
             }]),
-        
+            Text::make(__("Video link"), 'link_media'),
             TinymceEditor::make(__('Lesson content'), 'content')
                 ->showOnIndex()
                 ->fullWidth()

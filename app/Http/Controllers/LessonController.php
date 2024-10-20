@@ -26,6 +26,7 @@ class LessonController extends Controller
             'link-driver' => $lesson->link,
             'content' => $lesson->content,
             'documents' => $lesson->documents,
+            'link_media' => $lesson->link_media,
             'next_lesson' => $this->nextLessonUrl($lesson),
             'prev_lesson' => $this->prevLessonUrl($lesson),
             'complete_theory' => $lesson->users()->where('users.id', $user?->id)->first()?->pivot->complete_theory ? 'true' : 'false',
