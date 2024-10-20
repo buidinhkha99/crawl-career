@@ -176,6 +176,8 @@
         .image {
             width: 85px; /* Kích thước khung ảnh */
             height: 113px; /* Kích thước khung ảnh */
+            object-fit: cover; /* Cắt ảnh sao cho luôn lấp đầy container */
+            object-position: center; /* Đảm bảo cắt ở giữa ảnh */
         }
 
         .title-back {

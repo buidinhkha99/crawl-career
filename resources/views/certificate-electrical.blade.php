@@ -107,6 +107,8 @@
         .image {
             width: 2cm;
             height: 3cm;
+            object-fit: cover; /* Cắt ảnh sao cho luôn lấp đầy container */
+            object-position: center; /* Đảm bảo cắt ở giữa ảnh */
         }
 
         .border-image {

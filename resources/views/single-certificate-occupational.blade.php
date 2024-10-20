@@ -82,6 +82,8 @@
         .image {
             width: 85px; /* Kích thước khung ảnh */
             height: 113px; /* Kích thước khung ảnh */
+            object-fit: cover; /* Cắt ảnh sao cho luôn lấp đầy container */
+            object-position: center; /* Đảm bảo cắt ở giữa ảnh */
         }
 
         .header {
@@ -217,8 +219,8 @@
                     </div>
                     <div class="normal-text">Sinh
                         ngày: {{$data_back_size_cards['dob'] ?? null}}</div>
-                    <div class="normal-text job">Công
-                        việc: {{$data_back_size_cards['job'] ?? null}}</div>
+                    <div class="normal-text job"><span style="font-size: 10px">Công việc: </span>
+                        {{$data_back_size_cards['job'] ?? null}}</div>
                     <div class="normal-text">
                         Đã hoàn thành khóa huấn
                         luyện: {{$data_back_size_cards['description'] ?? null}}
@@ -251,7 +253,6 @@
     document.addEventListener("DOMContentLoaded", function() {
         var textContent = document.querySelector('.job');
         var lineHeight = parseInt(window.getComputedStyle(textContent).lineHeight);
-        console.log(lineHeight)
         var maxHeight = lineHeight * 3; // 3 lines limit
 
         if (textContent.scrollHeight > maxHeight) {
