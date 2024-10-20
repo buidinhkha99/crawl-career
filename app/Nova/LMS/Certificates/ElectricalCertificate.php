@@ -4,6 +4,7 @@ namespace App\Nova\LMS\Certificates;
 
 use App\Enums\CertificateConstant;
 use App\Models\Certificate;
+use App\Models\Setting;
 use App\Nova\Actions\DownloadExcelTemplate;
 use App\Nova\Actions\DownloadPDFElectricCertificate;
 use App\Nova\Actions\ImportCertificate;
@@ -20,12 +21,14 @@ use Carbon\Carbon;
 use Laravel\Nova\Exceptions\HelperNotSupported;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Date;
+use Laravel\Nova\Fields\Hidden;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Panel;
+use Outl1ne\MultiselectField\Multiselect;
 use Outl1ne\NovaMediaHub\Models\Media;
 use Outl1ne\NovaMediaHub\Nova\Fields\MediaHubField;
 
@@ -99,6 +102,52 @@ class ElectricalCertificate extends Resource
             Panel::make(__('Setting Generate Certificate'), [
                 Text::make(__('Director Name'), 'director_name_printed')->rules('required'),
                 MediaHubField::make(__('Signature Image'), 'signature_photo_printed')->required()
+                    ->defaultCollection('setting-certificate')
+                    ->rules(fn ($request) => [
+                        function ($attribute, $value, $fail) {
+                            $mime_types = collect(['image/jpeg', 'image/png']);
+                            $media = Media::select('id', 'mime_type')->find($value);
+                            if ($media && ! $mime_types->contains($media?->mime_type)) {
+                                return $fail(__('The :attribute does not match the format :format.', [
+                                    'attribute' => $attribute,
+                                    'format' => $mime_types->join(', '),
+                                ]));
+                            }
+                        },
+                    ]),
+            ]),
+        ];
+    }
+
+    public function fieldsForCreate(NovaRequest $request)
+    {
+        return [
+            Multiselect::make(__('Users'), 'user_id')
+                ->options(\App\Models\User::select(['id', 'name', 'employee_code'])->get()->mapWithKeys(function ($user) {
+                    return [$user->id => $user->employee_code . ' - ' . $user->name];
+                }))
+                ->singleSelect()
+                ->rules('required'),
+            Hidden::make('Type', 'type')->default(fn() => CertificateConstant::ELECTRICAL_SAFETY),
+            Number::make(__('Card number'), 'card_id')->rules('required', function($attribute, $value, $fail)  use ($request){
+                $year = Carbon::parse($request->released_at)->year;
+                if (Certificate::where('type', CertificateConstant::ELECTRICAL_SAFETY)
+                    ->where('user_id', '!=', $this->user_id)
+                    ->where('card_id', $value)
+                    ->whereYear('released_at', $year)
+                    ->exists()
+                ) {
+                    return $fail(__('Card number used by other users in year :year', [
+                        'year' => $year
+                    ]));
+                }
+            }),
+            Text::make(__('Level'), 'level')->required(),
+            Date::make(__('Issue date'), 'released_at')->required(),
+
+            Panel::make(__('Setting Generate Certificate'), [
+                Text::make(__('Director Name'), 'director_name_printed')->default(fn () => Setting::get('director_name_electric'))->rules('required'),
+                MediaHubField::make(__('Signature Image'), 'signature_photo_printed')->default(fn () => Setting::get('signature_photo_electric'))->required()
                     ->defaultCollection('setting-certificate')
                     ->rules(fn ($request) => [
                         function ($attribute, $value, $fail) {

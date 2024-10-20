@@ -15,7 +15,7 @@ class CertificateObserver
      */
     public function created(Certificate $certificate)
     {
-        //
+        dispatch_sync(new CreateImageCertificate($certificate->id));
     }
 
     /**

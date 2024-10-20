@@ -904,6 +904,7 @@
     "Invalid correct answer": "Trường Đáp án không hợp lệ",
     "Added the right question to the system, check the message to see if any question failed.": "Đã thêm các câu hỏi phù hợp vào hệ thống, kiểm tra thông báo để xem có câu hỏi nào bị lỗi không.",
     "Tests": "Bài thi",
+    "Mock Tests": "Bài thi thử",
     "Questions & Answers": "Câu hỏi & Đáp án",
     "Order Question": "Câu",
     "Correct Answer": "Đáp án đúng",
@@ -1226,5 +1227,10 @@
     "Attendance time has ended!" : "Thời gian điểm danh đã kết thúc!",
     "User has not joined any classroom!" : "Chưa có lớp học nào được tham gia",
     "Successfully" : "Thành công",
-    "Video link" : "Link video"
+    "Video link" : "Link video",
+    "Academic report" : "Báo cáo học tập",
+    "Time answer" : "Thời gian trả lời",
+    "Complete theory" : "Hoàn thành lý thuyết",
+    "Complete lesson" : "Hoàn thành bài giảng",
+    "Time complete" : "Thời gian học"
 }

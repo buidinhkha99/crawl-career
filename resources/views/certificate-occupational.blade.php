@@ -62,6 +62,8 @@
         .image {
             width: 3cm; /* Kích thước khung ảnh */
             height: 4cm; /* Kích thước khung ảnh */
+            object-fit: cover; /* Cắt ảnh sao cho luôn lấp đầy container */
+            object-position: center; /* Đảm bảo cắt ở giữa ảnh */
         }
 
         .header {
@@ -99,12 +101,13 @@
         }
 
         .info {
-            font-size: 13px;
+            font-size: 12px;
             margin-top: 15px;
             margin-left: 12px;
             line-height: 16px;
             text-align: left;
             height: 150px;
+            width: 91%;
         }
 
         .location {
@@ -140,6 +143,9 @@
             grid-template-columns: repeat(3, minmax(0, 1fr));
             column-gap: 0.1cm;
             row-gap: 0.1cm;
+        }
+        .small-font {
+            font-size: 10px;
         }
     </style>
 
@@ -197,8 +203,8 @@
                             </div>
                             <div class="normal-text">Sinh
                                 ngày: {{$data_back_size_cards['dob'] ?? null}}</div>
-                            <div class="normal-text">Công
-                                việc: {{$data_back_size_cards['job'] ?? null}}</div>
+                            <div class="normal-text job"> <span style="font-size: 12px">Công
+                                việc:</span> {{$data_back_size_cards['job'] ?? null}}</div>
                             <div class="normal-text">
                                 Đã hoàn thành khóa huấn
                                 luyện: {{$data_back_size_cards['description'] ?? null}}
@@ -228,6 +234,19 @@
         @endfor
     </div>
 @endfor
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var textContents = document.querySelectorAll('.job');
 
+        textContents.forEach(function(element) {
+            var lineHeight = parseInt(window.getComputedStyle(element).lineHeight);
+            var maxHeight = lineHeight * 3; // 3 lines limit
+            console.log(element.scrollHeight, maxHeight);
+            if (element.scrollHeight > maxHeight) {
+                element.classList.add('small-font');
+            }
+        });
+    });
+</script>
 </body>
 </html>

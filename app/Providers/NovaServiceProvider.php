@@ -14,6 +14,9 @@ use App\Nova\Dashboards\Main;
 use App\Nova\Dashboards\Review;
 use App\Nova\Flexible\Components\Background;
 use App\Nova\Form;
+use App\Nova\LMS\AcademicReport\ExaminationInMockQuiz;
+use App\Nova\LMS\AcademicReport\LessonDone;
+use App\Nova\LMS\AcademicReport\QuestionDone;
 use App\Nova\LMS\Certificates\ElectricalCertificate;
 use App\Nova\LMS\Certificates\OccupationalCertificate;
 use App\Nova\LMS\Certificates\PaperCertificate;
@@ -159,6 +162,12 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     MenuItem::resource(OccupationalCertificate::class),
                     MenuItem::resource(ElectricalCertificate::class),
                     MenuItem::resource(PaperCertificate::class),
+                ])->icon('academic-cap')->collapsedByDefault(),
+
+                MenuSection::make(__('Academic report'), [
+                    MenuItem::resource(QuestionDone::class),
+                    MenuItem::resource(ExaminationInMockQuiz::class),
+                    MenuItem::resource(LessonDone::class),
                 ])->icon('academic-cap')->collapsedByDefault(),
 
                 MenuSection::make(__('Configuration'), [

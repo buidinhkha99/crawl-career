@@ -82,7 +82,7 @@ class Certificate extends Model
     // Helper method to decode card_info
     public function getCardInfoAttribute()
     {
-        return json_decode($this->attributes['card_info'], true) ?? [];
+        return json_decode($this->attributes['card_info'] ?? null, true) ?? [];
     }
 
     // Helper method to set card_info

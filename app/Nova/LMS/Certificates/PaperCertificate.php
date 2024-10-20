@@ -5,6 +5,7 @@ namespace App\Nova\LMS\Certificates;
 use App\Enums\CertificateConstant;
 use App\Enums\UserGender;
 use App\Models\Certificate;
+use App\Models\Setting;
 use App\Nova\Actions\DownloadExcelTemplate;
 use App\Nova\Actions\DownloadPDFElectricCertificate;
 use App\Nova\Actions\DownloadPDFPaperCertificate;
@@ -25,6 +26,8 @@ use Carbon\Carbon;
 use Laravel\Nova\Exceptions\HelperNotSupported;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Date;
+use Laravel\Nova\Fields\FormData;
+use Laravel\Nova\Fields\Hidden;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Fields\Number;
@@ -124,6 +127,100 @@ class PaperCertificate extends Resource
                 Text::make(__('Place'), 'place_printed')->default(fn () => __('Lào Cai'))->rules('required'),
                 Text::make(__('Director Name'), 'director_name_printed')->rules('required'),
                 MediaHubField::make(__('Signature Image'), 'signature_photo_printed')->required()
+                    ->defaultCollection('setting-certificate')
+                    ->rules(fn ($request) => [
+                        function ($attribute, $value, $fail) {
+                            $mime_types = collect(['image/jpeg', 'image/png']);
+                            $media = Media::select('id', 'mime_type')->find($value);
+                            if ($media && ! $mime_types->contains($media?->mime_type)) {
+                                return $fail(__('The :attribute does not match the format :format.', [
+                                    'attribute' => $attribute,
+                                    'format' => $mime_types->join(', '),
+                                ]));
+                            }
+                        },
+                    ]),
+            ]),
+        ];
+    }
+
+    public function fieldsForCreate(NovaRequest $request)
+    {
+        return [
+            Multiselect::make(__('Users'), 'user_id')
+                ->options(\App\Models\User::select(['id', 'name', 'employee_code'])->get()->mapWithKeys(function ($user) {
+                    return [$user->id => $user->employee_code . ' - ' . $user->name];
+                }))
+                ->singleSelect()
+                ->rules('required'),
+            Hidden::make('Type', 'type')->default(fn() => CertificateConstant::PAPER_SAFETY),
+            Number::make(__('Card number'), 'card_id')->rules('required', function($attribute, $value, $fail)  use ($request){
+                $year = Carbon::parse($request->released_at)->year;
+                if (Certificate::where('type', CertificateConstant::PAPER_SAFETY)
+                    ->where('user_id', $this->user_id)
+                    ->where('card_id', $value)
+                    ->where('id', '!=', $this->id)
+                    ->whereYear('released_at', $year)
+                    ->exists()
+                ) {
+                    return $fail(__('Card number used in year :year', [
+                        'year' => $year
+                    ]));
+                }
+            }),
+            Hidden::make(__('Gender'), 'gender')
+                ->dependsOn(
+                    ['user_id'],
+                    function (Text $field, NovaRequest $request, FormData $formData) {
+                        if ($formData->user_id) {
+                            $gender = \App\Models\User::find($formData->user_id)?->gender;
+                            $field->show()->default(UserGender::asArray()[$gender] ?? null);
+                        }
+                    }
+                ),
+            Hidden::make(__('Date Of Birth'), 'dob')
+                ->dependsOn(
+                    ['user_id'],
+                    function (Text $field, NovaRequest $request, FormData $formData) {
+                        if ($formData->user_id) {
+
+                            $field->show()->default(\App\Models\User::find($formData->user_id)?->dob);
+                        }
+                    }
+                ),
+            Text::make(__('Nationality'), 'nationality')->required(),
+            Hidden::make(__('CCCD/CMND'), 'cccd')
+                ->dependsOn(
+                    ['user_id'],
+                    function (Text $field, NovaRequest $request, FormData $formData) {
+                        if ($formData->user_id) {
+                            $field->show()->default(\App\Models\User::find($formData->user_id)?->username);
+                        }
+                    }
+                ),
+            Hidden::make(__('Group User'), 'group')->dependsOn(
+                ['user_id'],
+                function (Text $field, NovaRequest $request, FormData $formData) {
+                    if ($formData->user_id) {
+                        $field->show()->default(\App\Models\User::find($formData->user_id)?->group->name ?? null);
+                    }
+                }
+            ),
+            Multiselect::make(__('Result training'), 'result')
+                ->options(['Giỏi' => 'Giỏi', 'Khá' => 'Khá', 'Trung bình' => 'Trung bình'])
+                ->singleSelect()
+                ->rules('required'),
+            Date::make(__('Training start date'), 'complete_from')->required(),
+            Date::make(__('Training end date'), 'complete_to')->required(),
+            Date::make(__('Expiration from'), 'effective_from')->required(),
+            Date::make(__('Expiration to'), 'effective_to')->required(),
+            Date::make(__('Issue date'), 'released_at')->required(),
+
+            Panel::make(__('Setting Generate Certificate'), [
+                Text::make(__('Work unit'), 'work_unit_printed')->default(fn () => Setting::get('work_unit'))->rules('required')->rules('required'),
+                Text::make(__('Place'), 'place_printed')->default(fn () => Setting::get('place_paper'))->rules('required'),
+                Text::make(__('Director Name'), 'director_name_printed')->default(fn () => Setting::get('director_name_paper'))->rules('required'),
+                MediaHubField::make(__('Signature Image'), 'signature_photo_printed')->default(fn () => Setting::get('signature_photo_paper'))->required()
                     ->defaultCollection('setting-certificate')
                     ->rules(fn ($request) => [
                         function ($attribute, $value, $fail) {
