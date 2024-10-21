@@ -31,8 +31,7 @@ class TopicQuestionDoneFilter extends MultiselectFilter
      */
     public function apply(NovaRequest $request, $query, $value)
     {
-        $value = is_array($value) ? $value : [$value];
-        return $query->whereIn('topic_id', '=', $value);
+        return $query->where('topic_id', '=', $value);
     }
 
     /**
@@ -43,8 +42,6 @@ class TopicQuestionDoneFilter extends MultiselectFilter
      */
     public function options(NovaRequest $request)
     {
-        return [
-            ...Topic::select('id', 'name')->get()->pluck('name', 'id'),
-        ];
+        return Topic::select('id', 'name')->get()->pluck('name', 'id')->toArray();
     }
 }
