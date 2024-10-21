@@ -5,6 +5,7 @@ namespace App\Nova\LMS\Certificates;
 use App\Enums\CertificateConstant;
 use App\Enums\UserGender;
 use App\Models\Certificate;
+use App\Models\Role;
 use App\Models\Setting;
 use App\Nova\Actions\DownloadExcelTemplate;
 use App\Nova\Actions\DownloadPDFElectricCertificate;
@@ -148,7 +149,9 @@ class PaperCertificate extends Resource
     {
         return [
             Multiselect::make(__('Users'), 'user_id')
-                ->options(\App\Models\User::select(['id', 'name', 'employee_code'])->get()->mapWithKeys(function ($user) {
+                ->options(\App\Models\User::select(['id', 'name', 'employee_code'])->whereHas('roles', function ($query) {
+                    $query->where('name', '!=', Role::SUPER_ADMIN);
+                })->orWhereDoesntHave('roles')->get()->mapWithKeys(function ($user) {
                     return [$user->id => $user->employee_code . ' - ' . $user->name];
                 }))
                 ->singleSelect()
