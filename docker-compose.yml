@@ -1,24 +1,25 @@
+### FOR DEVELOPMENT ONLY ###
+# For more information: https://laravel.com/docs/sail
 version: '3'
 services:
-    php:
+    app:
         build:
             context: .
-            dockerfile: Dockerfile_dev_v2
+            dockerfile: Dockerfile_dev
         restart: unless-stopped
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         ports:
             - '80:80'
+        environment:
+            APP_SERVICE: 'app'
+            WWWUSER: 'root'
+            WWWGROUP: 'root'
+            LARAVEL_SAIL: 1
+            XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
+            XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
         volumes:
-            - './.env:/app/.env'
-            - './storage:/app/storage'
-            - './database:/app/database'
-            - './app:/app/app'
-            - './resources:/app/resources'
-            - './routes:/app/routes'
-            - './vendor:/app/vendor'
-            - 'caddy_data:/data'
-            - 'caddy_config:/config'
+            - '.:/var/www/html'
         networks:
             - salt
         depends_on:
@@ -27,8 +28,6 @@ services:
     mysql:
         image: 'mysql/mysql-server:8.0'
         restart: unless-stopped
-        ports:
-            - '3333:3306'
         environment:
             MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
             MYSQL_ROOT_HOST: "%"
@@ -47,13 +46,13 @@ services:
     redis:
         image: 'redis:alpine'
         volumes:
-            - 'salt-redis:/data'
+          - 'salt-redis:/data'
         networks:
-            - salt
+          - salt
         healthcheck:
-            test: [ "CMD", "redis-cli", "ping" ]
-            retries: 3
-            timeout: 5s
+          test: [ "CMD", "redis-cli", "ping" ]
+          retries: 3
+          timeout: 5s
 networks:
     salt:
         driver: bridge
@@ -61,6 +60,4 @@ volumes:
     salt-mysql:
         driver: local
     salt-redis:
-        driver: local
-    caddy_data:
-    caddy_config:
+      driver: local
