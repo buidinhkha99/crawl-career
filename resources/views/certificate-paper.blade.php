@@ -22,6 +22,7 @@
         }
 
         .page {
+            margin-top: 2px;
             margin-left: 0.5cm;
             margin-right: 0.5cm;
             margin-bottom: 2cm;
@@ -64,6 +65,8 @@
             width: 45%;
             margin-right: 12px;
             line-height: 19px;
+            margin-left: 10px;
+            margin-top: 20px;
         }
 
         .note-back {
@@ -72,14 +75,16 @@
             float: left;
             margin-right: 12px;
             line-height: 19px;
+            margin-top: 5px;
         }
 
         .certificate {
             color: #FFFF27;
             float: right;
-            width: 50%;
+            width: 48%;
             max-height: 195px;
             margin-right: 18px;
+            margin-top: 20px;
         }
 
         .certificate-back {
@@ -87,6 +92,7 @@
             float: right;
             width: 41%;
             margin-right: 18px;
+            margin-top: 5px;
         }
 
         .photo-box {
@@ -183,7 +189,7 @@
         .details {
             margin-top: 5px;
             margin-right: 12px;
-            margin-left: 2px;
+            margin-left: 10px;
             line-height: 18px;
             height: 237px;
             max-height: 235px;
@@ -221,8 +227,6 @@
                         <p>4- Khi thất lạc phải báo ngay cho Tổ chức huấn luyện nơi cấp Giấy chứng nhận.</p>
                         <p>5- Trước khi Giấy chứng nhận huấn luyện hết hạn trong vòng 30 ngày, người được cấp phải
                             tham dự huấn luyện định kỳ để được cấp Giấy chứng nhận mới.
-                            <br>
-                            Đối tượng huấn luyện: {{$group_font_size_cards[$iGroup][$i -1]['group']}}
                         </p>
                     </div>
                     <div class="certificate">
@@ -271,7 +275,10 @@
                                 <div>2. Nam/Nữ: {{$data['gender']}}</div>
                                 <div>3. Ngày, tháng, năm sinh: {{$data['dob']}}</div>
                                 <div>4. Quốc tịch: {{$data['nationality']}}; Số CMND/Căn cước công dân/hộ chiếu: {{$data['cccd']}}</div>
-                                <div>5. Chức vụ: {{$data['position']}}</div>
+                                <div>5. Chức vụ: {{$data['position']}}
+                                    <br>
+                                    Đối tượng huấn luyện: {{$group_font_size_cards[$iGroup][$i -1]['group']}}
+                                </div>
                                 <div>6. Đơn vị công tác: {{$data['work_unit']}}</div>
                                 <div>7. Đã hoàn thành khóa huấn luyện an toàn, vệ sinh lao động được tổ chức từ {{$data['complete_from']}} đến {{$data['complete_to']}}
                                 </div>

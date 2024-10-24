@@ -138,11 +138,12 @@
         }
 
         .page {
-            height: 29.7cm;
+            margin-top: 2px;
+            height: 29.5cm;
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
             column-gap: 0.1cm;
-            row-gap: 0.1cm;
+            row-gap: 0;
         }
         .small-font {
             font-size: 10px;
