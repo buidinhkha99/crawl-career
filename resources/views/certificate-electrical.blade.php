@@ -24,7 +24,7 @@
         }
 
         .card {
-            border: 1px solid red;
+            border: 1px solid #000000;
             width: 95mm;
             height: 63mm
         }

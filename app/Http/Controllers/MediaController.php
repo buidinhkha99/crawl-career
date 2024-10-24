@@ -412,6 +412,7 @@ class MediaController extends Controller
             $frontSizeCards[] = [
                 'image_card' => $imageFont,
                 'certificate_id' => $cert->certificate_id,
+                'group' => $cert->card_info['group'] ?? null
             ];
             $backSizeCards[] = [
                 'image_card' => $imageBack,

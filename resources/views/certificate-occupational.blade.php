@@ -157,7 +157,7 @@
                 <?php
                 $data_font_size_cards = $group_font_size_cards[$iGroup][$i - 1];
                 ?>
-            <div class="card" style="border: 1px solid black; width: 6.5cm; height: 9.5cm">
+            <div class="card" style="border: 1px solid black; width: 6.5cm; height: 9.5cm;">
                 @if(!($group_font_size_cards[$iGroup][$i - 1]['is_fake'] ?? false))
                     <div class="card-inner">
                         <div class="header">

@@ -32,7 +32,7 @@
         }
 
         .card {
-            border: 1px solid red;
+            border: 1px solid #000000;
             width: 20cm;
             height: 14cm
         }
@@ -221,6 +221,8 @@
                         <p>4- Khi thất lạc phải báo ngay cho Tổ chức huấn luyện nơi cấp Giấy chứng nhận.</p>
                         <p>5- Trước khi Giấy chứng nhận huấn luyện hết hạn trong vòng 30 ngày, người được cấp phải
                             tham dự huấn luyện định kỳ để được cấp Giấy chứng nhận mới.
+                            <br>
+                            Đối tượng huấn luyện: {{$group_font_size_cards[$iGroup][$i -1]['group']}}
                         </p>
                     </div>
                     <div class="certificate">
