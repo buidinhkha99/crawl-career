@@ -210,6 +210,14 @@ class MediaController extends Controller
         }
 
         $groupFonts = collect($frontSizeCards)->chunk(9)->map(function($group) {
+            $rowLose = 9 - $group->count();
+            if ($rowLose > 0) {
+                for ($iRow = 0; $iRow < $rowLose; $iRow++) {
+                    $group[] = [
+                        'is_fake' => true,
+                    ];
+                }
+            }
             return $group->chunk(3)->map(function ($groupCard) {
                 $rowLose = 3 - $groupCard->count();
                 if ($rowLose > 0) {
@@ -224,18 +232,26 @@ class MediaController extends Controller
             })->collapse();
         });
 
-        $groupBacks = collect($backSizeCards)->chunk(9)->map(function($group) {
+        $groupBacks = collect($backSizeCards)->chunk(9)->map(function ($group) {
+            $rowLose = 9 - $group->count();
+            if ($rowLose > 0) {
+                for ($iRow = 0; $iRow < $rowLose; $iRow++) {
+                    $group[] = [
+                        'is_fake' => true,
+                    ];
+                }
+            }
             $valueReversed = $group->chunk(3)->map(function ($groupCard) {
-                $rowLose = 3 - $groupCard->count();
-             if ($rowLose > 0) {
-                 for ($i = 0; $i < $rowLose; $i++) {
-                     $groupCard[] = [
-                         'is_fake' => true,
-                     ];
-                 }
-             };
+                $cardLose = 3 - $groupCard->count();
+                if ($cardLose > 0) {
+                    for ($i = 0; $i < $cardLose; $i++) {
+                        $groupCard[] = [
+                            'is_fake' => true,
+                        ];
+                    }
+                }
 
-             return $groupCard->reverse()->values();
+                return $groupCard->reverse()->values();
             });
 
             return $valueReversed->collapse();
@@ -277,7 +293,7 @@ class MediaController extends Controller
         // Write the html content to the blade file
         file_put_contents($dummyFilePath, Setting::get('pdf_occupational_certificate'));
 
-        return view('dummy', [
+        return view('certificate-occupational', [
             'total_group' => $groupFonts->count(),
             'group_font_size_cards' => $groupFonts,
             'group_back_size_cards' => $groupBacks,
@@ -385,7 +401,7 @@ class MediaController extends Controller
         // Write the html content to the blade file
         file_put_contents($dummyFilePath, Setting::get('pdf_electrical_certificate'));
 
-        return view('dummy', [
+        return view('certificate-electrical', [
             'total_group' => $groupFonts->count(),
             'group_font_size_cards' => $groupFonts,
             'group_back_size_cards' => $groupBacks,
@@ -412,6 +428,7 @@ class MediaController extends Controller
             $frontSizeCards[] = [
                 'image_card' => $imageFont,
                 'certificate_id' => $cert->certificate_id,
+                'group' => $cert->card_info['group'] ?? null
             ];
             $backSizeCards[] = [
                 'image_card' => $imageBack,
@@ -507,7 +524,7 @@ class MediaController extends Controller
         // Write the html content to the blade file
         file_put_contents($dummyFilePath, Setting::get('pdf_paper_certificate'));
 
-        return view('dummy', [
+        return view('certificate-paper', [
             'total_group' => $groupFonts->count(),
             'group_font_size_cards' => $groupFonts,
             'group_back_size_cards' => $groupBacks,

@@ -138,11 +138,12 @@
         }
 
         .page {
-            height: 29.7cm;
+            margin-top: 2px;
+            height: 29.5cm;
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
             column-gap: 0.1cm;
-            row-gap: 0.1cm;
+            row-gap: 0;
         }
         .small-font {
             font-size: 10px;
@@ -157,7 +158,7 @@
                 <?php
                 $data_font_size_cards = $group_font_size_cards[$iGroup][$i - 1];
                 ?>
-            <div class="card" style="border: 1px solid black; width: 6.5cm; height: 9.5cm">
+            <div class="card" style="border: 1px solid black; width: 6.5cm; height: 9.5cm;">
                 @if(!($group_font_size_cards[$iGroup][$i - 1]['is_fake'] ?? false))
                     <div class="card-inner">
                         <div class="header">
