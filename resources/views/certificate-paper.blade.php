@@ -22,14 +22,13 @@
         }
 
         .page {
-            margin-top: 2px;
+            padding-top: 2px;
             margin-left: 0.5cm;
             margin-right: 0.5cm;
-            margin-bottom: 2cm;
             display: grid;
             grid-template-columns: repeat(1, minmax(0, 1fr));
             gap: 1cm;
-            height: 29.7cm;
+            height: 29.660cm;
         }
 
         .card {
