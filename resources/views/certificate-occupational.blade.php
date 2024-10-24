@@ -138,8 +138,8 @@
         }
 
         .page {
-            margin-top: 2px;
-            height: 29.5cm;
+            padding-top: 2px;
+            height: 29.660cm;
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
             column-gap: 0.1cm;
