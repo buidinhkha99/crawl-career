@@ -293,7 +293,7 @@ class MediaController extends Controller
         // Write the html content to the blade file
         file_put_contents($dummyFilePath, Setting::get('pdf_occupational_certificate'));
 
-        return view('certificate-occupational', [
+        return view('dummy', [
             'total_group' => $groupFonts->count(),
             'group_font_size_cards' => $groupFonts,
             'group_back_size_cards' => $groupBacks,
@@ -401,7 +401,7 @@ class MediaController extends Controller
         // Write the html content to the blade file
         file_put_contents($dummyFilePath, Setting::get('pdf_electrical_certificate'));
 
-        return view('certificate-electrical', [
+        return view('dummy', [
             'total_group' => $groupFonts->count(),
             'group_font_size_cards' => $groupFonts,
             'group_back_size_cards' => $groupBacks,
@@ -524,7 +524,7 @@ class MediaController extends Controller
         // Write the html content to the blade file
         file_put_contents($dummyFilePath, Setting::get('pdf_paper_certificate'));
 
-        return view('certificate-paper', [
+        return view('dummy', [
             'total_group' => $groupFonts->count(),
             'group_font_size_cards' => $groupFonts,
             'group_back_size_cards' => $groupBacks,

@@ -189,9 +189,9 @@
             margin-top: 5px;
             margin-right: 12px;
             margin-left: 10px;
-            line-height: 18px;
+            line-height: 16px;
             height: 237px;
-            max-height: 235px;
+            max-height: 215px;
             overflow: hidden;
             font-size: 13px;
         }
@@ -206,7 +206,7 @@
 
         .info {
             margin-top: 5px;
-            line-height: 19px;
+            line-height: 16px;
             font-size: 13px;
         }
     </style>
