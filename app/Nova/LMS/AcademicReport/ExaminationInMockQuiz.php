@@ -5,6 +5,7 @@ namespace App\Nova\LMS\AcademicReport;
 use App\Enums\ExaminationStatus;
 use App\Nova\Filters\ExamNameFilter;
 use App\Nova\Filters\QuizNameFilter;
+use App\Nova\Filters\UserFilter;
 use App\Nova\Resource;
 use App\Nova\User;
 use Dnwjn\NovaButton\Button;
@@ -125,7 +126,9 @@ class ExaminationInMockQuiz extends Resource
      */
     public function filters(NovaRequest $request): array
     {
-        return [];
+        return [
+            new UserFilter()
+        ];
     }
 
     /**

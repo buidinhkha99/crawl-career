@@ -5,6 +5,7 @@ namespace App\Nova\LMS\AcademicReport;
 use App\Models\LessonUser;
 use App\Models\Question;
 use App\Nova\Filters\TopicQuestionDoneFilter;
+use App\Nova\Filters\UserFilter;
 use App\Nova\LMS\Lesson;
 use App\Nova\Resource;
 use App\Nova\Traits\HasCallbacks;
@@ -109,7 +110,8 @@ class LessonDone extends Resource
     public function filters(NovaRequest $request): array
     {
         return [
-            new TopicQuestionDoneFilter()
+            new TopicQuestionDoneFilter(),
+            new UserFilter()
         ];
     }
 

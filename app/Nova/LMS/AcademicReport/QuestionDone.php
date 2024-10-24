@@ -7,6 +7,7 @@ use App\Models\QuestionUser;
 use App\Nova\Filters\TopicNameFilter;
 use App\Nova\Filters\TopicQuestionDoneFilter;
 use App\Nova\Filters\TopicQuestionNameFilter;
+use App\Nova\Filters\UserFilter;
 use App\Nova\LMS\Topic;
 use App\Nova\Resource;
 use App\Nova\Traits\HasCallbacks;
@@ -168,7 +169,8 @@ class QuestionDone extends Resource
     public function filters(NovaRequest $request): array
     {
         return [
-            new TopicQuestionDoneFilter()
+            new TopicQuestionDoneFilter(),
+            (new UserFilter())->singleSelect()
         ];
     }
 
