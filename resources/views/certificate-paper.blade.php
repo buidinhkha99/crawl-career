@@ -32,6 +32,7 @@
         }
 
         .card {
+            background-color: white;
             border: 1px solid #000000;
             width: 20cm;
             height: 14cm
@@ -43,6 +44,15 @@
             margin: 0.5cm;
             border: 1px solid #324376;
             background-color: #1b1e9d;
+            font-size: 16px;
+        }
+
+        .card-inner-back {
+            width: 19cm;
+            height: 13cm;
+            margin: 0.5cm;
+            border: 1px solid #324376;
+            background-color: #FFF7E9;
             font-size: 16px;
         }
 
@@ -252,7 +262,7 @@
                 $data = $group_back_size_cards[$iGroup][$i - 1];
                 ?>
             <div class="card">
-                <div class="card-inner" style="background-color: #FFF7E9">
+                <div class="card-inner-back">
                     <div style="display: inline-block">
                         <div class="note-back">
                             <div style="display: flex; margin-top: 10px">

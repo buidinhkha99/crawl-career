@@ -30,6 +30,7 @@
             box-shadow: inset 0 0 0 4px #324376;
             outline: 2px solid #324376;
             outline-offset: -8px;
+            background-color: white;
         }
 
         .bold-text {
@@ -147,6 +148,9 @@
         }
         .small-font {
             font-size: 10px;
+        }
+        .card {
+            background-color: white;
         }
     </style>
 
