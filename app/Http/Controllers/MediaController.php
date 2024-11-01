@@ -193,6 +193,8 @@ class MediaController extends Controller
                 'certificate_id' => $cert->certificate_id,
             ];
 
+            $signature = Media::find($cert->signature_photo_printed);
+            $imagePhotoPrinted= base64_encode(Storage::disk('public')->get($signature?->path.$signature?->file_name));
             $backSizeCards[] = [
                 'image_card' => $imageBack,
                 'name' => $cert->user->name ?? null,
@@ -201,10 +203,10 @@ class MediaController extends Controller
                 'description' => $cert->card_info['description'] ?? null,
                 'complete_from' => Carbon::parse($cert->complete_from)->format('d/m/Y'),
                 'complete_to' => Carbon::parse($cert->complete_to)->format('d/m/Y'),
-                'place' => $payload->place ?? null,
+                'place' => $cert->place_printed ?? null,
                 'created_at' => Carbon::parse($cert->released_at)->format('d/m/Y'),
-                'director_name' => $payload->director_name ?? null,
-                'signature_photo' => $payload->signature_photo ?? null,
+                'director_name' => $cert->director_name_printed,
+                'signature_photo' => $imagePhotoPrinted,
                 'effective_to' => Carbon::parse($cert->effective_to)->format('d/m/Y'),
             ];
         }
@@ -319,6 +321,8 @@ class MediaController extends Controller
             ];
 
             $release = Carbon::parse($cert->released_at);
+            $signature = Media::find($cert->signature_photo_printed);
+            $imagePhotoPrinted= base64_encode(Storage::disk('public')->get($signature?->path.$signature?->file_name));
             $backSizeCards[] = [
                 'image_card' => $imageBack,
                 'name' => $cert->user->name ?? null,
@@ -327,8 +331,8 @@ class MediaController extends Controller
                 'day_created' => $release->day,
                 'month_created' => $release->month,
                 'year_created' => $release->year,
-                'director_name' => $payload->director_name ?? null,
-                'signature_photo' => $payload->signature_photo ?? null,
+                'director_name' => $cert->director_name_printed ?? null,
+                'signature_photo' => $imagePhotoPrinted,
             ];
         }
 
@@ -430,6 +434,9 @@ class MediaController extends Controller
                 'certificate_id' => $cert->certificate_id,
                 'group' => $cert->card_info['group'] ?? null
             ];
+
+            $signature = Media::find($cert->signature_photo_printed);
+            $imagePhotoPrinted= base64_encode(Storage::disk('public')->get($signature?->path.$signature?->file_name));
             $backSizeCards[] = [
                 'image_card' => $imageBack,
                 'info_certificate' => $cert->training_content_paper_certificate,
@@ -441,16 +448,16 @@ class MediaController extends Controller
                 'nationality' => $cert->nationality,
                 'cccd' => $cert->cccd,
                 'position' => $cert->user->position,
-                'work_unit' => $payload->work_unit ?? null,
+                'work_unit' => $cert->work_unit_printed,
                 'complete_from' => 'ngày ' . $completeFrom->day . ' tháng ' . $completeFrom->month . ' năm ' . $completeFrom->year,
                 'complete_to' => 'ngày ' . $completeTo->day . ' tháng ' . $completeTo->month . ' năm ' . $completeTo->year,
                 'result' => $cert->result,
                 'year_effect' => $effectiveTo->year - $effectiveFrom->year,
                 'effective_to' => 'ngày ' . $effectiveTo->day . ' tháng ' . $effectiveTo->month . ' năm ' . $effectiveTo->year,
                 'effective_from' => 'ngày ' . $effectiveFrom->day . ' tháng ' . $effectiveFrom->month . ' năm ' . $effectiveFrom->year,
-                'director_name' => $payload->director_name ?? null,
-                'signature_photo' => $payload->signature_photo ?? null,
-                'place' => $payload->place ?? null,
+                'director_name' => $cert->director_name_printed ?? null,
+                'signature_photo' => $imagePhotoPrinted,
+                'place' => $cert->place_printed ?? null,
                 'create_at' => 'ngày ' . $cert->released_at->day . ' tháng ' . $cert->released_at->month . ' năm ' . $cert->released_at->year,
             ];
         }

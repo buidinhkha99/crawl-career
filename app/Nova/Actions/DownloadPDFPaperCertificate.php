@@ -23,15 +23,8 @@ class DownloadPDFPaperCertificate extends Action
 
     public function handle(ActionFields $fields, Collection $models): Action|\Laravel\Nova\Actions\ActionResponse
     {
-        // custom image to base64
-        $media = Media::find(Setting::get('signature_photo_paper'));
-        $defaultSignature = base64_encode(Storage::disk($media->disk)->get($media->path . $media->file_name));
         $payload = [
             'type' => CertificateConstant::PAPER_SAFETY,
-            'director_name' => Setting::get('director_name_paper', 'Họ và Tên'),
-            'signature_photo' => $defaultSignature,
-            'work_unit' => Setting::get('work_unit', ),
-            'place' => Setting::get('place_paper'),
             'ids' => $models->pluck('id'),
         ];
 
