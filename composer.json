@@ -67,7 +67,9 @@
         "tanmuhittin/laravel-google-translate": "^2.2",
         "timothyasp/nova-badge-field": "^2.0",
         "trin4ik/nova-switcher": "^0.3.0",
-        "whitecube/nova-flexible-content": "*"
+        "whitecube/nova-flexible-content": "*",
+        "ext-dom": "*",
+        "ext-libxml": "*"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.8",
