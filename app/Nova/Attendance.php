@@ -2,6 +2,7 @@
 
 namespace App\Nova;
 
+use Carbon\Carbon;
 use Chaseconey\ExternalImage\ExternalImage;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Avatar;
@@ -151,5 +152,27 @@ class Attendance extends Resource
     public static function redirectAfterUpdate(NovaRequest $request, $resource)
     {
         return '/resources/'.static::uriKey();
+    }
+
+    /**
+     * @throws \Exception
+     */
+    protected static function afterValidation(NovaRequest $request, $validator): void
+    {
+        $classroom = \App\Models\Classroom::find($request->post('classroom'));
+        $start_at = Carbon::parse($request->post('start_attendance'));
+        $end_at = Carbon::parse($request->post('end_attendance'));
+
+        if (!empty($start_at) && ($start_at->lt($classroom->started_at->startOfDay()) || $start_at->gt($classroom->ended_at->endOfDay()))) {
+            $validator->errors()->add('start_attendance', __('Start time must be greater than start time of class.'));
+        }
+
+        if (!empty($end_at  ) && ($end_at->lt($classroom->started_at->startOfDay()) || $end_at->gt($classroom->ended_at->endOfDay()))) {
+            $validator->errors()->add('end_attendance', __('End time must be lesser than end time of class.'));
+        }
+
+        if ($start_at->gt($end_at)) {
+            $validator->errors()->add('end_attendance', __('End time must be greater than start time.'));
+        }
     }
 }

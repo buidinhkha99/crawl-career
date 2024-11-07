@@ -57,33 +57,40 @@ class ClassroomController extends Controller
     public function attending(Request $request, $id)
     {
         $attendance = Attendance::findOrFail($id);
+        $classroom = $attendance->classroom;
         $user = auth('api')->user();
-
         $attended = $attendance->attendees()
-            ->whereNull('created_at')
             ->where(['attendance_id' => $attendance->id, 'user_id' => $user->id])
             ->first();
 
         if (is_null($attended)) {
             return response()->json([
+                'message' => __('User not in classroom!'),
+                'data' => []
+            ], ResponseAlias::HTTP_BAD_REQUEST);
+        }
+
+        if (!is_null($attended->created_at)) {
+            return response()->json([
                 'message' => __('User already attended!'),
                 'data' => [
-                    'classroom' => $attendance->classroom->name,
+                    'classroom' => $classroom->name,
                     'lesson' => $attendance->name,
                     'date' => $attendance->date,
                 ]
             ]);
         }
 
+        $now = Carbon::now();
         // check time attendance
-        if (!empty($attendance->start_attendance) && Carbon::now()->lt($attendance->start_attendance)) {
+        if (!empty($attendance->start_attendance) && ($now->lt($attendance->start_attendance) || $now->lt($classroom->started_at->startOfDay()) || $now->gt($classroom->ended_at->endOfDay()))) {
             return response()->json([
                 'message' => __("Attendance time hasn't started yet!"),
                 'data' => []
             ], ResponseAlias::HTTP_BAD_REQUEST);
         }
 
-        if (!empty($attendance->end_attendance) && Carbon::now()->gt($attendance->end_attendance)) {
+        if (!empty($attendance->end_attendance) && ($now->gt($attendance->end_attendance) || $now->lt($classroom->started_at->startOfDay()) || $now->gt($classroom->ended_at->endOfDay()))) {
             return response()->json([
                 'message' => __('Attendance time has ended!'),
                 'data' => []
@@ -97,7 +104,7 @@ class ClassroomController extends Controller
         return response()->json([
             'message' => __('Attendance added successfully!'),
             'data' => [
-                'classroom' => $attendance->classroom->name,
+                'classroom' => $classroom->name,
                 'lesson' => $attendance->name,
                 'date' => $attendance->date,
             ]

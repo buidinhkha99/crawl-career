@@ -91,7 +91,7 @@ class PaperCertificate extends Resource
     public function fieldsForUpdate(NovaRequest $request)
     {
         return [
-            Number::make(__('Card number'), 'card_id')->rules('required', function($attribute, $value, $fail)  use ($request){
+            Number::make(__('Card number'), 'card_id')->min(0)->max(2147483647)->rules('required', function($attribute, $value, $fail)  use ($request){
                 $year = Carbon::parse($request->released_at)->year;
                 if (Certificate::where('type', CertificateConstant::PAPER_SAFETY)
                     ->where('user_id', $this->user_id)
@@ -109,25 +109,25 @@ class PaperCertificate extends Resource
                 ->options(['Nam' => 'Nam', 'Nữ' => 'Nữ', 'Khác' => 'Khác'])
                 ->singleSelect()
                 ->rules('required'),
-            Date::make(__('Date Of Birth'), 'dob')->required(),
-            Text::make(__('Nationality'), 'nationality')->required(),
-            Text::make(__('CCCD/CMND'), 'cccd')->required(),
-            Text::make(__('Group User'), 'group')->required(),
+            Date::make(__('Date Of Birth'), 'dob')->rules('required'),
+            Text::make(__('Nationality'), 'nationality')->rules('required'),
+            Text::make(__('CCCD/CMND'), 'cccd')->rules('required'),
+            Text::make(__('Group User'), 'group')->rules('required'),
             Multiselect::make(__('Result training'), 'result')
                 ->options(['Giỏi' => 'Giỏi', 'Khá' => 'Khá', 'Trung bình' => 'Trung bình'])
                 ->singleSelect()
                 ->rules('required'),
-            Date::make(__('Training start date'), 'complete_from')->required(),
-            Date::make(__('Training end date'), 'complete_to')->required(),
-            Date::make(__('Expiration from'), 'effective_from')->required(),
-            Date::make(__('Expiration to'), 'effective_to')->required(),
-            Date::make(__('Issue date'), 'released_at')->required(),
+            Date::make(__('Training start date'), 'complete_from')->rules('required'),
+            Date::make(__('Training end date'), 'complete_to')->rules('required'),
+            Date::make(__('Expiration from'), 'effective_from')->rules('required'),
+            Date::make(__('Expiration to'), 'effective_to')->rules('required'),
+            Date::make(__('Issue date'), 'released_at')->rules('required'),
 
             Panel::make(__('Setting Generate Certificate'), [
                 Text::make(__('Work unit'), 'work_unit_printed')->default(fn () => __('Lào Cai'))->rules('required'),
                 Text::make(__('Place'), 'place_printed')->default(fn () => __('Lào Cai'))->rules('required'),
                 Text::make(__('Director Name'), 'director_name_printed')->rules('required'),
-                MediaHubField::make(__('Signature Image'), 'signature_photo_printed')->required()
+                MediaHubField::make(__('Signature Image'), 'signature_photo_printed')->rules('required')
                     ->defaultCollection('setting-certificate')
                     ->rules(fn ($request) => [
                         function ($attribute, $value, $fail) {
@@ -157,7 +157,7 @@ class PaperCertificate extends Resource
                 ->singleSelect()
                 ->rules('required'),
             Hidden::make('Type', 'type')->default(fn() => CertificateConstant::PAPER_SAFETY),
-            Number::make(__('Card number'), 'card_id')->rules('required', function($attribute, $value, $fail)  use ($request){
+            Number::make(__('Card number'), 'card_id')->min(0)->max(2147483647)->rules('required', function($attribute, $value, $fail)  use ($request){
                 $year = Carbon::parse($request->released_at)->year;
                 if (Certificate::where('type', CertificateConstant::PAPER_SAFETY)
                     ->where('user_id', $this->user_id)
@@ -191,7 +191,7 @@ class PaperCertificate extends Resource
                         }
                     }
                 ),
-            Text::make(__('Nationality'), 'nationality')->required(),
+            Text::make(__('Nationality'), 'nationality')->rules('required'),
             Hidden::make(__('CCCD/CMND'), 'cccd')
                 ->dependsOn(
                     ['user_id'],
@@ -213,17 +213,17 @@ class PaperCertificate extends Resource
                 ->options(['Giỏi' => 'Giỏi', 'Khá' => 'Khá', 'Trung bình' => 'Trung bình'])
                 ->singleSelect()
                 ->rules('required'),
-            Date::make(__('Training start date'), 'complete_from')->required(),
-            Date::make(__('Training end date'), 'complete_to')->required(),
-            Date::make(__('Expiration from'), 'effective_from')->required(),
-            Date::make(__('Expiration to'), 'effective_to')->required(),
-            Date::make(__('Issue date'), 'released_at')->required(),
+            Date::make(__('Training start date'), 'complete_from')->rules('required'),
+            Date::make(__('Training end date'), 'complete_to')->rules('required'),
+            Date::make(__('Expiration from'), 'effective_from')->rules('required'),
+            Date::make(__('Expiration to'), 'effective_to')->rules('required'),
+            Date::make(__('Issue date'), 'released_at')->rules('required'),
 
             Panel::make(__('Setting Generate Certificate'), [
                 Text::make(__('Work unit'), 'work_unit_printed')->default(fn () => Setting::get('work_unit'))->rules('required')->rules('required'),
                 Text::make(__('Place'), 'place_printed')->default(fn () => Setting::get('place_paper'))->rules('required'),
                 Text::make(__('Director Name'), 'director_name_printed')->default(fn () => Setting::get('director_name_paper'))->rules('required'),
-                MediaHubField::make(__('Signature Image'), 'signature_photo_printed')->default(fn () => Setting::get('signature_photo_paper'))->required()
+                MediaHubField::make(__('Signature Image'), 'signature_photo_printed')->default(fn () => Setting::get('signature_photo_paper'))->rules('required')
                     ->defaultCollection('setting-certificate')
                     ->rules(fn ($request) => [
                         function ($attribute, $value, $fail) {
