@@ -25,6 +25,9 @@ class UserFilter extends MultiselectFilter
      */
     public function apply(NovaRequest $request, $query, $value)
     {
+        if (is_array($value)) {
+            return $query->whereIn('user_id', $value);
+        }
         return $query->where('user_id', '=', $value);
     }
 

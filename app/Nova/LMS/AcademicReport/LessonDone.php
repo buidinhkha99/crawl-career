@@ -39,7 +39,7 @@ class LessonDone extends Resource
      */
     public function title(): string
     {
-        return $this->lesson->name;
+        return $this->lesson->name ?? '';
     }
 
     public static function indexQuery(NovaRequest $request, $query)

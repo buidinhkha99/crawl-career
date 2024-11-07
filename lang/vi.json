@@ -1232,5 +1232,9 @@
     "Time answer" : "Thời gian trả lời",
     "Complete theory" : "Hoàn thành lý thuyết",
     "Complete lesson" : "Hoàn thành bài giảng",
-    "Time complete" : "Thời gian học"
+    "Time complete" : "Thời gian học",
+    "User not in classroom!" : "Người dùng không có trong lớp học",
+    "Start time must be greater than start time of class." : "Thời gian phải trong thời gian hoạt động của lớp học",
+    "End time must be lesser than end time of class." : "Thời gian phải trong thời gian hoạt động của lớp học",
+    "Place Occupational" : "Địa điểm"
 }

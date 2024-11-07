@@ -479,9 +479,9 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                 Panel::make(__('Occupational Certificate'), [
                     Text::make(__('Place'), 'place_occupational')->default(fn () => __('Lào Cai'))->rules('required'),
                     Text::make(__('Director Name'), 'director_name_occupational')->rules('required'),
-                    MediaHubField::make(__('Signature Image'), 'signature_photo_occupational')->required()
+                    MediaHubField::make(__('Signature Image'), 'signature_photo_occupational')
                         ->defaultCollection('setting-certificate')
-                        ->rules(fn ($request) => [
+                        ->rules('required', fn ($request) => [
                             function ($attribute, $value, $fail) {
                                 $mime_types = collect(['image/jpeg', 'image/png']);
                                 $media = Media::select('id', 'mime_type')->find($value);
@@ -497,8 +497,8 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
 
                 Panel::make(__('Electrical Certificate'), [
                     Text::make(__('Director Name'), 'director_name_electric')->rules('required'),
-                    MediaHubField::make(__('Signature Image'), 'signature_photo_electric')->required()->defaultCollection('setting-certificate')
-                        ->rules(fn ($request) => [
+                    MediaHubField::make(__('Signature Image'), 'signature_photo_electric')->defaultCollection('setting-certificate')
+                        ->rules('required', fn ($request) => [
                             function ($attribute, $value, $fail) {
                                 $mime_types = collect(['image/jpeg', 'image/png']);
                                 $media = Media::select('id', 'mime_type')->find($value);
@@ -516,8 +516,8 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     Text::make(__('Work unit'), 'work_unit')->rules('required')->default('Chi nhánh Luyện đồng Lào Cai - VIMICO'),
                     Text::make(__('Place'), 'place_paper')->default(fn () => __('Lào Cai'))->rules('required'),
                     Text::make(__('Director Name'), 'director_name_paper')->rules('required'),
-                    MediaHubField::make(__('Signature Image'), 'signature_photo_paper')->required()->defaultCollection('setting-certificate')
-                        ->rules(fn ($request) => [
+                    MediaHubField::make(__('Signature Image'), 'signature_photo_paper')->defaultCollection('setting-certificate')
+                        ->rules('required', fn ($request) => [
                             function ($attribute, $value, $fail) {
                                 $mime_types = collect(['image/jpeg', 'image/png']);
                                 $media = Media::select('id', 'mime_type')->find($value);

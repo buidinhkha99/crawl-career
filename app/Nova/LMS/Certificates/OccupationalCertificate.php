@@ -91,7 +91,7 @@ class OccupationalCertificate extends Resource
     public function fieldsForUpdate(NovaRequest $request)
     {
         return [
-            Number::make(__('Card number'), 'card_id')->rules('required', function($attribute, $value, $fail)  use ($request){
+            Number::make(__('Card number'), 'card_id')->min(0)->max(2147483647)->rules('required', function($attribute, $value, $fail)  use ($request){
                 $year = Carbon::parse($request->released_at)->year;
                 if (Certificate::where('type', CertificateConstant::OCCUPATIONAL_SAFETY)
                     ->where('user_id', '!=', $this->user_id)
@@ -104,16 +104,16 @@ class OccupationalCertificate extends Resource
                     ]));
                 }
             }),
-            Textarea::make(__('Training course name'), 'card_info->description')->required(),
-            Date::make(__('Training start date'), 'complete_from')->required(),
-            Date::make(__('Training end date'), 'complete_to')->required(),
-            Date::make(__('Issue date'), 'released_at')->required(),
-            Date::make(__('Expiration date'), 'effective_to')->required(),
+            Textarea::make(__('Training course name'), 'card_info->description')->rules('required'),
+            Date::make(__('Training start date'), 'complete_from')->rules('required'),
+            Date::make(__('Training end date'), 'complete_to')->rules('required'),
+            Date::make(__('Issue date'), 'released_at')->rules('required'),
+            Date::make(__('Expiration date'), 'effective_to')->rules('required'),
 
             Panel::make(__('Setting Generate Certificate'), [
                 Text::make(__('Place'), 'place_printed')->default(fn () => Setting::get('place_occupational'))->rules('required'),
                 Text::make(__('Director Name'), 'director_name_printed')->rules('required')->default(fn () => Setting::get('director_name_occupational')),
-                MediaHubField::make(__('Signature Image'), 'signature_photo_printed')->required()
+                MediaHubField::make(__('Signature Image'), 'signature_photo_printed')->rules('required')
                     ->default(fn () => Setting::get('signature_photo_occupational'))
                     ->defaultCollection('setting-certificate')
                     ->rules(fn ($request) => [
@@ -144,7 +144,7 @@ class OccupationalCertificate extends Resource
                 ->singleSelect()
                 ->rules('required'),
             Hidden::make('Type', 'type')->default(fn() => CertificateConstant::OCCUPATIONAL_SAFETY),
-            Number::make(__('Card number'), 'card_id')->rules('required', function($attribute, $value, $fail)  use ($request){
+            Number::make(__('Card number'), 'card_id')->min(0)->max(2147483647)->rules('required', function($attribute, $value, $fail)  use ($request){
                 $year = Carbon::parse($request->released_at)->year;
                 if (Certificate::where('type', CertificateConstant::OCCUPATIONAL_SAFETY)
                     ->where('user_id', '!=', $this->user_id)
@@ -157,16 +157,16 @@ class OccupationalCertificate extends Resource
                     ]));
                 }
             }),
-            Textarea::make(__('Training course name'), 'card_info->description')->required(),
-            Date::make(__('Training start date'), 'complete_from')->required(),
-            Date::make(__('Training end date'), 'complete_to')->required(),
-            Date::make(__('Issue date'), 'released_at')->required(),
-            Date::make(__('Expiration date'), 'effective_to')->required(),
+            Textarea::make(__('Training course name'), 'card_info->description')->rules('required'),
+            Date::make(__('Training start date'), 'complete_from')->rules('required'),
+            Date::make(__('Training end date'), 'complete_to')->rules('required'),
+            Date::make(__('Issue date'), 'released_at')->rules('required'),
+            Date::make(__('Expiration date'), 'effective_to')->rules('required'),
 
             Panel::make(__('Setting Generate Certificate'), [
                 Text::make(__('Place'), 'place_printed')->default(fn () => Setting::get('place_occupational'))->rules('required'),
                 Text::make(__('Director Name'), 'director_name_printed')->rules('required')->default(fn () => Setting::get('director_name_occupational')),
-                MediaHubField::make(__('Signature Image'), 'signature_photo_printed')->required()
+                MediaHubField::make(__('Signature Image'), 'signature_photo_printed')->rules('required')
                     ->default(fn () => Setting::get('signature_photo_occupational'))
                     ->defaultCollection('setting-certificate')
                     ->rules(fn ($request) => [

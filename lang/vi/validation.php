@@ -162,5 +162,16 @@ return [
         'title' => 'tiêu đề',
         'username' => 'tên đăng nhập',
         'year' => 'năm',
+        'place_occupational' => 'địa điểm',
+        'director_name' => 'tên giám đốc',
+        'director_paper' => 'tên giám đốc',
+        'signature_photo_occupational' => 'trường ảnh chữ ký',
+        'signature_photo_electric' => 'trường ảnh chữ ký',
+        'signature_photo_paper' => 'trường ảnh chữ ký',
+        'director_name_electric' => 'tên giám đốc',
+        'director_name_paper' => 'tên giám đốc',
+        'director_name_occupational' => 'tên giám đốc',
+        'work_unit' => 'đơn vị làm việc',
+        'place_paper' => 'địa điểm'
     ],
 ];

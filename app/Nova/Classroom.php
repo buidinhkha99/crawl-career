@@ -4,9 +4,11 @@ namespace App\Nova;
 
 use App\Nova\Actions\AttachGroupUserInClass;
 use App\Nova\Actions\DownloadAttendanceExcel;
+use Carbon\Carbon;
 use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\Date;
 use Laravel\Nova\Fields\DateTime;
+use Laravel\Nova\Fields\FormData;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
@@ -54,7 +56,7 @@ class Classroom extends Resource
     {
         return [
             ID::make()->sortable(),
-            Text::make(__('Name'), "name")->rules('required')->sortable(),
+            Text::make(__('Name'), "name")->rules('required', 'max:150')->sortable(),
             Number::make(__('Lessons count'), 'lessons_count')->min(1)->step(1)->rules('required'),
             Textarea::make(__('Description'), 'description'),
             Date::make(__('Start Date'), 'started_at'),
@@ -114,5 +116,18 @@ class Classroom extends Resource
                 ->cancelButtonText(__('Cancel'))
                 ->onlyOnDetail(),
         ];
+    }
+
+    /**
+     * @throws \Exception
+     */
+    protected static function afterValidation(NovaRequest $request, $validator): void
+    {
+        $start_at = Carbon::parse($request->post('started_at'));
+        $end_at = Carbon::parse($request->post('ended_at'));
+
+        if ($start_at->gt($end_at)) {
+            $validator->errors()->add('ended_at', __('End time must be greater than start time.'));
+        }
     }
 }

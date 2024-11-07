@@ -75,7 +75,7 @@ class ElectricalCertificate extends Resource
             ID::make()->sortable(),
             Text::make(__('Certificate ID'), 'certificate_id'),
             BelongsTo::make(__('Users'), 'user', User::class),
-            Text::make(__('Level'), 'level')->required(),
+            Text::make(__('Level'), 'level')->rules('required'),
             Date::make(__('Issue date'), 'released_at')
                 ->displayUsing(fn($value) => $value ? Carbon::parse($value)->format('d/m/Y') : null),
         ];
@@ -84,7 +84,7 @@ class ElectricalCertificate extends Resource
     public function fieldsForUpdate(NovaRequest $request)
     {
         return [
-            Number::make(__('Card number'), 'card_id')->rules('required', function($attribute, $value, $fail)  use ($request){
+            Number::make(__('Card number'), 'card_id')->min(0)->max(2147483647)->rules('required', function($attribute, $value, $fail)  use ($request){
                 $year = Carbon::parse($request->released_at)->year;
                 if (Certificate::where('type', CertificateConstant::ELECTRICAL_SAFETY)
                     ->where('user_id', '!=', $this->user_id)
@@ -97,12 +97,12 @@ class ElectricalCertificate extends Resource
                     ]));
                 }
             }),
-            Text::make(__('Level'), 'level')->required(),
-            Date::make(__('Issue date'), 'released_at')->required(),
+            Text::make(__('Level'), 'level')->rules('required'),
+            Date::make(__('Issue date'), 'released_at')->rules('required'),
 
             Panel::make(__('Setting Generate Certificate'), [
                 Text::make(__('Director Name'), 'director_name_printed')->rules('required'),
-                MediaHubField::make(__('Signature Image'), 'signature_photo_printed')->required()
+                MediaHubField::make(__('Signature Image'), 'signature_photo_printed')->rules('required')
                     ->defaultCollection('setting-certificate')
                     ->rules(fn ($request) => [
                         function ($attribute, $value, $fail) {
@@ -132,7 +132,7 @@ class ElectricalCertificate extends Resource
                 ->singleSelect()
                 ->rules('required'),
             Hidden::make('Type', 'type')->default(fn() => CertificateConstant::ELECTRICAL_SAFETY),
-            Number::make(__('Card number'), 'card_id')->rules('required', function($attribute, $value, $fail)  use ($request){
+            Number::make(__('Card number'), 'card_id')->min(0)->max(2147483647)->rules('required', function($attribute, $value, $fail)  use ($request){
                 $year = Carbon::parse($request->released_at)->year;
                 if (Certificate::where('type', CertificateConstant::ELECTRICAL_SAFETY)
                     ->where('user_id', '!=', $this->user_id)
@@ -145,12 +145,12 @@ class ElectricalCertificate extends Resource
                     ]));
                 }
             }),
-            Text::make(__('Level'), 'level')->required(),
-            Date::make(__('Issue date'), 'released_at')->required(),
+            Text::make(__('Level'), 'level')->rules('required'),
+            Date::make(__('Issue date'), 'released_at')->rules('required'),
 
             Panel::make(__('Setting Generate Certificate'), [
                 Text::make(__('Director Name'), 'director_name_printed')->default(fn () => Setting::get('director_name_electric'))->rules('required'),
-                MediaHubField::make(__('Signature Image'), 'signature_photo_printed')->default(fn () => Setting::get('signature_photo_electric'))->required()
+                MediaHubField::make(__('Signature Image'), 'signature_photo_printed')->default(fn () => Setting::get('signature_photo_electric'))->rules('required')
                     ->defaultCollection('setting-certificate')
                     ->rules(fn ($request) => [
                         function ($attribute, $value, $fail) {
@@ -183,7 +183,7 @@ class ElectricalCertificate extends Resource
             Text::make(__('Position '), 'user->position'),
             Text::make(__('Department'), 'user->department'),
             Textarea::make(__('Training course name'), 'job'),
-            Text::make(__('Level'), 'level')->required(),
+            Text::make(__('Level'), 'level')->rules('required'),
             Date::make(__('Issue date'), 'released_at')
                 ->displayUsing(fn($value) => $value ? Carbon::parse($value)->format('d/m/Y') : null),
 
