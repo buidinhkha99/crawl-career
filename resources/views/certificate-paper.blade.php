@@ -32,8 +32,8 @@
         }
 
         .card {
-            background-color: white;
-            border: 1px solid #000000;
+            /*background-color: white;*/
+            /*border: 1px solid #000000;*/
             width: 20cm;
             height: 14cm
         }
@@ -122,8 +122,8 @@
 
         .signature {
             margin: auto;
-            width: 50px;
-            height: 29px;
+            width: 80px;
+            height: 50px;
             object-fit: contain;
         }
 
@@ -201,7 +201,7 @@
             margin-left: 10px;
             line-height: 16px;
             height: 237px;
-            max-height: 215px;
+            max-height: 208px;
             overflow: hidden;
             font-size: 13px;
         }
@@ -224,7 +224,7 @@
 </head>
 <body>
 @for ($iGroup = 0; $iGroup < $total_group; $iGroup++)
-    <div class="page">
+    <div class="page" style="background-color: #1b1e9d">
         @for($i= 1; $i <= count($group_font_size_cards[$iGroup]); $i++)
             <div class="card">
                 <div class="card-inner">
@@ -255,7 +255,7 @@
         @endfor
     </div>
 
-    <div class="page">
+    <div class="page" style="background-color: #FFF7E9">
         @for($i= 1; $i <= count($group_back_size_cards[$iGroup]); $i++)
                 <?php
                 $image = $group_back_size_cards[$iGroup][$i - 1]['image'] ?? null;

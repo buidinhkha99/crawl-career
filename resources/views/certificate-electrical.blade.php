@@ -11,6 +11,7 @@
 
     <style type="text/css">
         body {
+            background-color: #ffff99;
             margin: 0;
         }
 
@@ -25,8 +26,6 @@
         }
 
         .card {
-            background-color: white;
-            border: 1px solid #000000;
             width: 95mm;
             height: 63mm
         }
@@ -143,26 +142,24 @@
 
         .signature {
             margin: auto;
-            width: 50px;
-            height: 29px;
+            width: 80px;
+            height: 50px;
             object-fit: contain;
         }
 
         .location {
-            margin-top: 15px;
             margin-left: 110px;
             text-align: center;
             font-size: 16px;
-            /*line-height: 11px;*/
         }
 
         .info {
             font-size: 16px;
             margin-top: 8px;
             margin-left: 15px;
-            line-height: 17px;
+            line-height: 16px;
             text-align: left;
-            height: 111px;
+            height: 103px;
         }
 
         .level-save {
@@ -177,7 +174,11 @@
             display: -webkit-box;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            -webkit-line-clamp: 4;
+            -webkit-line-clamp: 3;
+        }
+
+        .small-font {
+            font-size: 15px;
         }
 
     </style>
@@ -230,7 +231,7 @@
                         <div class="info normal-text">
                             <div>Họ tên: <strong class="bold-text">{{$data_back_size_cards['name'] ?? null}}</strong>
                             </div>
-                            <div class="work-description">Công việc, đơn vị công tác: {{$data_back_size_cards['description'] ?? null}}</div>
+                            <div class="job">Công việc, đơn vị công tác: {{$data_back_size_cards['description'] ?? null}}</div>
                             <div class="level-save">Bậc an toàn: {{$data_back_size_cards['level'] ?? null}}</div>
                             <div>Cấp ngày {{$data_back_size_cards['day_created'] ?? null}}
                                 tháng {{$data_back_size_cards['month_created'] ?? null}}
@@ -251,5 +252,21 @@
         @endfor
     </div>
 @endfor
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var textContents = document.querySelectorAll('.job');
+
+        textContents.forEach(function(element) {
+            var lineHeight = parseInt(window.getComputedStyle(element).lineHeight);
+            var maxHeight = lineHeight * 3; // 3 lines limit
+            console.log(111, element.scrollHeight, maxHeight);
+            if (element.scrollHeight > maxHeight) {
+                element.classList.add('small-font');
+                element.classList.add('work-description');
+            }
+        });
+    });
+</script>
 </body>
 </html>
