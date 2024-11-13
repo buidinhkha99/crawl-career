@@ -311,30 +311,31 @@ class Exam extends Resource
              return;
         }
 
-        $period = Period::make(
-            start: Carbon::parse($request->post('start_at'))->format(DATE_RFC7231),
-            end: Carbon::parse($request->post('end_at'))->format(DATE_RFC7231),
-            precision: Precision::SECOND(),
-            format: DATE_RFC7231);
-
-        $exams = \App\Models\Exam::whereNot('id', $request->resourceId)
-            ->where('fulfilled', false)
-            ->get(['id', 'start_at', 'end_at']);
-
-        foreach ($exams as $exam) {
-            $tmp_period = Period::make(
-                start: Carbon::parse($exam->start_at)->format(DATE_RFC7231),
-                end: Carbon::parse($exam->end_at)->format(DATE_RFC7231),
-                precision: Precision::SECOND(),
-                format: DATE_RFC7231);
-
-            if ($period->overlapsWith($tmp_period)) {
-                $validator->errors()->add('start_at', __('There was another exam around this time'));
-                $validator->errors()->add('end_at', __('There was another exam around this time'));
-
-                return;
-            }
-        }
+        // stop check other exam starting
+//        $period = Period::make(
+//            start: Carbon::parse($request->post('start_at'))->format(DATE_RFC7231),
+//            end: Carbon::parse($request->post('end_at'))->format(DATE_RFC7231),
+//            precision: Precision::SECOND(),
+//            format: DATE_RFC7231);
+//
+//        $exams = \App\Models\Exam::whereNot('id', $request->resourceId)
+//            ->where('fulfilled', false)
+//            ->get(['id', 'start_at', 'end_at']);
+//
+//        foreach ($exams as $exam) {
+//            $tmp_period = Period::make(
+//                start: Carbon::parse($exam->start_at)->format(DATE_RFC7231),
+//                end: Carbon::parse($exam->end_at)->format(DATE_RFC7231),
+//                precision: Precision::SECOND(),
+//                format: DATE_RFC7231);
+//
+//            if ($period->overlapsWith($tmp_period)) {
+//                $validator->errors()->add('start_at', __('There was another exam around this time'));
+//                $validator->errors()->add('end_at', __('There was another exam around this time'));
+//
+//                return;
+//            }
+//        }
 
         if ($request->post('quiz_kit') == '[]') {
             $validator->errors()->add('quiz_kit', __('The :attribute field is required.', ['attribute' => __('Quiz Kit')]));
