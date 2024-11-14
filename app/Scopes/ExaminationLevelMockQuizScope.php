@@ -8,19 +8,19 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
 
-class ExaminationMockQuizScope implements Scope
+class ExaminationLevelMockQuizScope implements Scope
 {
     /**
      * Apply the scope to a given Eloquent query builder.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $builder
-     * @param  \Illuminate\Database\Eloquent\Model  $model
+     * @param Builder $builder
+     * @param Model $model
      * @return void
      */
     public function apply(Builder $builder, Model $model)
     {
         $builder->where('type', ExaminationType::Random)
             ->whereNotNull('user_id')
-            ->where('scope_type', ScopeAccountType::OCCUPATIONAL);
+            ->where('scope_type', ScopeAccountType::LEVEL);
     }
 }

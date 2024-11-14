@@ -56,21 +56,22 @@ class Examination extends Model
         'avatar',
         'employee_code',
         'created_at',
-        'type'
+        'type',
+        'scope_type'
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'exam_id');
     }
 
     public function exam()
     {
-        return $this->belongsTo(Exam::class);
+        return $this->belongsTo(Exam::class, 'exam_id');
     }
 
     public function quiz()
     {
-        return $this->belongsTo(Quiz::class);
+        return $this->belongsTo(Quiz::class, 'exam_id');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Nova\Actions;
 
+use App\Models\BaseQuiz;
 use App\Models\Quiz;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
@@ -14,6 +15,7 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 
 class AttachUserInQuiz extends Action
 {
+
     use InteractsWithQueue, Queueable;
 
     public function name(): string
@@ -44,9 +46,9 @@ class AttachUserInQuiz extends Action
      */
     public function fields(NovaRequest $request): array
     {
-        $user_joined = Quiz::find($request->resources ?: $request->resourceId)->getAttribute('exam')?->getAttribute('users')->pluck('id');
-        
-        $users = User::whereNotIn('id', $user_joined)->get()->mapWithKeys(function ($item, $key) {
+        $user_joined = Quiz::withoutGlobalScopes()->find($request->resources ?: $request->resourceId)->getAttribute('exam')?->getAttribute('users')->pluck('id');
+
+        $users = User::whereNotIn('id', $user_joined ?? [])->get()->mapWithKeys(function ($item, $key) {
             return [$item->id => $item->name && $item->employee_code ? "$item->employee_code - $item->name" : ($item->employee_code ? $item->employee_code : $item->name)];
         });
 

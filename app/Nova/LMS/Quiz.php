@@ -33,13 +33,14 @@ use Timothyasp\Badge\Badge;
 class Quiz extends Resource
 {
     use HasCallbacks;
+    protected string $examClassNova = Exam::class;
 
     /**
      * The model the resource corresponds to.
      *
      * @var class-string<\App\Models\Exam>
      */
-    public static string $model = \App\Models\Quiz::class;
+    public static string $model = \App\Models\QuizOccupational::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -71,7 +72,13 @@ class Quiz extends Resource
 
     public static function indexQuery(NovaRequest $request, $query)
     {
-        return $query->withCount('questions')->withCount('users')->with('exam');
+         $query->select('id', 'name', 'slug', 'description', 'total_marks', 'pass_marks',
+            'duration', 'max_attempts', 'is_published', 'exam_id', 'type', 'score_pass_quiz',
+            'question_amount_quiz', 'group_id')
+            ->withCount('questions')
+            ->withCount('users')
+            ->with('exam');
+
     }
 
     public static function detailQuery(NovaRequest $request, $query)
@@ -92,7 +99,7 @@ class Quiz extends Resource
         return [
             ID::make()->sortable(),
             Text::make(__('Name'), 'name')->sortable(),
-            BelongsTo::make(__('Exam'), 'exam', Exam::class)->filterable(),
+            BelongsTo::make(__('Exam'), 'exam', $this->examClassNova)->filterable(),
             Number::make(__('Duration'), 'duration'),
             Number::make(__('Question Amount'), 'questions_count'),
             Number::make(__('Score Pass'), 'score_pass'),
@@ -114,7 +121,7 @@ class Quiz extends Resource
         return [
             ID::make(),
             Text::make(__('Name'), 'name')->rules('required'),
-            BelongsTo::make(__('Exam'), 'exam', Exam::class)->rules('required')->searchable(),
+            BelongsTo::make(__('Exam'), 'exam', $this->examClassNova)->rules('required')->searchable(),
             Number::make(__('Duration'), 'duration')->rules('required'),
             Number::make(__('Question Amount'), 'questions_count'),
             Number::make(__('Score Pass'), 'score_pass'),
@@ -157,7 +164,7 @@ class Quiz extends Resource
         return collect([
             ID::make(),
             Text::make(__('Name'), 'name')->rules('required'),
-            BelongsTo::make(__('Exam'), 'exam', Exam::class)->rules('required'),
+            BelongsTo::make(__('Exam'), 'exam', $this->examClassNova)->rules('required'),
             Number::make(__('Duration'), 'duration')
                 ->readonly()
                 ->withMeta(['value' => $this->exam?->duration])
@@ -205,9 +212,9 @@ class Quiz extends Resource
     public function fields(NovaRequest $request): array
     {
 
-        $is_exams_page = $request->viaResource() == Exam::class && $request->viaResourceId;
+        $is_exams_page = $request->viaResource() == $this->examClassNova && $request->viaResourceId;
 
-        $belongsTo = BelongsTo::make(__('Exam'), 'exam', Exam::class)->rules('required')->filterable();
+        $belongsTo = BelongsTo::make(__('Exam'), 'exam', $this->examClassNova)->rules('required')->filterable();
         $belongsTo->setValue($request->viaResourceId);
 
         return collect([

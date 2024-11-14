@@ -28,6 +28,8 @@ use Timothyasp\Badge\Badge;
 
 class Exam extends Resource
 {
+    protected string $quizClassNova = Quiz::class;
+
     use HasCallbacks;
 
     /**
@@ -248,7 +250,7 @@ class Exam extends Resource
                 ->withMeta([
                     'showForm' => false,
                 ]),
-            HasMany::make(__('Quizzes'), 'quizzes', Quiz::class),
+            HasMany::make(__('Quizzes'), 'quizzes', $this->quizClassNova),
         ];
     }
 

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
 
-class ExaminationMockQuizScope implements Scope
+class ExaminationCareerScope implements Scope
 {
     /**
      * Apply the scope to a given Eloquent query builder.
@@ -19,8 +19,6 @@ class ExaminationMockQuizScope implements Scope
      */
     public function apply(Builder $builder, Model $model)
     {
-        $builder->where('type', ExaminationType::Random)
-            ->whereNotNull('user_id')
-            ->where('scope_type', ScopeAccountType::OCCUPATIONAL);
+        $builder->where('type', ExaminationType::Exam)->where('scope_type', ScopeAccountType::CAREER);
     }
 }

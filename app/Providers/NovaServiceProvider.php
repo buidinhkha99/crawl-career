@@ -21,14 +21,20 @@ use App\Nova\LMS\Certificates\ElectricalCertificate;
 use App\Nova\LMS\Certificates\OccupationalCertificate;
 use App\Nova\LMS\Certificates\PaperCertificate;
 use App\Nova\LMS\Exam;
+use App\Nova\LMS\ExamCareer;
+use App\Nova\LMS\ExaminationCareerInReport;
 use App\Nova\LMS\ExaminationInReport;
+use App\Nova\LMS\ExaminationLevelInReport;
+use App\Nova\LMS\ExamLevel;
 use App\Nova\LMS\Lesson;
 use App\Nova\LMS\MockQuiz;
 use App\Nova\LMS\ObjectGroupCertificate;
 use App\Nova\LMS\Question;
 use App\Nova\LMS\QuestionType;
 use App\Nova\LMS\Quiz;
+use App\Nova\LMS\QuizCareer;
 use App\Nova\LMS\QuizGroup;
+use App\Nova\LMS\QuizLevel;
 use App\Nova\LMS\Topic;
 use App\Nova\Observer\FormObserver;
 use App\Nova\Observer\LessonObserver;
@@ -149,6 +155,18 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     MenuItem::resource(Exam::class),
                     MenuItem::resource(Quiz::class),
                     MenuItem::resource(ExaminationInReport::class),
+                ])->icon('document-text')->collapsedByDefault(),
+
+                MenuSection::make(__('Examination Career'), [
+                    MenuItem::resource(ExamCareer::class),
+                    MenuItem::resource(QuizCareer::class),
+                    MenuItem::resource(ExaminationCareerInReport::class),
+                ])->icon('document-text')->collapsedByDefault(),
+
+                MenuSection::make(__('Examination Level'), [
+                    MenuItem::resource(ExamLevel::class),
+                    MenuItem::resource(QuizLevel::class),
+                    MenuItem::resource(ExaminationLevelInReport::class),
                 ])->icon('document-text')->collapsedByDefault(),
 
                MenuSection::make(__('Review'), [
