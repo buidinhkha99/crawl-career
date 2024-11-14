@@ -38,6 +38,7 @@ class AuthController extends Controller
         $credentials = [
             'employee_code' => $request->get('name'),
             'password' => $request->get('password'),
+            'status' => true
         ];
 
         if (Auth::user()) {
