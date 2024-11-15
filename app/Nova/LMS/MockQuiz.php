@@ -28,7 +28,7 @@ class MockQuiz extends Resource
      *
      * @var class-string<\App\Models\MockQuiz>
      */
-    public static string $model = \App\Models\MockQuiz::class;
+    public static string $model = \App\Models\MockQuizOccupational::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.

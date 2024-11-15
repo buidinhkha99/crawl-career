@@ -6,9 +6,14 @@ use App\Enums\ScopeAccountType;
 use Laravel\Nova\Fields\Hidden;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class QuizLevel extends Quiz
+class MockQuizLevel extends MockQuiz
 {
-    protected string $examClassNova = ExamLevel::class;
+    /**
+     * The model the resource corresponds to.
+     *
+     * @var class-string<\App\Models\MockQuiz>
+     */
+    public static string $model = \App\Models\MockQuizLevel::class;
 
     public function fields(NovaRequest $request): array
     {
@@ -17,10 +22,8 @@ class QuizLevel extends Quiz
         ]);
     }
 
-    /**
-     * The model the resource corresponds to.
-     *
-     * @var class-string<\App\Models\Exam>
-     */
-    public static string $model = \App\Models\QuizLevel::class;
+    public static function label(): string
+    {
+        return __('Mock Quiz Level');
+    }
 }

@@ -28,6 +28,8 @@ use App\Nova\LMS\ExaminationLevelInReport;
 use App\Nova\LMS\ExamLevel;
 use App\Nova\LMS\Lesson;
 use App\Nova\LMS\MockQuiz;
+use App\Nova\LMS\MockQuizCareer;
+use App\Nova\LMS\MockQuizLevel;
 use App\Nova\LMS\ObjectGroupCertificate;
 use App\Nova\LMS\Question;
 use App\Nova\LMS\QuestionType;
@@ -170,8 +172,10 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                 ])->icon('document-text')->collapsedByDefault(),
 
                MenuSection::make(__('Review'), [
-                   MenuItem::resource(MockQuiz::class),
                     MenuItem::resource(QuizGroup::class),
+                    MenuItem::resource(MockQuiz::class),
+                    MenuItem::resource(MockQuizCareer::class),
+                    MenuItem::resource(MockQuizLevel::class),
 //                   MenuItem::make(__('Random Quiz'))->path('/settings/quiz-random')->canSee(fn () => Auth::user() && ((method_exists(Auth::user(), 'isSuperAdmin') && Auth::user()->isSuperAdmin())
 //                           || Auth::user()->hasPermissionTo('view'.SettingType::QuizRandom))),
                ])->icon('document-text')->collapsedByDefault(),

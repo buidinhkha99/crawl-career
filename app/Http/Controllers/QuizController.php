@@ -460,7 +460,8 @@ class QuizController extends Controller
                     'avatar_url' => $user->avatar_url,
                     'avatar' => $user->avatar,
                     'employee_code' => $user->employee_code,
-                    'type' => ExaminationType::Random
+                    'type' => ExaminationType::Random,
+                    'scope_type' => $quiz->scope_type,
                 ]);
             });
         } catch (\Exception $e) {
