@@ -125,6 +125,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
         });
 
         Nova::style('custom.css', asset('css/nova_custom.css'));
+        Nova::script('custom.js', asset('js/nova_custom.js'));
 
         Nova::mainMenu(function (Request $request) {
             return [
