@@ -132,7 +132,7 @@ class Exam extends Resource
                 Hidden::make('', 'id'),
                 SimpleRepeatable::make(__('Kit'), 'kit', [
                     Select::make(__('Topics'), 'topics')
-                        ->options(fn () => \App\Models\Topic::all('name')->pluck('name', 'name'))
+                        ->options(fn () => \App\Models\Topic::withCount('questions')->having('questions_count', '>', 0)->pluck('name', 'name'))
                         ->searchable()
                         ->rules('required'),
                     Number::make(__('Amount'), 'amount')->rules('required'),
@@ -180,7 +180,7 @@ class Exam extends Resource
                 Hidden::make('', 'id'),
                 SimpleRepeatable::make(__('Kit'), 'kit', [
                     Select::make(__('Topics'), 'topics')
-                        ->options(fn () => \App\Models\Topic::all('name')->pluck('name', 'name'))
+                        ->options(fn () => \App\Models\Topic::withCount('questions')->having('questions_count', '>', 0)->pluck('name', 'name'))
                         ->searchable()
                         ->rules('required'),
                     Number::make(__('Amount'), 'amount')->rules('required'),
@@ -233,7 +233,7 @@ class Exam extends Resource
                 Hidden::make('', 'id'),
                 SimpleRepeatable::make(__('Kit'), 'kit', [
                     Select::make(__('Topics'), 'topics')
-                        ->options(fn () => \App\Models\Topic::all('name')->pluck('name', 'name'))
+                        ->options(fn () => \App\Models\Topic::withCount('questions')->having('questions_count', '>', 0)->pluck('name', 'name'))
                         ->searchable()
                         ->rules('required'),
                     Number::make(__('Amount'), 'amount')->rules('required'),
