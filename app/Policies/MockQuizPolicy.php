@@ -3,7 +3,6 @@
 namespace App\Policies;
 
 use App\Enums\ExamStatus;
-use App\Models\MockQuiz;
 use App\Models\Question;
 use App\Models\User;
 use Carbon\Carbon;
@@ -14,27 +13,27 @@ class MockQuizPolicy extends BasePolicy
 {
     protected $key = 'mockQuiz';
 
-    public function attachAnyQuestion(User $user, MockQuiz $quiz): bool
+    public function attachAnyQuestion(User $user, Model $quiz): bool
     {
         return $user->isSuperAdmin();
     }
 
-    public function attachQuestion(User $user, MockQuiz $quiz, Question $question): bool
+    public function attachQuestion(User $user, Model $quiz, Question $question): bool
     {
         return $user->isSuperAdmin() && !$quiz->questions()->where('questions.id', $question?->id)->exists();
     }
 
-    public function detachQuestion(User $user, MockQuiz $quiz, Question $question): bool
+    public function detachQuestion(User $user, Model $quiz, Question $question): bool
     {
         return $user->isSuperAdmin();
     }
 
-    public function attachAnyUser(User $user, MockQuiz $quiz): bool
+    public function attachAnyUser(User $user, Model $quiz): bool
     {
         return ($this->hasPermissionTo($user, 'update') && $quiz->getAttribute('exam')?->getAttribute('end_at')->gt(now())) || $user->isSuperAdmin();
     }
 
-    public function attachUser(User $user, MockQuiz $quiz, User $model): bool
+    public function attachUser(User $user, Model $quiz, User $model): bool
     {
         return
             $this->hasPermissionTo($user, 'update') &&
@@ -48,7 +47,7 @@ class MockQuizPolicy extends BasePolicy
             $user->isSuperAdmin();
     }
 
-    public function detachUser(User $user, MockQuiz $quiz, User $model): bool
+    public function detachUser(User $user, Model $quiz, User $model): bool
     {
         return (
                 $this->hasPermissionTo($user, 'update') &&

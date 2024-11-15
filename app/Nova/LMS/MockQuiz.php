@@ -73,7 +73,7 @@ class MockQuiz extends Resource
             Number::make(__('Question Amount'), 'question_amount_quiz')->rules('required', 'integer', 'min:1',),
             SimpleRepeatable::make(__('Kit'), 'kit', [
                 Select::make(__('Topics'), 'topics')
-                    ->options(fn() => \App\Models\Topic::pluck('name', 'name'))
+                    ->options(fn() => \App\Models\Topic::withCount('questions')->having('questions_count', '>', 0)->pluck('name', 'name'))
                     ->searchable(),
                 Number::make(__('Amount'), 'amount'),
             ])->addRowLabel(__('Add topic'))
