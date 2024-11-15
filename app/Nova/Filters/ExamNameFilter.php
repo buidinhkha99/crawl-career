@@ -21,6 +21,6 @@ class ExamNameFilter extends MultiselectFilter
 
     public function options(Request $request)
     {
-        return Examination::select('exam_name')->distinct()->get()?->pluck('exam_name', 'exam_name');
+        return Examination::select(['exam_name', 'created_at'])->latest()->distinct()->get()?->pluck('exam_name', 'exam_name');
     }
 }

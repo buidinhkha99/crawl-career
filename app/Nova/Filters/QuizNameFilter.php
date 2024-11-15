@@ -21,6 +21,6 @@ class QuizNameFilter extends MultiselectFilter
 
     public function options(Request $request)
     {
-        return Examination::select('quiz_name')->distinct()->get()?->pluck('quiz_name', 'quiz_name');
+        return Examination::select(['quiz_name', 'created_at'])->latest()->distinct()->get()?->pluck('quiz_name', 'quiz_name');
     }
 }

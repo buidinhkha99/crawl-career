@@ -28,6 +28,10 @@ Route::get('/css/nova_custom.css', function () {
     return response()->download(resource_path('css/nova_custom.css'), 'nova_custom.css', ['Content-type' => 'Text/css']);
 })->name('nova.css');
 
+Route::get('/js/nova_custom.js', function () {
+    return response()->download(resource_path('js/nova_custom.js'), 'nova_custom.js', ['Content-type' => 'Text/javascript']);
+})->name('nova.js');
+
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/logout', [AuthController::class, 'logout'])->middleware(['auth']);
 

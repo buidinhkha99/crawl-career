@@ -22,16 +22,16 @@ class CertificateController extends Controller
                 'icon' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
   <path d="M11.251.068a.5.5 0 0 1 .227.58L9.677 6.5H13a.5.5 0 0 1 .364.843l-8 8.5a.5.5 0 0 1-.842-.49L6.323 9.5H3a.5.5 0 0 1-.364-.843l8-8.5a.5.5 0 0 1 .615-.09z"></path>
 </svg>',
-                'front' => $certificateElectric?->image_font_url ?? 'https://placehold.co/400x600',
-                'back' => $certificateElectric?->image_back_url ?? 'https://placehold.co/400x600',
+                'front' => $certificateElectric?->image_font_url ?? null,
+                'back' => $certificateElectric?->image_back_url ?? null,
             ],
             [
                 'name' => 'Thẻ ATLĐ',
                 'icon' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
   <path fill-rule="evenodd" d="M12.516 2.17a.75.75 0 0 0-1.032 0 11.209 11.209 0 0 1-7.877 3.08.75.75 0 0 0-.722.515A12.74 12.74 0 0 0 2.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 0 0 .374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 0 0-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08Zm3.094 8.016a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd"></path>
 </svg>',
-                'front' => $certificateOccupation?->image_font_url ?? 'https://placehold.co/400x600',
-                'back' => $certificateOccupation?->image_back_url ?? 'https://placehold.co/400x600',
+                'front' => $certificateOccupation?->image_font_url ?? null,
+                'back' => $certificateOccupation?->image_back_url ?? null,
             ],
             [
                 'name' => 'Giấy chứng nhận ATLĐ',
@@ -43,8 +43,8 @@ class CertificateController extends Controller
   <path d="M6 12l3 0"></path>
   <path d="M6 15l2 0"></path>
 </svg>',
-                'front' => $certificatePaper?->image_font_url ?? 'https://placehold.co/400x600',
-                'back' => $certificatePaper?->image_back_url ?? 'https://placehold.co/400x600',
+                'front' => $certificatePaper?->image_font_url ?? null,
+                'back' => $certificatePaper?->image_back_url ?? null,
             ],
         ];
 

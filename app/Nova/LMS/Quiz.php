@@ -134,7 +134,7 @@ class Quiz extends Resource
                 ])->exceptOnForms(),
             SimpleRepeatable::make(__('Kit'), 'kit', [
                 Select::make(__('Topics'), 'topics')
-                    ->options(fn () => \App\Models\Topic::pluck('name', 'name'))
+                    ->options(fn () => \App\Models\Topic::withCount('questions')->having('questions_count', '>', 0)->pluck('name', 'name'))
                     ->searchable()
                     ->rules('required'),
                 Number::make(__('Amount'), 'amount')->rules('required'),
@@ -192,7 +192,7 @@ class Quiz extends Resource
             Number::make(__('Question Amount'), 'questions_count')->exceptOnForms(),
             SimpleRepeatable::make(__('Kit'), 'kit', [
                 Select::make(__('Topics'), 'topics')
-                    ->options(fn () => \App\Models\Topic::pluck('name', 'name'))
+                    ->options(fn () => \App\Models\Topic::withCount('questions')->having('questions_count', '>', 0)->pluck('name', 'name'))
                     ->searchable()
                     ->rules('required'),
                 Number::make(__('Amount'), 'amount')->rules('required'),
@@ -267,7 +267,7 @@ class Quiz extends Resource
             Number::make(__('Question Amount'), 'questions_count')->exceptOnForms(),
             SimpleRepeatable::make(__('Kit'), 'kit', [
                 Select::make(__('Topics'), 'topics')
-                    ->options(fn () => \App\Models\Topic::pluck('name', 'name'))
+                    ->options(fn () => \App\Models\Topic::withCount('questions')->having('questions_count', '>', 0)->pluck('name', 'name'))
                     ->searchable(),
                 Number::make(__('Amount'), 'amount'),
             ])->addRowLabel(__('Add topic'))
