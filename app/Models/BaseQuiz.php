@@ -15,12 +15,11 @@ use Spatie\Sluggable\SlugOptions;
 
 class BaseQuiz extends Model
 {
+    use HasSlug, HasFactory;
     protected $table = 'quizzes';
 
     protected $relationExam = Exam::class;
     protected $relationExamination = Examination::class;
-
-    use HasSlug, HasFactory;
 
     /**
      * The attributes that aren't mass assignable.

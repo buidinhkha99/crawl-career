@@ -61,7 +61,7 @@ class QuizController extends Controller
             ])->onlyInput('error');
         }
 
-        $exam = Exam::select('name', 'id', 'score_pass', 'start_at', 'end_at', 'question_amount')->where('id', $request->get('exam_id'))->first();
+        $exam = Exam::select('name', 'id', 'score_pass', 'start_at', 'end_at', 'question_amount', 'scope_type')->where('id', $request->get('exam_id'))->first();
         if (! $exam) {
             return back()->withErrors([
                 'error' => __('Thông tin kỳ thi sai'),
@@ -256,6 +256,7 @@ class QuizController extends Controller
                 'avatar_url' => $user->avatar_url,
                 'avatar' => $user->avatar,
                 'employee_code' => $user->employee_code,
+                'scope_type' => $exam->scope_type,
             ]);
 
             $user_noty = collect([]);

@@ -37,7 +37,7 @@ class Exam extends Resource
      *
      * @var class-string<\App\Models\Exam>
      */
-    public static string $model = \App\Models\Exam::class;
+    public static string $model = \App\Models\ExamOccupational::class;
 
     public function title()
     {
