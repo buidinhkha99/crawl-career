@@ -1123,7 +1123,7 @@
     "Account Verification": "Xác thực tài khoản",
     "Cancellation of verification successful!": "Huỷ bỏ xác thực thành công!",
     "Account verification with employee code (:employee_code) error. Error: :error": "Xác thực tài khoản có mã nhân viên (:employee_code) lỗi. Lỗi: :error",
-    "User verification successful, check the message if any user failed.": "Xác minh người dùng thành công, kiểm tra thông báo xem có người dùng nào bị lỗi không.",
+    "User verification successful": "Xác minh người dùng thành công",
     "Verified": "Đã xác thực",
     "Not verified": "Chưa xác thực",
     "Complete": "Hoàn thành",

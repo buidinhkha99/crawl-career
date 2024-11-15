@@ -36,52 +36,11 @@ class AccountVerification extends Action
                 return;
             }
 
-            $validator = Validator::make(
-                [
-                    'employee_code' => $model->getAttribute('employee_code'),
-                    'name' => $model->getAttribute('name'),
-                    'dob' => $model->getAttribute('dob'),
-                    'gender' => $model->getAttribute('gender'),
-                    'phone' => $model->getAttribute('phone'),
-                    'cccd/cmnd' => $model->getAttribute('username'),
-                ],
-                [
-                    'employee_code' => 'required',
-                    'name' => 'required',
-                    'dob' => 'required',
-                    'gender' => 'required',
-                    'phone' => 'required',
-                    'cccd/cmnd' => 'required',
-                ],
-                [],
-                [
-                    'employee_code' => __('Employee Code'),
-                    'name' => __('Name User'),
-                    'dob' => __('Date Of Birth'),
-                    'gender' => __('Gender'),
-                    'phone' => __('Phone Number'),
-                    'cccd/cmnd' => 'CCCD/CMND'
-                ]
-            );
-
-            if ($validator->fails()) {
-                Auth::user()->notify(
-                    NovaNotification::make()
-                        ->message(__("Account verification with employee code (:employee_code) error. Error: :error", [
-                            'employee_code' => $model->getAttribute('employee_code'),
-                            'error' => $validator->errors()->first(),
-                        ]))
-                        ->type('error')
-                );
-
-                return;
-            }
-
             $model->setAttribute('status', true);
             $model->save();
         });
 
-        return Action::message(__('User verification successful, check the message if any user failed.'));
+        return Action::message(__('User verification successful'));
     }
 
     /**
