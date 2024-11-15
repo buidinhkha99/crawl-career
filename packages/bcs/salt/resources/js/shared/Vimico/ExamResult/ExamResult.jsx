@@ -11,6 +11,7 @@ import dayjs from "dayjs";
 
 import { TableResult } from "../components";
 import { AnswerChooseIcon, AnswerIcon, AnswerTickIcon } from "../../../icon";
+import {Radio} from "antd";
 
 export default function ExamResult({ background, indexItem }) {
     const {
@@ -24,6 +25,8 @@ export default function ExamResult({ background, indexItem }) {
         start_time,
         end_time,
     } = usePage().props.components[indexItem];
+
+    const listLabelAnswer = ['A', 'B', 'C', 'D', 'E', 'F', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
     const startTime = dayjs(start_time);
     const endTime = dayjs(end_time);
     const time = endTime.diff(startTime);
@@ -210,8 +213,9 @@ export default function ExamResult({ background, indexItem }) {
                                 </div>
 
                                 {showDetail && (
-                                    <table>
-                                        <tbody>
+                                    <div>
+                                        <table>
+                                            <tbody>
                                             {data.map((item, index) => {
                                                 return (
                                                     <TableResult
@@ -227,7 +231,7 @@ export default function ExamResult({ background, indexItem }) {
                                                 {examinationData
                                                     .slice(
                                                         examinationData.length -
-                                                            itemDta,
+                                                        itemDta,
                                                         examinationData.length
                                                     )
                                                     .map(
@@ -346,8 +350,46 @@ export default function ExamResult({ background, indexItem }) {
                                                         }
                                                     )}
                                             </tr>
-                                        </tbody>
-                                    </table>
+                                            </tbody>
+                                        </table>
+
+                                        <div className="mt-10">
+                                            <span className="text-[30px] font-medium text-black mt-10">Chi tiết bài làm </span>
+                                        </div>
+                                        {examination.map((item, index) => (
+                                            <div className="question-block" key={index}>
+                                                <div style={{marginTop: '20px', display: 'flex', alignItems: 'center'}}>
+                                                    <strong style={{
+                                                        display: 'inline',
+                                                        marginRight: '5px',
+                                                        width: '80px'
+                                                    }}>Câu {item.order}:</strong>
+                                                    <span style={{display: 'inline'}}
+                                                          dangerouslySetInnerHTML={{__html: item.question_content}}/>
+                                                </div>
+                                                <table className="borderless-table">
+                                                    {item.answers.map((answerQuestion, keyAnswer) => (
+                                                        <tr key={keyAnswer}>
+                                                        <td style={{ width: '25px', paddingTop: '2px' }}>
+                                                                {answerQuestion.is_correct ? <span className="checkmark">✓</span> : null}
+                                                            </td>
+                                                            <td style={{ width: '25px' }}>
+                                                                <span
+                                                                    className={clsx(answerQuestion.is_choose ? 'answered' : 'answer')}
+                                                                    style={{ display: 'inline' }}
+                                                                >
+                                                                  {listLabelAnswer[keyAnswer]}
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <p style={{ display: 'inline' }}><span dangerouslySetInnerHTML={{__html: answerQuestion.data}}/></p>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </table>
+                                            </div>
+                                        ))}
+                                    </div>
                                 )}
                             </div>
                         </div>

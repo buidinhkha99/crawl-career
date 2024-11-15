@@ -476,7 +476,13 @@ class QuizController extends Controller
         'wrong_answers' => $examination->getAttribute('wrong_answer'),
         'unanswered' => $examination->getAttribute('unanswered'),
         'questions' => $examination->getAttribute('examination'),
-    ];;
+        'examination' => collect($examination->getAttribute('examination'))->map(fn($question) => array_merge($question,
+            [
+                'index_answered' => collect($question['answers'])->where('id', $question['answered'])?->keys()?->first() ?? null,
+                'index_correct_answer' => collect($question['answers'])->where('is_correct', true)?->keys()?->first() ?? null,
+            ])
+        ),
+    ];
     }
 
     public function reset(Request $request, $id)

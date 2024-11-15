@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\File;
+use Laravel\Nova\Notifications\NovaNotification;
+use Laravel\Nova\URL;
 use Outl1ne\NovaMediaHub\Http\Controllers\MediaHubController;
 use Outl1ne\NovaMediaHub\MediaHub;
 use Outl1ne\NovaMediaHub\Models\Media;
@@ -50,6 +52,17 @@ class ApiAuthController extends Controller
                 'status' => false,
                 'type' => UserType::Mobile
             ]);
+
+            // noty for admin, have new user
+            $user->notify(
+                NovaNotification::make()
+                    ->message(__('Have user just registered. CertificateID: :attribute', [
+                        'attribute' => $request->get('employee_code')
+                    ]))
+                    ->action(__('User Registered'), URL::remote('/admin/resources/users/'.$user->id))
+                    ->icon('link')
+                    ->type('info')
+            );
 
             return response()->json([
                 'success' => __('Registered successfully!'),

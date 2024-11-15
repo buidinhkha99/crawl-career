@@ -81,6 +81,12 @@ class ExamList extends Layout
                 Arr::get($attributes, 'background_option', 'color'),
                 Arr::get($attributes, 'background', '#000000')
             ),
+            'exams' => $quiz_unfinished->groupBy('exam.name')->map(fn($quizzes, $key) => [
+                'exam_id' => $quizzes->first()->exam_id,
+                'exam_name' => $key,
+                'quizzes' => $quizzes->map(fn($quiz) => ['name' => $quiz->name, 'id' => $quiz->id])->values()
+            ])->values(),
+
             'exam_name' => $quiz_unfinished?->first()?->exam?->name,
             'quizzes' => $quiz_unfinished->map(fn($quiz) => ['name' => $quiz->name, 'id' => $quiz->id])->values(),
             'config_button_one' => [

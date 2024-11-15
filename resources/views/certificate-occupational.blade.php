@@ -18,6 +18,7 @@
 
         @endforeach
         body {
+            background-color: #324376;
             margin: 0;
         }
 
@@ -96,7 +97,7 @@
         }
 
         .footer-back {
-            margin-top: 10px;
+            margin-top: 31px;
             font-size: 13px;
             text-align: center;
         }
@@ -107,7 +108,7 @@
             margin-left: 12px;
             line-height: 16px;
             text-align: left;
-            height: 150px;
+            height: 129px;
             width: 91%;
         }
 
@@ -122,8 +123,8 @@
 
         .signature {
             margin: 2px auto;
-            width: 50px;
-            height: 29px;
+            width: 80px;
+            height: 50px;
             object-fit: contain;
         }
 
@@ -147,10 +148,17 @@
             row-gap: 0;
         }
         .small-font {
-            font-size: 10px;
+            font-size: 11px;
         }
         .card {
-            background-color: white;
+            background-color: #324376;
+        }
+
+        .work-description {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            -webkit-line-clamp: 3;
         }
     </style>
 
@@ -162,7 +170,7 @@
                 <?php
                 $data_font_size_cards = $group_font_size_cards[$iGroup][$i - 1];
                 ?>
-            <div class="card" style="border: 1px solid black; width: 6.5cm; height: 9.5cm;">
+            <div class="card" style="width: 6.5cm; height: 9.5cm;">
                 @if(!($group_font_size_cards[$iGroup][$i - 1]['is_fake'] ?? false))
                     <div class="card-inner">
                         <div class="header">
@@ -193,7 +201,7 @@
                 <?php
                 $data_back_size_cards = $group_back_size_cards[$iGroup][$i - 1];
                 ?>
-            <div class="card" style="border: 1px solid black; width: 6.5cm; height: 9.5cm">
+            <div class="card" style=" width: 6.5cm; height: 9.5cm">
                 @if(!($group_back_size_cards[$iGroup][$i - 1]['is_fake'] ?? false))
                     <div class="card-inner">
                         <div class="header-back">
@@ -210,9 +218,8 @@
                                 ngày: {{$data_back_size_cards['dob'] ?? null}}</div>
                             <div class="normal-text job"> <span style="font-size: 12px">Công
                                 việc:</span> {{$data_back_size_cards['job'] ?? null}}</div>
-                            <div class="normal-text">
-                                Đã hoàn thành khóa huấn
-                                luyện: {{$data_back_size_cards['description'] ?? null}}
+                            <div class="normal-text job">
+                                Đã hoàn thành khóa huấn luyện: {{$data_back_size_cards['description'] ?? null}}
                             </div>
                             <div class="normal-text">Từ
                                 ngày {{$data_back_size_cards['complete_from'] ?? null}} đến
@@ -246,9 +253,10 @@
         textContents.forEach(function(element) {
             var lineHeight = parseInt(window.getComputedStyle(element).lineHeight);
             var maxHeight = lineHeight * 3; // 3 lines limit
-            console.log(element.scrollHeight, maxHeight);
+            console.log(111, element.scrollHeight, maxHeight);
             if (element.scrollHeight > maxHeight) {
                 element.classList.add('small-font');
+                element.classList.add('work-description');
             }
         });
     });

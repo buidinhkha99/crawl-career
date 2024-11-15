@@ -177,4 +177,9 @@ class User extends Authenticatable
     {
         return $this->certificate()->where('type', CertificateConstant::PAPER_SAFETY);
     }
+
+    public function findAndValidateForPassport($username, $password)
+    {
+        return User::where('employee_code', $username)->where('status', true)->first();
+    }
 }

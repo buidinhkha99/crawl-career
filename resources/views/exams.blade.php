@@ -309,32 +309,51 @@
             </div>
             <div class="marginTop">
                 <p class="main_result_table_title"><b>Bảng kết quả thi</b></p>
-                <table class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th style="width: 100px">Câu hỏi</th>
-                        @for ($i = 1; $i <= count($examination); $i++)
-                            <th style="width: 45px">{{ $i }}</th>
-                        @endfor
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @for($indexAnswer = 0; $indexAnswer <= $max_answer - 1; $indexAnswer++)
-                        <tr style="height: 35px;">
-                            <td><strong>{{$listLabelAnswer[$indexAnswer] ?? ''}}</strong></td>
-                            @foreach ($examination as $question)
-                                <td>{{ $question['index_answered'] == $indexAnswer ? '●' : ''}}</td>
-                            @endforeach
-                        </tr>
-                    @endfor
-                    <tr style="height: 35px;">
-                        <td><strong>Đáp án</strong></td>
-                        @foreach ($examination as $question)
-                            <td><strong>{{ $listLabelAnswer[$question['index_correct_answer']] ?? ''}}</strong></td>
+                    <table>
+                        @foreach($examination as $key=>$exam)
+                            @if($key == 0)
+                                <tr>
+                                    <td>
+                                        <span class="w-3" for="vehicle1" class="question" style="padding-left: 10px;">Câu {{$exam['order']}}:</span>
+                                        @if($exam['is_correct'])
+                                            <span>Đúng</span>
+                                        @else
+                                            <span>Sai</span>
+                                        @endif
+                                    </td>
+                                    @elseif($key != 0 && $key%5 == 0)
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="w-3" for="vehicle1" class="question" style="padding-left: 10px;">Câu {{$exam['order']}}:</span>
+                                        @if($exam['is_correct'])
+                                            <span>Đúng</span>
+                                        @else
+                                            <span>Sai</span>
+                                        @endif
+                                    </td>
+                                    @elseif($key+1 == count($examination))
+                                        <td>
+                                            <span class="w-3" for="vehicle1" class="question" style="padding-left: 10px;">Câu {{$exam['order']}}:</span>
+                                            @if($exam['is_correct'])
+                                                <span>Đúng</span>
+                                            @else
+                                                <span>Sai</span>
+                                            @endif
+                                        </td>
+                                </tr>
+                            @else
+                                <td>
+                                    <span class="w-3" for="vehicle1" class="question" style="padding-left: 10px;">Câu {{$exam['order']}}:</span>
+                                    @if($exam['is_correct'])
+                                        <span>Đúng</span>
+                                    @else
+                                        <span>Sai</span>
+                                    @endif
+                                </td>
+                            @endif
                         @endforeach
-                    </tr>
-                    </tbody>
-                </table>
+                    </table>
 
                 <p class="title-detail-exam"><b>Chi tiết bài làm</b></p>
                 @foreach($examination as $exam)
