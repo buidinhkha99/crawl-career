@@ -72,10 +72,7 @@ class Quiz extends Resource
 
     public static function indexQuery(NovaRequest $request, $query)
     {
-         $query->select('id', 'name', 'slug', 'description', 'total_marks', 'pass_marks',
-            'duration', 'max_attempts', 'is_published', 'exam_id', 'type', 'score_pass_quiz',
-            'question_amount_quiz', 'group_id')
-            ->withCount('questions')
+         $query->withCount('questions')
             ->withCount('users')
             ->with('exam');
 

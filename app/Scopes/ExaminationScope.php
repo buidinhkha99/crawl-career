@@ -19,7 +19,6 @@ class ExaminationScope implements Scope
      */
     public function apply(Builder $builder, Model $model)
     {
-        $builder->where('type', ExaminationType::Exam)
-            ->where('scope_type', ScopeAccountType::OCCUPATIONAL);
+        $builder->where('type', ExaminationType::Exam);
     }
 }

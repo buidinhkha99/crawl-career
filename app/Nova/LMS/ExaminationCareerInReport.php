@@ -2,7 +2,6 @@
 
 namespace App\Nova\LMS;
 
-use App\Models\Examination;
 use App\Models\ExaminationCareer;
 
 class ExaminationCareerInReport extends ExaminationInReport
@@ -10,7 +9,7 @@ class ExaminationCareerInReport extends ExaminationInReport
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<Examination>
+     * @var class-string<ExaminationCareer>
      */
     public static string $model = ExaminationCareer::class;
 }

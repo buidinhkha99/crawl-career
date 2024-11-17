@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Enums\ExamStatus;
 use App\Models\Question;
-use App\Models\BaseQuiz;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -14,27 +13,27 @@ class QuizPolicy extends BasePolicy
 {
     protected $key = 'quiz';
 
-    public function attachAnyQuestion(User $user, BaseQuiz $quiz): bool
+    public function attachAnyQuestion(User $user, Model $quiz): bool
     {
         return $user->isSuperAdmin();
     }
 
-    public function attachQuestion(User $user, BaseQuiz $quiz, Question $question): bool
+    public function attachQuestion(User $user, Model $quiz, Question $question): bool
     {
         return $user->isSuperAdmin() && !$quiz->questions()->where('questions.id', $question?->id)->exists();
     }
 
-    public function detachQuestion(User $user, BaseQuiz $quiz, Question $question): bool
+    public function detachQuestion(User $user, Model $quiz, Question $question): bool
     {
         return $user->isSuperAdmin();
     }
 
-    public function attachAnyUser(User $user, BaseQuiz $quiz): bool
+    public function attachAnyUser(User $user, Model $quiz): bool
     {
         return ($this->hasPermissionTo($user, 'update') && $quiz->getAttribute('exam')?->getAttribute('end_at')->gt(now())) || $user->isSuperAdmin();
     }
 
-    public function attachUser(User $user, BaseQuiz $quiz, User $model): bool
+    public function attachUser(User $user, Model $quiz, User $model): bool
     {
         return
             $this->hasPermissionTo($user, 'update') &&
@@ -44,7 +43,7 @@ class QuizPolicy extends BasePolicy
             $user->isSuperAdmin();
     }
 
-    public function detachUser(User $user, BaseQuiz $quiz, User $model): bool
+    public function detachUser(User $user, Model $quiz, User $model): bool
     {
         return (
                 $this->hasPermissionTo($user, 'update') &&

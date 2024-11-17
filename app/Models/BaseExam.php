@@ -14,7 +14,7 @@ class BaseExam extends Model
 {
     use HasFactory;
 
-    protected $relationQuiz = QuizOccupational::class;
+    protected $relationQuiz = Quiz::class;
     protected $relationExamination = Examination::class;
 
     protected $table = 'exams';

@@ -19,8 +19,6 @@ class QuizLevelScope implements Scope
      */
     public function apply(Builder $builder, Model $model)
     {
-        $builder->where('type', QuizType::Exam)->whereHas('exam', function ($query) {
-            $query->where('scope_type', ScopeAccountType::LEVEL);
-        });
+        $builder->where('type', QuizType::Exam)->where('scope_type', ScopeAccountType::LEVEL);
     }
 }

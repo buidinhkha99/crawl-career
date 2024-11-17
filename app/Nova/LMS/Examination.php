@@ -3,6 +3,7 @@
 namespace App\Nova\LMS;
 
 use App\Enums\ExaminationStatus;
+use App\Models\ExaminationOccupational;
 use App\Nova\Filters\ExamNameFilter;
 use App\Nova\Filters\QuizNameFilter;
 use App\Nova\Filters\UserGroupNameFilter;
@@ -24,9 +25,9 @@ class Examination extends Resource
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<Examination>
+     * @var class-string<ExaminationOccupational>
      */
-    public static string $model = \App\Models\Examination::class;
+    public static string $model = \App\Models\ExaminationOccupational::class;
 
     /**
      * The columns that should be searched.
