@@ -292,7 +292,7 @@ class QuizController extends Controller
         }
 
         // check conditions for participating in the exam
-        $quiz = MockQuiz::select('id', 'duration', 'name', 'question_amount_quiz', 'score_pass_quiz')->where('id', $id)->first();
+        $quiz = MockQuiz::select('id', 'duration', 'name', 'question_amount_quiz', 'score_pass_quiz', 'scope_type')->where('id', $id)->first();
         if (!$quiz) {
             return response()->json(['message' => __('Wrong exam information')], 404);
         }
