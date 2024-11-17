@@ -7,6 +7,8 @@ use App\Scopes\QuizScope;
 
 class QuizOccupational extends BaseQuiz
 {
+    protected $relationExam = ExamOccupational::class;
+    protected $relationExamination = ExaminationOccupational::class;
 
     protected static function boot()
     {

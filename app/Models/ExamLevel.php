@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ScopeAccountType;
 use App\Scopes\ExamLevelScope;
 
 class ExamLevel extends BaseExam
@@ -14,5 +15,8 @@ class ExamLevel extends BaseExam
         parent::boot();
 
         static::addGlobalScope(new ExamLevelScope());
+        static::saving(function ($model) {
+            $model->scope_type = ScopeAccountType::LEVEL;
+        });
     }
 }

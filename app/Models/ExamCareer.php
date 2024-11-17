@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ScopeAccountType;
 use App\Scopes\ExamCareerScope;
 
 class ExamCareer extends BaseExam
@@ -13,5 +14,8 @@ class ExamCareer extends BaseExam
         parent::boot();
 
         static::addGlobalScope(new ExamCareerScope());
+        static::saving(function ($model) {
+            $model->scope_type = ScopeAccountType::CAREER;
+        });
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ScopeAccountType;
 use App\Scopes\QuizLevelScope;
 
 class QuizLevel extends BaseQuiz
@@ -14,5 +15,8 @@ class QuizLevel extends BaseQuiz
         parent::boot();
 
         static::addGlobalScope(new QuizLevelScope());
+        static::saving(function ($model) {
+            $model->scope_type = ScopeAccountType::LEVEL;
+        });
     }
 }
