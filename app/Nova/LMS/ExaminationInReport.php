@@ -31,7 +31,7 @@ class ExaminationInReport extends Resource
      *
      * @var class-string<Examination>
      */
-    public static string $model = \App\Models\Examination::class;
+    public static string $model = \App\Models\ExaminationOccupational::class;
 
     public function title(): string
     {
