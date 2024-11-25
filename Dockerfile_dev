@@ -60,3 +60,5 @@ COPY docker_dev/php.ini /etc/php/8.2/cli/conf.d/99-sail.ini
 RUN chmod +x /usr/local/bin/start-container
 
 ENTRYPOINT ["/usr/local/bin/start-container"]
+
+ENV PATH /var/www/html:$PATH
