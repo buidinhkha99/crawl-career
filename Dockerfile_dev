@@ -1,9 +1,6 @@
 # For development use
 FROM ubuntu:22.04
 
-ARG NODE_VERSION=18
-ARG POSTGRES_VERSION=14
-
 WORKDIR /var/www/html
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -11,53 +8,67 @@ ENV TZ=UTC
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
+# Cài đặt các dependency cơ bản
 RUN apt-get update \
-    && apt-get install -y software-properties-common gnupg gosu curl ca-certificates zip unzip git supervisor sqlite3 libcap2-bin libpng-dev python2 \
+    && apt-get install -y software-properties-common gnupg curl ca-certificates zip unzip git \
     && mkdir -p ~/.gnupg \
     && chmod 600 ~/.gnupg \
     && echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf \
-    && echo "keyserver hkp://keyserver.ubuntu.com:80" >> ~/.gnupg/dirmngr.conf \
-    && gpg --recv-key 0x14aa40ec0831756756d7f66c4f4ea0aae5267a6c \
+    && echo "keyserver hkp://keyserver.ubuntu.com:80" >> ~/.gnupg/dirmngr.conf
+
+# Cài đặt PHP và các extension cần thiết
+RUN gpg --recv-key 0x14aa40ec0831756756d7f66c4f4ea0aae5267a6c \
     && gpg --export 0x14aa40ec0831756756d7f66c4f4ea0aae5267a6c > /usr/share/keyrings/ppa_ondrej_php.gpg \
     && echo "deb [signed-by=/usr/share/keyrings/ppa_ondrej_php.gpg] https://ppa.launchpadcontent.net/ondrej/php/ubuntu jammy main" > /etc/apt/sources.list.d/ppa_ondrej_php.list \
     && apt-get update \
     && apt-get install -y php8.2-cli php8.2-dev \
-       php8.2-pgsql php8.2-sqlite3 php8.2-gd \
-       php8.2-curl \
-       php8.2-imap php8.2-mysql php8.2-mbstring php8.2-mcrypt \
-       php8.2-xml php8.2-zip php8.2-bcmath php8.2-soap \
-       php8.2-intl php8.2-readline \
-       php8.2-ldap \
-       php8.2-msgpack php8.2-igbinary php8.2-redis php8.2-swoole \
-       php8.2-memcached php8.2-pcov php8.2-xdebug  \
-       wkhtmltopdf php8.2-imagick php8.2-opcache php-font-lib \
-    && php -r "readfile('https://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer \
-    && curl -sLS https://deb.nodesource.com/setup_$NODE_VERSION.x | bash - \
-    && apt-get install -y nodejs \
-    && npm install -g npm \
-    && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /usr/share/keyrings/yarn.gpg >/dev/null \
-    && echo "deb [signed-by=/usr/share/keyrings/yarn.gpg] https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list \
-    && curl -sS https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor | tee /usr/share/keyrings/pgdg.gpg >/dev/null \
-    && echo "deb [signed-by=/usr/share/keyrings/pgdg.gpg] http://apt.postgresql.org/pub/repos/apt jammy-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
+       php8.2-curl php8.2-mysql php8.2-mbstring \
+       php8.2-xml php8.2-zip php8.2-bcmath \
+       php8.2-intl php8.2-gd php8.2-opcache \
+       php8.2-dom php8.2-fileinfo php8.2-pdo
+
+# Cài đặt Composer
+RUN php -r "readfile('https://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer
+
+# Cài đặt Google Chrome và ChromeDriver
+RUN apt-get update \
+    && apt-get install -y wget gnupg unzip \
+    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list \
     && apt-get update \
-    && apt-get install -y yarn \
-    && apt-get install -y mysql-client \
-    && apt-get install -y postgresql-client-$POSTGRES_VERSION \
-    && apt-get -y autoremove \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    && apt-get install -y google-chrome-stable \
+    && apt-get install -y xvfb \
+    && apt-get clean
 
-RUN setcap "cap_net_bind_service=+ep" /usr/bin/php8.2
+# Cài đặt ChromeDriver phiên bản phù hợp (Chrome 115+)
+RUN apt-get update && apt-get install -y jq \
+    && CHROME_VERSION=$(google-chrome --version | grep -oE "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+") \
+    && echo "Detected Chrome version: $CHROME_VERSION" \
+    && CHROMEDRIVER_URL=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json" | \
+       jq -r ".versions[] | select(.version==\"$CHROME_VERSION\") | .downloads.chromedriver[] | select(.platform==\"linux64\") | .url" | head -1) \
+    && if [ -z "$CHROMEDRIVER_URL" ]; then \
+         echo "Exact version not found, trying to find closest version..." && \
+         CHROME_MAJOR=$(echo $CHROME_VERSION | cut -d '.' -f 1) && \
+         CHROMEDRIVER_URL=$(curl -s "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json" | \
+           jq -r ".versions[] | select(.version | startswith(\"$CHROME_MAJOR.\")) | .downloads.chromedriver[]? | select(.platform==\"linux64\") | .url" | tail -1); \
+       fi \
+    && echo "ChromeDriver URL: $CHROMEDRIVER_URL" \
+    && wget -q -O /tmp/chromedriver-linux64.zip "$CHROMEDRIVER_URL" \
+    && unzip /tmp/chromedriver-linux64.zip -d /tmp \
+    && mv /tmp/chromedriver-linux64/chromedriver /usr/bin/chromedriver \
+    && chmod +x /usr/bin/chromedriver \
+    && rm -rf /tmp/chromedriver-linux64.zip /tmp/chromedriver-linux64
 
-## Setup cron for laravel schedule
-RUN apt-get update -yqq && apt-get install -yqq cron && systemctl enable cron.service && service cron restart
-COPY docker_dev/cron /etc/cron.d/cron
-RUN crontab /etc/cron.d/cron
+# Cài đặt thư viện cần thiết cho Laravel Dusk
+RUN apt-get update \
+    && apt-get install -y libxi6 libgconf-2-4 libxss1 libappindicator1 libappindicator3-1 libxdamage1 libxtst6 libnss3 libgbm1 libasound2 xdg-utils fonts-liberation libfontconfig
 
+# Thiết lập script khởi động container
 COPY docker_dev/start-container /usr/local/bin/start-container
-COPY docker_dev/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY docker_dev/php.ini /etc/php/8.2/cli/conf.d/99-sail.ini
 RUN chmod +x /usr/local/bin/start-container
+
+# Thiết lập PHP config
+COPY docker_dev/php.ini /etc/php/8.2/cli/conf.d/99-sail.ini
 
 ENTRYPOINT ["/usr/local/bin/start-container"]
 

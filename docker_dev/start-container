@@ -6,10 +6,22 @@ fi
 
 chmod -R ugo+rw /.composer
 
-service cron restart
-php artisan migrate -n --force
-php artisan schedule:clear-cache -n
-php artisan nova:check-license -n
-php artisan optimize:clear -n
-php artisan storage:link -n
-exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+# Đảm bảo ChromeDriver đang chạy
+nohup /usr/bin/chromedriver --port=9515 --whitelisted-ips="" --url-base=/ > /dev/null 2>&1 &
+echo "ChromeDriver started on port 9515"
+
+# Chuyển đến thư mục workspace
+cd /var/www/html
+
+# In ra phiên bản Chrome và ChromeDriver để xác nhận
+echo "Chrome version: $(google-chrome --version)"
+echo "ChromeDriver version: $(chromedriver --version)"
+
+# Khởi động PHP Web server từ public nếu tồn tại, nếu không thì từ thư mục gốc
+if [ -d "/var/www/html/public" ]; then
+    echo "Starting PHP server from /var/www/html/public"
+    php -S 0.0.0.0:80 -t /var/www/html/public
+else
+    echo "Starting PHP server from /var/www/html"
+    php -S 0.0.0.0:80 -t /var/www/html
+fi

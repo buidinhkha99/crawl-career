@@ -4,29 +4,28 @@ services:
         build:
             context: .
             dockerfile: Dockerfile_dev
+        container_name: crawl-career-php
         restart: unless-stopped
+        ports:
+            - '8001:80'
+        volumes:
+            - .:/var/www/html
+        environment:
+            - APP_ENV=local
+            - APP_DEBUG=true
+            - CHROME_DRIVER_HOST=localhost
+            - CHROME_DRIVER_PORT=9515
+            - DUSK_DRIVER_URL=http://localhost:9515
         extra_hosts:
             - 'host.docker.internal:host-gateway'
-        ports:
-            - '8000:80'
-        volumes:
-            - ./:/var/www/html
-            - './.env:/app/.env'
-            - './storage:/app/storage'
-            - './database:/app/database'
-            - './app:/app/app'
-            - './resources:/app/resources'
-            - './routes:/app/routes'
-            - './vendor:/app/vendor'
-            - './lang:/app/lang'
-            - './packages:/app/packages'
-            - 'caddy_data:/data'
-            - 'caddy_config:/config'
+        shm_size: '2gb' # Tăng shared memory cho Chrome
+        privileged: true # Cần thiết cho Chrome trong Docker
+        cap_add:
+            - SYS_ADMIN # Cần thiết cho Chrome
         networks:
-            - salt
+            - crawler_network
         depends_on:
             - mysql
-            - redis
     mysql:
         image: 'mysql/mysql-server:8.0'
         restart: unless-stopped
@@ -39,31 +38,6 @@ services:
             MYSQL_USER: '${DB_USERNAME}'
             MYSQL_PASSWORD: '${DB_PASSWORD}'
             MYSQL_ALLOW_EMPTY_PASSWORD: 1
-        volumes:
-            - 'salt-mysql:/var/lib/mysql'
-        networks:
-            - salt
-        healthcheck:
-            test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
-            retries: 3
-            timeout: 5s
-    redis:
-        image: 'redis:alpine'
-        volumes:
-            - 'salt-redis:/data'
-        networks:
-            - salt
-        healthcheck:
-            test: [ "CMD", "redis-cli", "ping" ]
-            retries: 3
-            timeout: 5s
 networks:
-    salt:
+    crawler_network:
         driver: bridge
-volumes:
-    salt-mysql:
-        driver: local
-    salt-redis:
-        driver: local
-    caddy_data:
-    caddy_config:

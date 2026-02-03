@@ -9,7 +9,9 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
+        "ext-dom": "*",
         "ext-imagick": "*",
+        "ext-libxml": "*",
         "adrianorosa/laravel-geolocation": "^1.1",
         "alexazartsev/heroicon": "*",
         "alexwenzel/nova-dependency-container": "^1.7",
@@ -64,16 +66,17 @@
         "spatie/nova-tags-field": "^4.0",
         "spatie/period": "^2.4",
         "stepanenko3/nova-json": "^4.0",
+        "symfony/css-selector": "^7.1",
+        "symfony/dom-crawler": "^7.1",
         "tanmuhittin/laravel-google-translate": "^2.2",
         "timothyasp/nova-badge-field": "^2.0",
         "trin4ik/nova-switcher": "^0.3.0",
-        "whitecube/nova-flexible-content": "*",
-        "ext-dom": "*",
-        "ext-libxml": "*"
+        "whitecube/nova-flexible-content": "*"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.8",
         "fakerphp/faker": "^1.9.1",
+        "laravel/dusk": "^7.13",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.16",
         "mockery/mockery": "^1.4.4",

@@ -1,30 +1,22 @@
-# VIMICO
+#!/bin/bash
 
-## Setup project
+# Build và khởi động container
+docker compose up -d --build
 
-### Cấu hình ImageMagick
-Cài đặt ghostscript
-```
-sudo apt-get install ghostscript
-```
-Tìm kiếm file policy.xml ImageMagick trên hệ thống, để có cho phép chuyển đổi pdf thành image:
-Xác định vị trí file policy.xml:
-```angular2html
-sudo find / -name "policy.xml"
-```
-Chỉnh sửa file policy.xml:
-Mở file policy.xml để chỉnh sửa:
+# Đợi để PHP container khởi động hoàn tất
+echo "Đợi 10 giây để container khởi động..."
+sleep 10
 
-```angular2html
-nano /etc/ImageMagick-6/policy.xml
-```
-Tìm và sửa dòng liên quan đến PDF:
-Tìm dòng cấu hình liên quan đến định dạng PDF. Nó thường trông giống như sau:
+# Chạy seeder TopCV
+echo "Chạy TopCV Seeder..."
+docker compose exec php php artisan db:seed --class=CrawlTopCVSeeder
 
-```angular2html
-<policy domain="coder" rights="none" pattern="PDF" />
-```
-Bạn cần thay đổi rights="none" thành rights="read|write" để cho phép ImageMagick đọc và ghi file PDF:
-```angular2html
-<policy domain="coder" rights="read|write" pattern="PDF" />
-```
+# Chạy seeder CareerViet
+echo "Chạy CareerViet Seeder..."
+docker compose exec php php artisan db:seed --class=CrawlCareerVietSeeder
+
+# Chạy seeder VietNamWorks
+echo "Chạy VietNamWorks Seeder..."
+docker compose exec php php artisan db:seed --class=CrawlVietNamWorksSeeder
+
+echo "Hoàn tất!" 
