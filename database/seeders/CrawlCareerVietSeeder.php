@@ -8,7 +8,7 @@ use App\Imports\UserImportCareerViet;
 use Illuminate\Database\Seeder;
 use Maatwebsite\Excel\Facades\Excel;
 
-class FileSeeder extends Seeder
+class CrawlCareerVietSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -17,13 +17,9 @@ class FileSeeder extends Seeder
      */
     public function run()
     {
-        $path = 'vietnamworks.xlsx';
-
-//        Excel::store((new JobExport()), $path, 'public');
-
-//        $path = 'careerviet.xlsx';
-//        Excel::store((new JobExportCareerviet()), $path, 'public');
+        $path = 'careerviet/careerviet.xlsx';
+        Excel::store((new JobExportCareerviet()), $path, 'public');
         // get job description and save again
-        Excel::import(new UserImportCareerViet(), storage_path('app/public/careerviet.xlsx'));
+        Excel::import(new UserImportCareerViet(), storage_path('app/public/careerviet/careerviet.xlsx'));
     }
 }
