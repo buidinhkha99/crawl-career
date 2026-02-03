@@ -14,7 +14,7 @@ use Maatwebsite\Excel\DefaultValueBinder;
 use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
-class UserImportCareerViet extends DefaultValueBinder implements ToCollection, WithCustomValueBinder
+class ImportVietNameWork extends DefaultValueBinder implements ToCollection, WithCustomValueBinder
 {
     public function collection(Collection $collection): void
     {
@@ -28,19 +28,25 @@ class UserImportCareerViet extends DefaultValueBinder implements ToCollection, W
 
             do {
                 try {
-                    $row[1] = $this->getJobDescription($row[5]);
+                    $link = $this->getJobDescription($row[5]);
+                    if (empty($this->getJobDescription($row[5])))
+                    {
+                        throw new \Exception("Lỗi khong lấy dc link doanh nghiệp $row[5]");
+                    }
+
+                    $row[2] = $link;
                     break;
                 } catch (Throwable $e) {
-                    Log::error("Lỗi lấy job title tại hàng $key: " . $e->getMessage());
+                    Log::error("[VIET-NAME-WORD] Lỗi lấy job title tại hàng $key: " . $e->getMessage());
                     sleep(1);
                 }
             } while (0);
 
             $dataCustoms[] = $row;
-            Log::info("Get data job title successfully. Row: $key");
+            Log::info("[VIET-NAME-WORD] Get data job title successfully. Row: $key");
 
             if ($key % 1000 == 0) {
-                $path = "careerviet-custom-$key.xlsx";
+                $path = "vietnam-work-custom-$key.xlsx";
                 Excel::store((new JobExportDataConvertCareerViet(collect($dataCustoms))), $path, 'public');
                 Log::info("Save file successfully. Row: $key");
             }
@@ -72,17 +78,11 @@ class UserImportCareerViet extends DefaultValueBinder implements ToCollection, W
             $xpath = new DOMXPath($dom);
 
             // Sử dụng XPath để lấy giá trị
-            $element = $xpath->query('//*[@id="tab-1"]/section/div[1]/div/div[2]/div/ul/li[2]/p');
+            $element = $xpath->query('//*[@id="vnwLayout__col"]/div/div[1]/div[2]/a');
 
             // Kiểm tra và lấy giá trị
             if ($element->length > 0) {
-                $input = $element->item(0)->nodeValue;
-                $cleaned = preg_replace('/[\r\n\t]+/', ' ', $input); // Thay thế \r, \n, \t bằng dấu cách
-                $cleaned = trim($cleaned); // Xóa khoảng trắng ở đầu và cuối
-                $parts = explode(',', $cleaned);
-                $filteredParts = array_filter(array_map('trim', $parts));
-                return implode(' | ', $filteredParts);
-
+                return $element->item(0)->getAttribute('href');
             } else {
                 return null;
             }

@@ -52,7 +52,8 @@ class Setting extends Settings
             case 'default_language':
                 return self::get_default_language();
             default:
-                return Cache::tags(['settings'])->rememberForever($key, fn () => nova_get_setting($key, $default) ?? '');
+//                return Cache::tags(['settings'])->rememberForever($key, fn () => nova_get_setting($key, $default) ?? '');
+                return null;
         }
     }
 
