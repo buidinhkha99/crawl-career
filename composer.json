@@ -11,63 +11,30 @@
         "php": "^8.0.2",
         "ext-imagick": "*",
         "adrianorosa/laravel-geolocation": "^1.1",
-        "alexazartsev/heroicon": "*",
-        "alexwenzel/nova-dependency-container": "^1.7",
         "artesaos/seotools": "^1.0",
-        "badinansoft/nova-language-switch": "^1.2",
         "barryvdh/laravel-dompdf": "^3.0",
         "barryvdh/laravel-snappy": "^1.0",
         "bensampo/laravel-enum": "^6.2",
         "bepsvpt/secure-headers": "^7.4",
-        "coroowicaksono/chart-js-integration": "*",
-        "dillingham/nova-attach-many": "^2.0",
-        "dinandmentink/nova-markdown": "^4.2",
-        "dniccum/phone-number": "^2.0",
-        "dnwjn/nova-button": "^4.0",
-        "fidum/nova-package-bundler-command": "^1.0",
         "guzzlehttp/guzzle": "^7.2",
         "harishdurga/laravel-quiz": "^1.2",
         "html2text/html2text": "^4.3",
         "inertiajs/inertia-laravel": "^0.6.9",
-        "inspheric/nova-url-field": "^2.0",
         "kalnoy/nestedset": "^6.0",
         "laravel/framework": "^9.19",
-        "laravel/nova": "4.26.1",
         "laravel/octane": "^1.4",
         "laravel/passport": "^11.8",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
         "maatwebsite/excel": "^3.1",
-        "maatwebsite/laravel-nova-excel": "^1.3",
-        "murdercode/nova4-tinymce-editor": "*",
-        "nemrutco/nova-global-filter": "*",
-        "norman-huth/nova-values-field": "^1.0",
-        "outl1ne/nova-color-field": "^2.0",
-        "outl1ne/nova-media-hub": "*",
-        "outl1ne/nova-multiselect-field": "^4.2",
-        "outl1ne/nova-multiselect-filter": "^4.0",
-        "outl1ne/nova-settings": "^5.0",
-        "outl1ne/nova-simple-repeatable": "^2.1",
-        "outl1ne/nova-sortable": "*",
-        "reedware/nova-text-filter": "^2.0",
         "repat/laravel-validator-emojis": "^0.2.0",
-        "salt/reset-password": "*",
-        "salt/title-dashboard": "@dev",
-        "sereny/nova-permissions": "^1.2",
         "simplesoftwareio/simple-qrcode": "^4.2",
-        "simplesquid/nova-enum-field": "^3.1",
-        "slash2nl/nova-back-button": "^2.0",
-        "spatie/browsershot": "^4.3",
         "spatie/laravel-medialibrary": "^10.0.0",
         "spatie/laravel-sluggable": "^3.4",
         "spatie/laravel-tags": "^4.3",
-        "spatie/nova-tags-field": "^4.0",
+        "spatie/laravel-permission": "^6.0",
         "spatie/period": "^2.4",
-        "stepanenko3/nova-json": "^4.0",
         "tanmuhittin/laravel-google-translate": "^2.2",
-        "timothyasp/nova-badge-field": "^2.0",
-        "trin4ik/nova-switcher": "^0.3.0",
-        "whitecube/nova-flexible-content": "*",
         "ext-dom": "*",
         "ext-libxml": "*"
     },
@@ -126,46 +93,5 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "https://nova.laravel.com"
-        },
-        {
-            "type": "path",
-            "url": "./nova-components/ResetPassword"
-        },
-        {
-            "type": "path",
-            "url": "./nova-components/heroicon"
-        },
-        {
-            "type": "path",
-            "url": "./nova-components/nova-media-hub"
-        },
-        {
-            "type": "path",
-            "url": "./nova-components/nova-sortable"
-        },
-        {
-            "type": "path",
-            "url": "./nova-components/nova-flexible-content"
-        },
-        {
-            "type": "path",
-            "url": "./nova-components/nova-chartjs"
-        },
-        {
-            "type": "path",
-            "url": "./nova-components/nova-global-filter"
-        },
-        {
-            "type": "path",
-            "url": "./nova-components/Nova4-TinymceEditor"
-        },
-        {
-            "type": "path",
-            "url": "./nova-components/TitleDashboard"
-        }
-    ]
+    "repositories": []
 }

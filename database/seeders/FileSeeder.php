@@ -17,13 +17,7 @@ class FileSeeder extends Seeder
      */
     public function run()
     {
-        $path = 'vietnamworks.xlsx';
-
-//        Excel::store((new JobExport()), $path, 'public');
-
-//        $path = 'careerviet.xlsx';
-//        Excel::store((new JobExportCareerviet()), $path, 'public');
-        // get job description and save again
-        Excel::import(new UserImportCareerViet(), storage_path('app/public/careerviet.xlsx'));
+        $path = 'careerviet.xlsx';
+        Excel::store((new JobExportCareerviet()), $path, 'public');
     }
 }
