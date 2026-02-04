@@ -18,10 +18,21 @@ services:
             - DUSK_DRIVER_URL=http://localhost:9515
         extra_hosts:
             - 'host.docker.internal:host-gateway'
-        shm_size: '2gb' # Tăng shared memory cho Chrome
-        privileged: true # Cần thiết cho Chrome trong Docker
-        cap_add:
-            - SYS_ADMIN # Cần thiết cho Chrome
+        ports:
+            - '8001:80'
+        volumes:
+            - ./:/var/www/html
+            - './.env:/app/.env'
+            - './storage:/app/storage'
+            - './database:/app/database'
+            - './app:/app/app'
+            - './resources:/app/resources'
+            - './routes:/app/routes'
+            - './vendor:/app/vendor'
+            - './lang:/app/lang'
+            - './packages:/app/packages'
+            - 'caddy_data:/data'
+            - 'caddy_config:/config'
         networks:
             - crawler_network
         depends_on:

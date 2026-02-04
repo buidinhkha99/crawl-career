@@ -17,9 +17,7 @@ class CrawlCareerVietSeeder extends Seeder
      */
     public function run()
     {
-        $path = 'careerviet/careerviet.xlsx';
+        $path = 'careerviet.xlsx';
         Excel::store((new JobExportCareerviet()), $path, 'public');
-        // get job description and save again
-        Excel::import(new UserImportCareerViet(), storage_path('app/public/careerviet/careerviet.xlsx'));
     }
 }
