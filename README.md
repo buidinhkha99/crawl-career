@@ -45,6 +45,10 @@ source venv/bin/activate && python src/topcv_scraper_api.py --all --output topcv
 source venv/bin/activate && python src/topcv_scraper_api.py --all --no-industry --output topcv_full.xlsx
 ```
 
+```angular2html
+source venv/bin/activate && python3 src/update_topcv_na.py --input data/topcv_full.xlsx --output data/topcv_updated.xlsx
+```
+
 ### CareerViet
 
 ```bash
